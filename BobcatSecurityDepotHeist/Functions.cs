@@ -17,6 +17,7 @@ using System.Security;
 using System.Security.Policy;
 using System.Text;
 using System.Threading;
+using System.Web;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
@@ -30,39 +31,6 @@ namespace BobcatSecurityDepotHeist
     {
         public class fMisc
         {
-            public static int ReturnNextDayOfWeek()
-            {
-                int dwVar = Function.Call<int>(Hash.GET_CLOCK_DAY_OF_WEEK);
-                if (dwVar == 0)
-                {
-                    return 1;
-                }
-                if (dwVar == 1)
-                {
-                    return 2;
-                }
-                if (dwVar == 2)
-                {
-                    return 3;
-                }
-                if (dwVar == 3)
-                {
-                    return 4;
-                }
-                if (dwVar == 4)
-                {
-                    return 5;
-                }
-                if (dwVar == 5)
-                {
-                    return 6;
-                }
-                if (dwVar == 6)
-                {
-                    return 0;
-                }
-                return -1;
-            }
             public static object pushArgs(params object[] args)
             {
                 foreach (object obj in args)
@@ -121,22 +89,6 @@ namespace BobcatSecurityDepotHeist
             {
                 Function.Call(Hash.DISABLE_POLICE_RESTART, policeID, disable);
             }
-            public static void SetClockTime(int hour, int minute, int second)
-            {
-                Function.Call(Hash.SET_CLOCK_TIME, hour, minute, second);
-            }
-            public static int GetClockHours()
-            {
-                return Function.Call<int>(Hash.GET_CLOCK_HOURS);
-            }
-            public static int GetClockMinutes()
-            {
-                return Function.Call<int>(Hash.GET_CLOCK_MINUTES);
-            }
-            public static int GetClockSeconds()
-            {
-                return Function.Call<int>(Hash.GET_CLOCK_SECONDS);
-            }
             public static void ClearArea(Vector3 xyz, float radius, bool ignoreVehicles, bool ignorePeds, bool ignoreProps)
             {
                 Entity[] entities = World.GetAllEntities();
@@ -166,6 +118,430 @@ namespace BobcatSecurityDepotHeist
             public static int GetRandomIntInRange(int startRange, int endRange)
             {
                 return Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, startRange, endRange);
+            }
+        }
+
+        public class fWeather
+        {
+            public static Hash GetCurrentWeatherTypeHashName() // Returns current weather name hash
+            {
+                return Function.Call<Hash>(Hash.GET_​PREV_​WEATHER_​TYPE_​HASH_​NAME);
+            }
+            public static Hash GetNextWeatherTypeHashName()
+            {
+                return Function.Call<Hash>(Hash.GET_​NEXT_​WEATHER_​TYPE_​HASH_​NAME);
+            }
+            public static string GetCurrentWeatherStringName()
+            {
+                uint weatherHash = (uint)Function.Call<Hash>(Hash.GET_​PREV_​WEATHER_​TYPE_​HASH_​NAME);
+                for (int i = 0; i < WeatherHashes.Length; i++)
+                {
+                    if (weatherHash == WeatherHashes[i])
+                    {
+                        return WeatherStr[i];
+                    }
+                }
+                return null;
+            }
+            public static string GetNextWeatherStringName()
+            {
+                uint weatherHash = (uint)Function.Call<Hash>(Hash.GET_​NEXT_​WEATHER_​TYPE_​HASH_​NAME);
+                for (int i = 0; i < WeatherHashes.Length; i++)
+                {
+                    if (weatherHash == WeatherHashes[i])
+                    {
+                        return WeatherStr[i];
+                    }
+                }
+                return null;
+            }
+            public static WeatherTypes GetCurrentWeatherEnum()
+            {
+                uint weatherHash = (uint)Function.Call<Hash>(Hash.GET_​PREV_​WEATHER_​TYPE_​HASH_​NAME);
+                for (int i = 0; i < WeatherHashes.Length; i++)
+                {
+                    if (weatherHash == WeatherHashes[i])
+                    {
+                        return (WeatherTypes)i;
+                    }
+                }
+                return WeatherTypes.EXTRASUNNY;
+            }
+            public static WeatherTypes GetNextWeatherEnum()
+            {
+                uint weatherHash = (uint)Function.Call<Hash>(Hash.GET_​NEXT_​WEATHER_​TYPE_​HASH_​NAME);
+                for (int i = 0; i < WeatherHashes.Length; i++)
+                {
+                    if (weatherHash == WeatherHashes[i])
+                    {
+                        return (WeatherTypes)i;
+                    }
+                }
+                return WeatherTypes.EXTRASUNNY;
+            }
+            public static bool IsCurrentWeatherType(WeatherTypes weatherType)
+            {
+                string WeatherType = null;
+                if (WeatherType == null)
+                {
+                    for (int i = 0; i < WeatherStr.Length; i++)
+                    {
+                        if ((int)weatherType == i)
+                        {
+                            WeatherType = WeatherStr[i];
+                            break;
+                        }
+                    }
+                }
+                return Function.Call<bool>(Hash.IS_​PREV_​WEATHER_​TYPE, WeatherType);
+            }
+            public static bool IsNextWeatherType(WeatherTypes weatherType)
+            {
+                string WeatherType = null;
+                if (WeatherType == null)
+                {
+                    for (int i = 0; i < WeatherStr.Length; i++)
+                    {
+                        if ((int)weatherType == i)
+                        {
+                            WeatherType = WeatherStr[i];
+                            break;
+                        }
+                    }
+                }
+                return Function.Call<bool>(Hash.IS_​NEXT_​WEATHER_​TYPE, WeatherType);
+            }
+            public static void SetWeatherTypePersist(WeatherTypes weatherType)
+            {
+                string WeatherType = null;
+                if (WeatherType == null)
+                {
+                    for (int i = 0; i < WeatherStr.Length; i++)
+                    {
+                        if ((int)weatherType == i)
+                        {
+                            WeatherType = WeatherStr[i];
+                            break;
+                        }
+                    }
+                }
+                Function.Call(Hash.SET_​WEATHER_​TYPE_​PERSIST, WeatherType);
+            }
+            public static void SetWeatherTypeNowPersist(WeatherTypes weatherType)
+            {
+                string WeatherType = null;
+                if (WeatherType == null)
+                {
+                    for (int i = 0; i < WeatherStr.Length; i++)
+                    {
+                        if ((int)weatherType == i)
+                        {
+                            WeatherType = WeatherStr[i];
+                            break;
+                        }
+                    }
+                }
+                Function.Call(Hash.SET_​WEATHER_​TYPE_​NOW_​PERSIST, WeatherType);
+            }
+            public static void SetWeatherTypeNow(WeatherTypes weatherType)
+            {
+                string WeatherType = null;
+                if (WeatherType == null)
+                {
+                    for (int i = 0; i < WeatherStr.Length; i++)
+                    {
+                        if ((int)weatherType == i)
+                        {
+                            WeatherType = WeatherStr[i];
+                            break;
+                        }
+                    }
+                }
+                Function.Call(Hash.SET_​WEATHER_​TYPE_​NOW, WeatherType);
+            }
+            public static void SetWeatherTypeOvertimePersist(WeatherTypes weatherType, float time)
+            {
+                string WeatherType = null;
+                if (WeatherType == null)
+                {
+                    for (int i = 0; i < WeatherStr.Length; i++)
+                    {
+                        if ((int)weatherType == i)
+                        {
+                            WeatherType = WeatherStr[i];
+                            break;
+                        }
+                    }
+                }
+                Function.Call(Hash.SET_​WEATHER_​TYPE_​OVERTIME_​PERSIST, WeatherType, time);
+            }
+            public static void SetRandomWeatherType()
+            {
+                Function.Call(Hash.SET_​RANDOM_​WEATHER_​TYPE);
+            }
+            public static void ClearWeatherTypePersist()
+            {
+                Function.Call(Hash.CLEAR_​WEATHER_​TYPE_​PERSIST);
+            }
+            public static unsafe void GetCurrWeatherState(Hash* weatherType1, Hash* weatherType2, float* percentWeather2)
+            {
+                Function.Call(Hash.GET_​CURR_​WEATHER_​STATE, weatherType1, weatherType2, percentWeather2);
+            }
+            /// <summary>
+            /// https://nativedb.dotindustries.dev/gta5/natives/0x578C752848ECFA0C
+            /// </summary>
+            public static void SetCurrWeatherState(Hash weatherType1, Hash weatherType2, float percentWeather2)
+            {
+                Function.Call(Hash.SET_​CURR_​WEATHER_​STATE, weatherType1, weatherType2, percentWeather2);
+            }
+            public static void SetOverrideWeather(WeatherTypes weatherType)
+            {
+                string WeatherType = null;
+                if (WeatherType == null)
+                {
+                    for (int i = 0; i < WeatherStr.Length; i++)
+                    {
+                        if ((int)weatherType == i)
+                        {
+                            WeatherType = WeatherStr[i];
+                            break;
+                        }
+                    }
+                }
+                Function.Call(Hash.SET_​OVERRIDE_​WEATHER, WeatherType);
+            }
+            /// <summary>
+            /// Identical to SET_OVERRIDE_WEATHER but has an additional BOOL param that sets some weather var to 0 if true
+            /// </summary>
+            public static void SetOverrideWeatherEx(WeatherTypes weatherType, bool p1)
+            {
+                string WeatherType = null;
+                if (WeatherType == null)
+                {
+                    for (int i = 0; i < WeatherStr.Length; i++)
+                    {
+                        if ((int)weatherType == i)
+                        {
+                            WeatherType = WeatherStr[i];
+                            break;
+                        }
+                    }
+                }
+                Function.Call(Hash.SET_​OVERRIDE_​WEATHEREX, WeatherType, p1);
+            }
+            public static void ClearOverrideWeather()
+            {
+                Function.Call(Hash.CLEAR_​OVERRIDE_​WEATHER);
+            }
+            /// <summary>
+            /// https://nativedb.dotindustries.dev/gta5/natives/0x643E26EA6E024D92
+            /// </summary>
+            public static void SetRain(float intensity)
+            {
+                Function.Call(Hash.SET_​RAIN, intensity);
+            }
+
+        }
+        public static uint[] WeatherHashes = new uint[]
+{
+            2544503417,
+            916995460,
+            821931868,
+            282916021,
+            2926802500,
+            3146353965,
+            1420204096,
+            3061285535,
+            1840358669,
+            2764706598,
+            4021743606,
+            669657108,
+            603685163,
+            3373937154,
+            2144126041,
+            385726482
+};
+        public static string[] WeatherStr = new string[]
+        {
+            "EXTRASUNNY",
+            "CLEAR",
+            "CLOUDS",
+            "smog",
+            "foggy",
+            "OVERCAST",
+            "Rain",
+            "THUNDER",
+            "Clearing",
+            "NEUTRAL",
+            "Snow",
+            "BLIZZARD",
+            "SNOWLIGHT",
+            "Halloween",
+            "SNOW_HALLOWEEN",
+            "RAIN_HALLOWEEN"
+        };
+        public enum WeatherTypes
+        {
+            EXTRASUNNY,
+            CLEAR,
+            CLOUDS,
+            smog,
+            foggy,
+            OVERCAST,
+            Rain,
+            THUNDER,
+            Clearing,
+            NEUTRAL,
+            Snow,
+            BLIZZARD,
+            SNOWLIGHT,
+            Halloween,
+            SNOW_HALLOWEEN,
+            RAIN_HALLOWEEN
+        }
+
+        public class fZone
+        {
+            public static int GetZoneAtCoords(Vector3 xyz)
+            {
+                return Function.Call<int>(Hash.GET_​ZONE_​AT_​COORDS, xyz.X, xyz.Y, xyz.Z);
+            }
+            public static int GetZoneFromNameID(string zoneName)
+            {
+                return Function.Call<int>(Hash.GET_​ZONE_​FROM_​NAME_​ID, zoneName);
+            }
+            public static int GetZonePopschedule(int zoneId)
+            {
+                return Function.Call<int>(Hash.GET_​ZONE_​POPSCHEDULE, zoneId);
+            }
+            public static string GetNameOfZone(Vector3 xyz)
+            {
+                return Function.Call<string>(Hash.GET_​NAME_​OF_​ZONE, xyz.X, xyz.Y, xyz.Z);
+            }
+            public static void SetZoneEnabled(int zoneId, bool toggle)
+            {
+                Function.Call(Hash.SET_​ZONE_​ENABLED, zoneId, toggle);
+            }
+            /// <summary>
+            /// cellphone range 1- 5 used for signal bar in iFruit phone
+            /// </summary>
+            public static int GetZoneScumminess(int zoneId)
+            {
+                return Function.Call<int>(Hash.GET_​ZONE_​SCUMMINESS, zoneId);
+            }
+            public static void OverridePopscheduleVehicleModel(int scheduleId, Hash vehicleHash)
+            {
+                Function.Call(Hash.OVERRIDE_​POPSCHEDULE_​VEHICLE_​MODEL, scheduleId, vehicleHash);
+            }
+            public static void ClearPopscheduleOverrideVehicleModel(int scheduleId)
+            {
+                Function.Call(Hash.CLEAR_​POPSCHEDULE_​OVERRIDE_​VEHICLE_​MODEL, scheduleId);
+            }
+            public static Hash GetHashOfMapAreaAtCoords(Vector3 xyz)
+            {
+                return Function.Call<Hash>(Hash.GET_​HASH_​OF_​MAP_​AREA_​AT_​COORDS, xyz.X, xyz.Y, xyz.Z);
+            } 
+        }
+
+        public class fClock
+        {
+            public static int ReturnNextDayOfWeek()
+            {
+                int dwVar = Function.Call<int>(Hash.GET_CLOCK_DAY_OF_WEEK);
+                if (dwVar == 0)
+                {
+                    return 1;
+                }
+                if (dwVar == 1)
+                {
+                    return 2;
+                }
+                if (dwVar == 2)
+                {
+                    return 3;
+                }
+                if (dwVar == 3)
+                {
+                    return 4;
+                }
+                if (dwVar == 4)
+                {
+                    return 5;
+                }
+                if (dwVar == 5)
+                {
+                    return 6;
+                }
+                if (dwVar == 6)
+                {
+                    return 0;
+                }
+                return -1;
+            }
+
+            public static void SetClockTime(int hour =0, int minute=0, int second=0)
+            {
+                Function.Call(Hash.SET_CLOCK_TIME, hour, minute, second);
+            }
+            public static void PauseClock(bool toggle)
+            {
+                Function.Call(Hash.PAUSE_​CLOCK, toggle);
+            }
+            public static void AdvanceClockTimeTo(int hour=0, int minute=0, int second = 0)
+            {
+                Function.Call(Hash.ADVANCE_​CLOCK_​TIME_​TO, hour, minute, second);
+            }
+            public static void AddToClockTime(int hours =0, int minutes =0, int seconds = 0)
+            {
+                Function.Call(Hash.ADD_​TO_​CLOCK_​TIME, hours, minutes, seconds);
+            }
+            public static int GetClockHours()
+            {
+                return Function.Call<int>(Hash.GET_CLOCK_HOURS);
+            }
+            public static int GetClockMinutes()
+            {
+                return Function.Call<int>(Hash.GET_CLOCK_MINUTES);
+            }
+            public static int GetClockSeconds()
+            {
+                return Function.Call<int>(Hash.GET_CLOCK_SECONDS);
+            }
+            public static void SetClockDate(int day, int month, int year)
+            {
+                Function.Call(Hash.SET_​CLOCK_​DATE, day, month, year);
+            }
+            public static int GetClockDayOfWeek()
+            {
+                return Function.Call<int>(Hash.GET_​CLOCK_​DAY_​OF_​WEEK);
+            }
+            public static int GetClockDayOfMonth()
+            {
+                return Function.Call<int>(Hash.GET_​CLOCK_​DAY_​OF_​MONTH);
+            }
+            public static int GetClockMonth()
+            {
+                return Function.Call<int>(Hash.GET_​CLOCK_​MONTH);
+            }
+            public static int GetClockYear()
+            {
+                return Function.Call<int>(Hash.GET_​CLOCK_​YEAR);
+            }
+            public static int GetMillisecondsPerGameMinute()
+            {
+                return Function.Call<int>(Hash.GET_​MILLISECONDS_​PER_​GAME_​MINUTE);
+            }
+            public static unsafe void GetPOSIXTime(int* year, int* month, int* day, int* hour, int* minute, int* second) // Gets System Time
+            {
+                Function.Call(Hash.GET_​POSIX_​TIME, year, month, day, hour, minute, second);
+            }
+            public static unsafe void GetUTCTime(int* year, int* month, int* day, int* hour, int* minute, int* second) // Gets current UTC time
+            {
+                Function.Call(Hash.GET_​UTC_​TIME, year, month, day, hour, minute, second);
+            }
+            public static unsafe void GetLocalTime(int* year, int* month, int* day, int* hour, int* minute, int* second) // Gets Local System Time
+            {
+                Function.Call(Hash.GET_​LOCAL_​TIME, year, month, day, hour, minute, second);
             }
         }
 
@@ -201,11 +577,11 @@ namespace BobcatSecurityDepotHeist
 
             public static int ReturnWantedLevel = 0;
 
-            public static int ReturnHour = fMisc.GetClockHours();
+            public static int ReturnHour = fClock.GetClockHours();
 
-            public static int ReturnMinute = fMisc.GetClockMinutes();
+            public static int ReturnMinute = fClock.GetClockMinutes();
 
-            public static int ReturnSecond = fMisc.GetClockSeconds();
+            public static int ReturnSecond = fClock.GetClockSeconds();
 
             public static Vector4 playerSpawn = null;
 
@@ -305,7 +681,7 @@ namespace BobcatSecurityDepotHeist
                     Function.Call(Hash.STOP_AUDIO_SCENE, "DEATH_SCENE");
                     Function.Call(Hash.RELEASE_NAMED_SCRIPT_AUDIO_BANK, "OFFMISSION_WASTED");
                     scaleform.Dispose();
-                    fMisc.SetClockTime(ReturnHour, ReturnMinute, ReturnSecond);
+                    fClock.SetClockTime(ReturnHour, ReturnMinute, ReturnSecond);
                     Screen.StopEffects();
                     fGraphics.AnimpostFXStopAll();
                     fGraphics.ClearTimecycleModifier();
@@ -473,13 +849,20 @@ namespace BobcatSecurityDepotHeist
                 }
             }
 
-            static Wanted PlayerWantedLevel;
+            public static int GetPlayerWantedLevel(Player player)
+            {
+                return Function.Call<int>(Hash.GET_​PLAYER_​WANTED_​LEVEL, player);
+            }
+            public static void SetPlayerWantedLevel(Player player, int wantedLevel, bool disableNoMission = false)
+            {
+                Function.Call(Hash.SET_​PLAYER_​WANTED_​LEVEL, player, wantedLevel, disableNoMission);
+            }
 
             public static bool IsWanted
             {
                 get
                 {
-                    return PlayerWantedLevel.WantedLevel != 0;
+                    return GetPlayerWantedLevel(Game.Player) < 0;
                 }
             }
 
@@ -487,11 +870,11 @@ namespace BobcatSecurityDepotHeist
             {
                 get
                 {
-                    return PlayerWantedLevel.WantedLevel;
+                    return GetPlayerWantedLevel(Game.Player);
                 }
                 set
                 {
-                    PlayerWantedLevel.SetWantedLevel(value, false);
+                    SetPlayerWantedLevel(Game.Player, value, false);
                 }
             }
             public static int FakeWantedLevel
@@ -681,9 +1064,9 @@ namespace BobcatSecurityDepotHeist
             {
                 Function.Call(Hash.FORCE_PED_AI_AND_ANIMATION_UPDATE, ped, p1, p2);
             }
-            public static void PlaySynchronizedEntityAnim(Entity entity, int syncedScene, string animation, string propName, float p5, int p6, float p4 = 1000.0f, float p7 = 1000.0f)
+            public static void PlaySynchronizedEntityAnim(Entity entity, int syncedScene, string animation, string AnimDict, float p5, int p6, float p4 = 1000.0f, float p7 = 1000.0f)
             {
-                Function.Call<bool>(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, entity, syncedScene, animation, propName, p4, p5, p6, p7);
+                Function.Call<bool>(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, entity, syncedScene, animation, AnimDict, p4, p5, p6, p7);
             }
             public static void TaskPlayAnim(Ped ped, string AnimDictName, string AnimName, float BlendInDelta = 8f, float BlendOutDelta = 8f, int timeToPlay = -1,
                 AnimFlags AnimFlags = AnimFlags.AF_DEFAULT, float startPhase = 0f, bool phaseControlled = false, IkControlFlags ikFlags = IkControlFlags.AIK_NONE, bool allowOverrideCloneUpdate = false)
@@ -912,6 +1295,14 @@ namespace BobcatSecurityDepotHeist
 
         }
 
+        public class fMath
+        {
+            public static int CEIL(float value)
+            {
+                return Function.Call<int>(Hash.CEIL, value);
+            }
+        }
+
         public class fMissionShard
         {
             public unsafe void DeleteScaleformID()
@@ -938,13 +1329,19 @@ namespace BobcatSecurityDepotHeist
                 }
             }
 
-            public void Shard_In(string ShardName, string ShardDescription, int color = 2, float speed = 0.5f, int colorout = 0)
+            public void Shard_In(string ShardName, string ShardDescription, int color = 2, float speed = 0.5f, int colorout = 0, bool failShard = false)
             {
                 DeleteScaleformID();
                 RequestScaleformID();
                 Script.Wait(500);
                 fScaleforms.CallFunction(scaleID, "SHOW_SHARD_MIDSIZED_MESSAGE", ShardName, ShardDescription, color, false, true);
-                Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, shardInSoundName, shardInSoundSet, true);
+                if (failShard)
+                {
+                    Function.Call(Hash.REQUEST_SCRIPT_AUDIO_BANK, "DLC_MP2023_1/DLC_MP2023_1_Bicycle_Race", true, -1);
+                    Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, "Fail", "Bike_Time_Trials_Soundset", true);
+                }
+                else
+                    Function.Call(Hash.PLAY_SOUND_FRONTEND, -1, shardInSoundName, shardInSoundSet, true);
                 int num = Game.GameTime + 7000;
                 while (Game.GameTime < num)
                 {
@@ -993,6 +1390,14 @@ namespace BobcatSecurityDepotHeist
             {
                 return Function.Call<bool>(Hash.TRIGGER_MUSIC_EVENT, eventName);
             }
+            public static bool PrepareMusicEvent(string eventName)
+            {
+                return Function.Call<bool>(Hash.PREPARE_​MUSIC_​EVENT, eventName);
+            }
+            public static bool AudioIsMusicPlaying()
+            {
+                return Function.Call<bool>(Hash.AUDIO_​IS_​MUSIC_​PLAYING);
+            }
             public static void ChangeMusicEventIntensity(MusicEventIntensity intensity)
             {
                 if (intensity == MusicEventIntensity.StaffProblemsCroupierChaseStart)
@@ -1025,6 +1430,39 @@ namespace BobcatSecurityDepotHeist
                     TriggerMusicEvent("CH_FAIL");
                 if (intensity == MusicEventIntensity.MusicStop)
                     TriggerMusicEvent("CH_MUSIC_STOP");
+            }
+            public static void PrepareMusicEventIntensity(MusicEventIntensity intensity)
+            {
+                if (intensity == MusicEventIntensity.StaffProblemsCroupierChaseStart)
+                    PrepareMusicEvent("CH_STAFF_PROBLEMS_CROUPIER_CHASE_START");
+                if (intensity == MusicEventIntensity.IdleStart)
+                    PrepareMusicEvent("CH_IDLE_START");
+                if (intensity == MusicEventIntensity.MedIntensityStart)
+                    PrepareMusicEvent("CH_MED_INTENSITY_START");
+                if (intensity == MusicEventIntensity.GunfightStart)
+                    PrepareMusicEvent("CH_GUNFIGHT_START");
+                if (intensity == MusicEventIntensity.DeliveringStart)
+                    PrepareMusicEvent("HEI4_DELIVERING_START");
+                if (intensity == MusicEventIntensity.SuspenseStart)
+                    PrepareMusicEvent("HEI4_SUSPENSE_START");
+                if (intensity == MusicEventIntensity.Suspense)
+                    PrepareMusicEvent("CH_SUSPENSE");
+                if (intensity == MusicEventIntensity.MedIntensity)
+                    PrepareMusicEvent("CH_MED_INTENSITY");
+                if (intensity == MusicEventIntensity.Delivering)
+                    PrepareMusicEvent("CH_DELIVERING");
+                if (intensity == MusicEventIntensity.Gunfight)
+                    PrepareMusicEvent("CH_GUNFIGHT");
+                if (intensity == MusicEventIntensity.VehicleAction)
+                    PrepareMusicEvent("CH_VEHICLE_ACTION");
+                if (intensity == MusicEventIntensity.Idle)
+                    PrepareMusicEvent("CH_IDLE");
+                if (intensity == MusicEventIntensity.Silent)
+                    PrepareMusicEvent("CH_SILENT");
+                if (intensity == MusicEventIntensity.Fail)
+                    PrepareMusicEvent("CH_FAIL");
+                if (intensity == MusicEventIntensity.MusicStop)
+                    PrepareMusicEvent("CH_MUSIC_STOP");
             }
             public static void PlayPedAmbientSpeechNative(Ped ped, string speechName, string speechParam, int p3 = 1)
             {
@@ -1108,6 +1546,14 @@ namespace BobcatSecurityDepotHeist
 
         public class fCam
         {
+            public static void ShakeCam(Camera cam, string type, float amplitude)
+            {
+                Function.Call(Hash.SHAKE_CAM, cam, type, amplitude);
+            }
+            public static void SetCamFov(Camera cam, float fov)
+            {
+                Function.Call(Hash.SET_CAM_FOV, cam, fov);
+            }
             public static Camera CreateCam(string camName, bool createCamera = true)
             {
                 return Function.Call<Camera>(Hash.CREATE_CAM, camName, createCamera);
@@ -1198,6 +1644,11 @@ namespace BobcatSecurityDepotHeist
 
         public class fHud
         {
+            public static void ToggleNorthYanktonMap(bool toggle)
+            {
+                Function.Call(Hash.SET_​MINIMAP_​IN_​PROLOGUE, toggle);
+            }
+
             public static void ShowNotification(string message, bool isImportant, bool cacheMessage = true)
             {
                 Notification.PostTicker(message, isImportant, cacheMessage);
@@ -1223,11 +1674,30 @@ namespace BobcatSecurityDepotHeist
                 else
                 {
                     ClearAllHelpMessages();
+                    ClearHelp(true);
                     BeginTextCommandDisplayHelp(CellEmailBcon);
                     foreach (string text in texts)
                     {
                         AddTextComponentSubstringPlayerName(text);
                     }
+                    EndTextCommandDisplayHelp(0, false, false, 1);
+                }
+            }
+            public static void DisplayHelpText(string text)
+            {
+                if (!IsHelpMessageBeingDisplayed() && !IsHelpMessageOnScreen() && !IsHelpMessageFadingOut() && !Game.Player.Character.IsDead)
+                {
+                    ClearAllHelpMessages();
+                    BeginTextCommandDisplayHelp(CellEmailBcon);
+                    AddTextComponentSubstringPlayerName(text);
+                    EndTextCommandDisplayHelp(0, false, true);
+                }
+                else
+                {
+                    ClearAllHelpMessages();
+                    ClearHelp(true);
+                    BeginTextCommandDisplayHelp(CellEmailBcon);
+                    AddTextComponentSubstringPlayerName(text);
                     EndTextCommandDisplayHelp(0, false, false, 1);
                 }
             }
@@ -1417,6 +1887,11 @@ namespace BobcatSecurityDepotHeist
                 Function.Call(Hash.SHOW_HUD_COMPONENT_THIS_FRAME, id);
             }
 
+            public static void ShowScriptedHudComponentThisFrame(int id)
+            {
+                Function.Call(Hash.SHOW_​SCRIPTED_​HUD_​COMPONENT_​THIS_​FRAME, id);
+            }
+
             public static void HideHudComponentThisFrame(int id)
             {
                 Function.Call(Hash.HIDE_HUD_COMPONENT_THIS_FRAME, id);
@@ -1428,8 +1903,21 @@ namespace BobcatSecurityDepotHeist
             }
         }
 
+        public class fPathfind
+        {
+            public static void SetAllowStreamPrologueNodes(bool toggle)
+            {
+                Function.Call(Hash.SET_ALLOW_STREAM_PROLOGUE_NODES, toggle);
+            }
+        }
+
         public class fCutscene
         {
+            public static int GetCutsceneTotalDuration()
+            {
+                return Function.Call<int>(Hash.GET_CUTSCENE_TOTAL_DURATION);
+            }
+
             public static string LoadCutsceneWithFlag(string cutscene, int playbackflag)
             {
                 while (!Function.Call<bool>(Hash.HAS_CUTSCENE_LOADED, cutscene))
@@ -2803,6 +3291,26 @@ namespace BobcatSecurityDepotHeist
 
         public class fVehicle
         {
+            public static void SwitchTrainTrack(TrainTracks trainTrack, bool toggleTrainSpawn)
+            {
+                Function.Call(Hash.SWITCH_​TRAIN_​TRACK, (int)trainTrack, toggleTrainSpawn);
+            }
+            public enum TrainTracks
+            {
+                MainTrackAroundSanAndreas = 0, // Vector3 Pos: 1084.48f, 3231.45f, 39.2565f
+                DavisQuartzQuarryBranch, // Vector3 Pos: 2787.94f, 2837.48f, 35.3899f
+                SecondTrackAlongsideLiveTrackAlongRoyLewensteinBlv, // Vector3 Pos: 290.534f, -1845.34f, 25.776f
+                MetroTrackCircuit, // Vector3 Pos: 193.196f, -603.836f, 16.7565f
+                BranchInMirrorParkRailyard, // Vector3 Pos: 536.946f, -452.129f, 23.7995f
+                BranchInMirrorParkRailyard2, // Vector3 Pos: 561.516f, -432.01f, 23.8422f
+                LosSantosBranchToMirrorParkRailyard, // Vector3 Pos: 499.604f, -1571.59f, 28.3367f
+                OvergroundPartOfMetroTrackAlongForumDr, // Vector3 Pos: -213.538f, -1019.98f, 28.1413f
+                BranchToMirrorParkRailyard, // Vector3 Pos: 532.34f, -952.224f, 26.1233f
+                YanktonTrain, // Vector3 Pos: 4318.79f, -4714.68f, 112.313f 
+                PartOfMetroTrackNearMissionRow, // Vector3 Pos: 519.823f, -1187.75f, 28.3182f
+                YanktonPrologueMissionTrain // Vector3 Pos: 4243.14f, -6506.32f, 109.381f 
+            }
+
             public static void DeleteVehiclesInList(List<Vehicle> vehList)
             {
                 if (vehList.Count > 0)
@@ -3201,6 +3709,170 @@ namespace BobcatSecurityDepotHeist
             "hei_ch1_06e_strm_2",
             "hei_ch1_06e_strm_1"
         };
+            }
+
+            public class PrologueMap : Script
+            {
+                public PrologueMap()
+                {
+                    Tick += OnTick;
+                    UnloadPrologueMap();
+                }
+
+                private void OnTick(object sender, EventArgs e)
+                {
+                    for (int i = 0; i < LoadPrologueIPLS.Count; i++)
+                    {
+                        if (Function.Call<bool>(Hash.IS_IPL_ACTIVE, LoadPrologueIPLS[i]))
+                        {
+                            if (PrologueIPLSLoaded < LoadPrologueIPLS.Count)
+                                PrologueIPLSLoaded++;
+                            else
+                                PrologueIPLSLoaded = LoadPrologueIPLS.Count;
+                        }
+                    }
+                    for (int i = 0; i < UnloadPrologueIPLS.Count; i++)
+                    {
+                        if (!Function.Call<bool>(Hash.IS_IPL_ACTIVE, UnloadPrologueIPLS[i]))
+                        {
+                            if (PrologueIPLSUnloaded < UnloadPrologueIPLS.Count)
+                                PrologueIPLSUnloaded++;
+                            else
+                                PrologueIPLSUnloaded = UnloadPrologueIPLS.Count;
+                        }
+                    }
+                }
+
+                public static void EnableNorthYanktonTrains(bool enabled)
+                {
+                    if (enabled)
+                    {
+                        fVehicle.SwitchTrainTrack(fVehicle.TrainTracks.YanktonPrologueMissionTrain, true);
+                        fVehicle.SwitchTrainTrack(fVehicle.TrainTracks.YanktonTrain, true);
+                        return;
+                    }
+                    fVehicle.SwitchTrainTrack(fVehicle.TrainTracks.YanktonPrologueMissionTrain, false);
+                    fVehicle.SwitchTrainTrack(fVehicle.TrainTracks.YanktonTrain, false);
+                }
+                public static bool IsPrologueMapLoading;
+                public static bool IsPrologueMapUnloading;
+                public static bool IsPrologueMapLoaded
+                {
+                    get
+                    {
+                        if (PrologueIPLSLoaded == 30)
+                        {
+                            PrologueIPLSUnloaded = 0;
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+                public static bool IsPrologueMapUnloaded
+                {
+                    get
+                    {
+                        if (PrologueIPLSUnloaded == 30)
+                        {
+                            PrologueIPLSLoaded = 0;
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+                public static void LoadPrologueMap()
+                {
+                    IsPrologueMapLoading = true;
+                    IsPrologueMapUnloading = false;
+                    foreach (string ipl in LoadPrologueIPLS)
+                    {
+                        Function.Call(Hash.REMOVE_IPL, ipl);
+                        Function.Call(Hash.REQUEST_IPL, ipl);
+                    }
+                }
+                public static void UnloadPrologueMap()
+                {
+                    IsPrologueMapUnloading = true;
+                    IsPrologueMapLoading = false;
+                    foreach (string ipl in UnloadPrologueIPLS)
+                    {
+                        Function.Call(Hash.REMOVE_IPL, ipl);
+                    }
+                }
+                public static int PrologueIPLSLoaded = 0;
+                public static int PrologueIPLSUnloaded = 0;
+                public static List<string> LoadPrologueIPLS = new List<string>
+                {
+                    "prologue01",
+                    "prologue02",
+                    "prologue03",
+                    "prologue04",
+                    "prologue05",
+                    "prologue06",
+                    "prologuerd",
+                    "prologue01c",
+                    "prologue01d",
+                    "prologue01e",
+                    "prologue01f",
+                    "prologue01g",
+                    "prologue01h",
+                    "prologue01i",
+                    "prologue01j",
+                    "prologue01k",
+                    "prologue01z",
+                    "prologue03b",
+                    "prologue04b",
+                    "prologue05b",
+                    "prologue06b",
+                    "prologue_occl",
+                    "prologue06_int",
+                    "prologue03_grv_dug",
+                    "prologue_grv_torch",
+                    "des_protree_end",
+                    "des_protree_start",
+                    "prologue06_pannel",
+                    "plg_occl_00",
+                    "prologuerdb"
+                };
+                public static List<string> UnloadPrologueIPLS = new List<string>
+                {
+                    "prologue01",
+                    "prologue02",
+                    "prologue03",
+                    "prologue04",
+                    "prologue05",
+                    "prologue06",
+                    "prologuerd",
+                    "prologue01c",
+                    "prologue01d",
+                    "prologue01e",
+                    "prologue01f",
+                    "prologue01g",
+                    "prologue01h",
+                    "prologue01i",
+                    "prologue01j",
+                    "prologue01k",
+                    "prologue01z",
+                    "prologue03b",
+                    "prologue04b",
+                    "prologue05b",
+                    "prologue06b",
+                    "prologue_occl",
+                    "prologue06_int",
+                    "prologue03_grv_dug",
+                    "prologue_grv_torch",
+                    "des_protree_end",
+                    "des_protree_start",
+                    "prologue06_pannel",
+                    "plg_occl_00",
+                    "prologuerdb"
+                };
             }
 
             public static void RequestIpl(string iplName)
@@ -3876,8 +4548,17 @@ namespace BobcatSecurityDepotHeist
                     LongRangeBlips[i].IsShortRange = IsShortRange;
                 }
             }
+            public static Blip AddBlipForArea(Vector3 areaCenter, float width, float height)
+            {
+                return Function.Call<Blip>(Hash.ADD_​BLIP_​FOR_​AREA, areaCenter.X, areaCenter.Y, areaCenter.Z, width, height);
+            }
+            public static void SetBlipRotation(Blip blip, int rotation)
+            {
+                Function.Call(Hash.SET_​BLIP_​ROTATION, blip, rotation);
+            }
 
         }
     }
+    
 }
 // mph_pri_fin_ext

@@ -51,6 +51,7 @@ namespace Global
 {
     using static Functions;
     using static Globals;
+    using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
     public class GlobalsController : Script
     {
@@ -94,6 +95,9 @@ namespace Global
         static Ped cutscenePed1;
         static Ped cutscenePed2;
         static Ped cutscenePed3;
+        static Blip debugBlip;
+        static Camera debugCam;
+
 
         private void onKeyDown(object sender, KeyEventArgs e)
         {
@@ -101,7 +105,9 @@ namespace Global
             {
                 if (e.KeyCode == Keys.N)
                 {
-                    missionSwitch = 2;
+                    missionSwitch = 3;
+                    //Debug2++;
+                    //missionSwitch = 2;
                     /*
                     Blip[] allBlips = World.GetAllBlips();
                     if (allBlips.Length > 0)
@@ -118,6 +124,10 @@ namespace Global
                 if (e.KeyCode == Keys.NumPad7)
                 {
                     fDebugStuff.CopyPlayerPosWithAddons();
+                }
+                if (e.KeyCode == Keys.NumPad9)
+                {
+                    fDebugStuff.CopyToClipboard(fPlayer.ped.Heading.ToString() + "f");
                 }
                 Entity[] anyEntity = World.GetAllEntities();
                 foreach (Entity entity in anyEntity)
@@ -164,6 +174,11 @@ namespace Global
             bool flag = true;
             if (true == flag)
             {
+                if (debugBlip != null)
+                {
+                    debugBlip.Delete();
+                    debugBlip = null;
+                }
                 if (debugHeli != null)
                 {
                     debugHeli.Delete();
@@ -184,7 +199,11 @@ namespace Global
                     cutscenePed3.Delete();
                     cutscenePed3 = null;
                 }
-                //Function.Call(Hash.ON_ENTER_MP);
+                if (debugCam != null)
+                {
+                    debugCam.Delete();
+                    debugCam = null;
+                }
                 fVehicle.DeleteVehiclesInList(fDebugStuff.DebugVehicles);
                 fStreaming.RemoveAnimDict(fDebugStuff.DebugAnimDicts);
                 fProp.DeletePropsInList(fDebugStuff.DebugProps);
@@ -247,12 +266,13 @@ namespace Global
 
         private void onTick(object sender, EventArgs e)
         {
+            if (debugBlip != null)
+                fBlip.SetBlipRotation(debugBlip, fMath.CEIL(0f));
             if (!ScriptSetup)
             {
                 if (!Function.Call<bool>(Hash.GET_IS_LOADING_SCREEN_ACTIVE) && !Screen.IsFadingIn)
                 {
-                    //fInterior.MPMaps.LoadMpMaps();
-                    GTA.Audio.SetAudioFlag(AudioFlags.LoadMPData, true);
+                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);
                     ScriptSetup = true;
                 }
             }
@@ -577,35 +597,187 @@ namespace BobcatSecurityDepotHeist
         float HeliHeading = 5.047073f;
         public static Blip HeliBlip;
         public static Vehicle StartHeli;
-        bool WasDestroyed = false;
-        bool SpawnedIn = false;
+        bool WasDestroyed 
+        { 
+            get 
+            {
+                if (StartHeli != null)
+                    return IsStartHeliDestroyed;
+                else
+                    return false;
+            }
+        }
+        bool SpawnedIn 
+        { 
+            get 
+            {
+                return StartHeli != null;
+            } 
+        }
         bool fixedPosition = false;
+        bool colorSet = false;
+        bool IsStartHeliDestroyed
+        {
+            get
+            {
+                if (StartHeli != null && StartHeli.IsConsideredDestroyed)
+                    return true;
+                if (StartHeli != null && !StartHeli.IsConsideredDestroyed)
+                    return false;
+                return true;
+            }
+        }
+        int startSwitch = 0;
         int num;
 
         private void OnTick(object sender, EventArgs e)
         {
-            Screen.ShowSubtitle($"{Globals.missionSwitch}");
             if (Globals.missionSwitch == 0)
             {
-                if (HeliBlip == null && fPlayer.GetDistanceTo(HeliPos) > 500f && !WasDestroyed && !SpawnedIn)
+                switch (startSwitch)
                 {
-                    HeliBlip = fBlip.CreateBlipForCoordWithParams(HeliPos, (BlipSprite)64, (BlipColor)5, 1f, "The Ludendorff Heist");
+                    case 0:
+                        if (HeliBlip == null && fPlayer.GetDistanceTo(HeliPos) > 500f && !WasDestroyed && !SpawnedIn)
+                        {
+                            HeliBlip = fBlip.CreateBlipForCoordWithParams(HeliPos, (BlipSprite)64, (BlipColor)5, 1f, "The Ludendorff Heist");
+                        }
+                        if (HeliBlip != null)
+                        {
+                            if (StartHeli == null)
+                            {
+                                if (fPlayer.GetDistanceTo(HeliPos) > 200f)
+                                {
+                                    if (fPlayer.GetDistanceTo(HeliPos) < 300f)
+                                    {
+                                        num = fMisc.GetRandomIntInRange(1, 8);
+                                        StartHeli = fVehicle.CreateVehicle("buzzard", HeliPos, HeliHeading);
+                                    }
+                                }
+
+                            }
+                        }
+                        if (StartHeli != null)
+                        {
+                            if (!IsStartHeliDestroyed)
+                            {
+                                if (!fEntity.HasCollisionLoadedAroundEntity(StartHeli))
+                                {
+                                    fEntity.SetEntityLoadCollisionFlag(StartHeli, true);
+                                }
+                                if (!fixedPosition)
+                                {
+                                    fVehicle.SetVehicleOnGroundProperly(StartHeli);
+                                    fixedPosition = true;
+                                }
+                                if (StartHeli.IsExtraOn(8) || StartHeli.IsExtraOn(9))
+                                {
+                                    StartHeli.ToggleExtra(8, false);
+                                    StartHeli.ToggleExtra(9, false);
+                                }
+                                if (!colorSet)
+                                {
+                                    switch (num)
+                                    {
+                                        case 1:
+                                            fVehicle.SetVehicleColours(StartHeli, 111, 111);
+                                            colorSet = true;
+                                            break;
+                                        case 2:
+                                            fVehicle.SetVehicleColours(StartHeli, 8, 8);
+                                            colorSet = true;
+                                            break;
+                                        case 3:
+                                            fVehicle.SetVehicleColours(StartHeli, 99, 99);
+                                            colorSet = true;
+                                            break;
+                                        case 4:
+                                            fVehicle.SetVehicleColours(StartHeli, 69, 69);
+                                            colorSet = true;
+                                            break;
+                                        case 5:
+                                            fVehicle.SetVehicleColours(StartHeli, 90, 90);
+                                            colorSet = true;
+                                            break;
+                                        case 6:
+                                            fVehicle.SetVehicleColours(StartHeli, 33, 33);
+                                            colorSet = true;
+                                            break;
+                                        case 7:
+                                            fVehicle.SetVehicleColours(StartHeli, 147, 147);
+                                            colorSet = true;
+                                            break;
+                                    }
+                                }
+                                if (HeliBlip != null && StartHeli.AttachedBlip == null)
+                                {
+                                    StartHeli.AddBlip();
+                                }
+                                if (StartHeli.AttachedBlip != null)
+                                {
+                                    StartHeli.AttachedBlip.Alpha = 255;
+                                    StartHeli.AttachedBlip.Sprite = (BlipSprite)64;
+                                    StartHeli.AttachedBlip.Color = (BlipColor)5;
+                                    StartHeli.AttachedBlip.Name = "The Ludendorff Heist";
+                                    if (HeliBlip != null)
+                                        HeliBlip.DisplayType = BlipDisplayType.NoDisplay;
+                                    if (HeliBlip.DisplayType == BlipDisplayType.NoDisplay)
+                                        startSwitch = 1;
+                                }
+                            }
+                        }
+                        break;
+                    case 1:
+                        if (fPlayer.GetDistanceTo(StartHeli.Position) < 6f)
+                        {
+                            if (!fPlayer.ped.IsEnteringVehicle || !fPlayer.ped.IsSittingInVehicle(StartHeli) && !fPlayer.IsWanted)
+                                fHud.DisplayHelpText("Press ~INPUT_ENTER~ to start The Ludendorff Heist.");
+                            if (fPlayer.IsWanted)
+                                fHud.DisplayHelpText("Lose the cops before starting the heist.");
+                            if (fPlayer.ped.IsEnteringVehicle || fPlayer.ped.IsSittingInVehicle(StartHeli))
+                            {
+                                fHud.ClearAllPrints();
+                                fHud.ClearBrief();
+                                fHud.ClearAllHelpMessages();
+                                fHud.ClearGPSMultiRoute();
+                                fHud.ClearHelp(true);
+                                startSwitch = 2;
+                            }
+                            if (Game.IsControlJustPressed(GTA.Control.Enter))
+                            {
+                                fHud.ClearAllPrints();
+                                fHud.ClearBrief();
+                                fHud.ClearAllHelpMessages();
+                                fHud.ClearGPSMultiRoute();
+                                fHud.ClearHelp(true);
+                                fPlayer.ped.Task.ClearAll();
+                                fPlayer.ped.Task.EnterVehicle(StartHeli, VehicleSeat.Driver);
+                                startSwitch = 2;
+                            }
+                        }
+                        break;
+                    case 2:
+                        if (fPlayer.ped.CurrentVehicle == StartHeli)
+                        {
+                            fVehicle.DisableVehicleWeapon(true, fMisc.GetHashKey("VEHICLE_WEAPON_PLAYER_BUZZARD"), StartHeli, fPlayer.ped);
+                            fVehicle.DisableVehicleWeapon(true, fMisc.GetHashKey("VEHICLE_WEAPON_PLANE_ROCKET"), StartHeli, fPlayer.ped);
+                            if (HeliBlip != null)
+                            {
+                                HeliBlip.Delete();
+                                HeliBlip = null;
+                            }
+                            StartHeli.AttachedBlip.Color = BlipColor.Blue;
+                            StartHeli.AttachedBlip.Alpha = 0;
+                            startSwitch = 0;
+                            Globals.missionSwitch = 1;
+                        }
+                        else
+                        {
+                            StartHeli.AttachedBlip.Alpha = 255;
+                        }
+                        break;
                 }
                 if (HeliBlip != null)
                 {
-                    if (StartHeli == null)
-                    {
-                        if (fPlayer.GetDistanceTo(HeliPos) > 200f)
-                        {
-                            if (fPlayer.GetDistanceTo(HeliPos) < 300f)
-                            {
-                                num = fMisc.GetRandomIntInRange(1, 7);
-                                StartHeli = fVehicle.CreateVehicle("buzzard", HeliPos, HeliHeading);
-                                SpawnedIn = true;
-                            }
-                        }
-
-                    }
                     if (!SpawnedIn)
                     {
                         HeliBlip.DisplayType = BlipDisplayType.NoDisplay;
@@ -614,11 +786,6 @@ namespace BobcatSecurityDepotHeist
                     {
                         HeliBlip.DisplayType = BlipDisplayType.Default;
                     }
-                    if (WasDestroyed && fPlayer.GetDistanceTo(HeliPos) > 200f)
-                    {
-                        WasDestroyed = false;
-                        SpawnedIn = false;
-                    }
                     if (StartHeli != null && StartHeli.IsConsideredDestroyed)
                     {
                         if (StartHeli.AttachedBlip != null)
@@ -626,86 +793,11 @@ namespace BobcatSecurityDepotHeist
                             StartHeli.AttachedBlip.Delete();
                         }
                         HeliBlip.DisplayType = BlipDisplayType.NoDisplay;
-                        WasDestroyed = true;
+                        startSwitch = 0;
                     }
                 }
                 if (StartHeli != null)
                 {
-                    if (!fEntity.HasCollisionLoadedAroundEntity(StartHeli))
-                    {
-                        fEntity.SetEntityLoadCollisionFlag(StartHeli, true);
-                    }
-                    if (!fixedPosition)
-                    {
-                        fVehicle.SetVehicleOnGroundProperly(StartHeli);
-                        fixedPosition = true;
-                    }
-                    StartHeli.ToggleExtra(8, false);
-                    StartHeli.ToggleExtra(9, false);
-                    fVehicle.DisableVehicleWeapon(true, fMisc.GetHashKey("VEHICLE_WEAPON_PLAYER_BUZZARD"), StartHeli, fPlayer.ped);
-                    fVehicle.DisableVehicleWeapon(true, fMisc.GetHashKey("VEHICLE_WEAPON_PLANE_ROCKET"), StartHeli, fPlayer.ped);
-                    switch (num)
-                    {
-                        case 1:
-                            fVehicle.SetVehicleColours(StartHeli, 111, 111);
-                            break;
-                        case 2:
-                            fVehicle.SetVehicleColours(StartHeli, 8, 8);
-                            break;
-                        case 3:
-                            fVehicle.SetVehicleColours(StartHeli, 99, 99);
-                            break;
-                        case 4:
-                            fVehicle.SetVehicleColours(StartHeli, 69, 69);
-                            break;
-                        case 5:
-                            fVehicle.SetVehicleColours(StartHeli, 90, 90);
-                            break;
-                        case 6:
-                            fVehicle.SetVehicleColours(StartHeli, 33, 33);
-                            break;
-                        case 7:
-                            fVehicle.SetVehicleColours(StartHeli, 147, 147);
-                            break;
-                    }
-                    if (HeliBlip != null && StartHeli.AttachedBlip == null)
-                    {
-                        StartHeli.AddBlip();
-                    }
-                    if (StartHeli.AttachedBlip != null)
-                    {
-                        StartHeli.AttachedBlip.Alpha = 255;
-                        StartHeli.AttachedBlip.Sprite = (BlipSprite)64;
-                        StartHeli.AttachedBlip.Color = (BlipColor)5;
-                        StartHeli.AttachedBlip.Name = "The Ludendorff Heist";
-                        if (HeliBlip != null)
-                            HeliBlip.DisplayType = BlipDisplayType.NoDisplay;
-                        if (fPlayer.GetDistanceTo(StartHeli.Position) < 6f)
-                        {
-                            fHud.ClearAllHelpMessages();
-                            fHud.ClearHelp(true);
-                            fHud.DisplayHelpText("Press ~INPUT_ENTER~ to start The Ludendorff Heist.");
-                            if (Game.IsControlJustPressed(GTA.Control.Enter))
-                            {
-                                fPlayer.ped.Task.ClearAll();
-                                fPlayer.ped.Task.EnterVehicle(StartHeli, VehicleSeat.Driver);
-                                if (fPlayer.ped.CurrentVehicle == StartHeli)
-                                {
-                                    Globals.missionSwitch = 1;
-                                    if (HeliBlip != null)
-                                    {
-                                        HeliBlip.Delete();
-                                        HeliBlip = null;
-                                    }
-                                    StartHeli.AttachedBlip.Alpha = 0;
-                                }
-                                else
-                                {
-                                    StartHeli.AttachedBlip.Alpha = 255;
-                                }
-                            }
-                        }
-                    }
                     if (fPlayer.GetDistanceTo(StartHeli.Position) > 440f)
                     {
                         if (StartHeli.AttachedBlip != null)
@@ -714,7 +806,7 @@ namespace BobcatSecurityDepotHeist
                         }
                         StartHeli.Delete();
                         StartHeli = null;
-                        SpawnedIn = false;
+                        startSwitch = 0;
                     }
                 }
             }
@@ -750,22 +842,102 @@ namespace BobcatSecurityDepotHeist
             Tick += onTick; ;
             Aborted += onShutdown;
             failTimer.OnTimerExpired += OnFailTimerExpired;
+            timer.Elapsed += onTimerElapsed;
+        }
+
+        private void onTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            timerElapsed = true;
         }
 
         private void OnFailTimerExpired(object sender)
         {
-            if (!PlayerInArea)
-                MissionFailCleanUp();
+            if (!fInterior.PrologueMap.IsPrologueMapLoaded)
+            {
+                if (!PlayerInArea)
+                {
+                    justFailed = true;
+                    if (GetFailVariation() != FailVariations.LeftMissionArea)
+                        SetFailVariation(FailVariations.LeftMissionArea);
+                    MissionFailCleanUp();
+                }
+            }
+            else
+            {
+                if (fPlayer.ped.CurrentVehicle != PrologueVehicle)
+                {
+                    justFailed = true;
+                    if (GetFailVariation() != FailVariations.PrologueVehicleLeft_JobBlown)
+                        SetFailVariation(FailVariations.PrologueVehicleLeft_JobBlown);
+                    MissionFailCleanUp();
+                }
+            }
         }
 
         Vehicle StartHeli;
         Blip LudendorffNorthYankton;
+        Blip FailArea;
         bool FailCountdownVisible = false;
         bool PlayerInArea = false;
         bool WarningMessageShown = false;
+        bool PlayerTeleportedToPrologue = false;
+        bool IsStartHeliDestroyed
+        {
+            get
+            {
+                if (StartHeli != null && StartHeli.IsConsideredDestroyed)
+                    return true;
+                if (StartHeli != null && !StartHeli.IsConsideredDestroyed)
+                    return false;
+                return true;
+            }
+        }
+        bool IsPrologueVehicleDestroyed
+        {
+            get
+            {
+                if (PrologueVehicle != null && PrologueVehicle.IsConsideredDestroyed || fVehicle.GetVehicleEngineHealth(PrologueVehicle) <= 0)
+                    return true;
+                if (PrologueVehicle != null && !PrologueVehicle.IsConsideredDestroyed || fVehicle.GetVehicleEngineHealth(PrologueVehicle) > 0)
+                    return false;
+                return true;
+            }
+        }
+        private static int FailVariation
+        {
+            get;
+            set;
+        }
+        public static void SetFailVariation(FailVariations failVariation)
+        {
+            FailVariation = (int)failVariation;
+        }
+        public static FailVariations GetFailVariation()
+        {
+            return (FailVariations)FailVariation;
+        }
+        public enum FailVariations
+        {
+            None,
+            LeftMissionArea,
+            HelicopterDestroyed,
+            PrologueVehicleDestroyed,
+            PrologueVehicleLeft_JobBlown,
+        }
         VariableTimer failTimer = new VariableTimer(30000);
         CountdownTimerbar failCountdown;
-
+        Vehicle PrologueVehicle;
+        string PrologueVehicleName;
+        Camera PrologueIntroCam;
+        Camera PrologueIntroCam2;
+        int num;
+        Blip DepotBlip;
+        bool justFailed = false;
+        WeatherTypes weatherTypeBeforeMission;
+        bool weatherTypeSaved = false;
+        bool timeAdvanced1 = false;
+        bool timeAdvanced2 = false;
+        bool timeAdvanced3 = false;
 
         public event TimerExpired OnTimerExpired;
 
@@ -774,6 +946,11 @@ namespace BobcatSecurityDepotHeist
             switch (Globals.missionSwitch)
             {
                 case 1:
+                    if (!weatherTypeSaved)
+                    {
+                        weatherTypeBeforeMission = fWeather.GetCurrentWeatherEnum();
+                        weatherTypeSaved = true;
+                    }
                     fHud.ClearAllPrints();
                     fHud.ClearBrief();
                     fHud.ClearAllHelpMessages();
@@ -782,64 +959,53 @@ namespace BobcatSecurityDepotHeist
                     Audio.SetAudioFlag(AudioFlags.DisableFlightMusic, true);
                     Audio.SetAudioFlag(AudioFlags.WantedMusicDisabled, true);
                     fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
-                    fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.IdleStart);
+                    fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.IdleStart);
                     fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
                     fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
+                    Wait(100);
                     fMissionShard missionShard = new fMissionShard();
-                    missionShard.Shard_In("The Ludendorff Heist", "Break into the Bobcat Security Depot in Ludendorff, and clean out the vault.");
+                    missionShard.Shard_In("~a~The Ludendorff Heist~w~", "Break into the ~y~Bobcat Security Depot~w~ in Ludendorff and clean out the ~g~vault.~w~", 2, 0.375f);
                     missionShard = null;
                     Globals.missionSwitch = 2;
                     break;
                 case 2:
+                    fHud.HideHudComponentThisFrame((int)HudComponent.HelpText);
+                    fHud.DisplayHelpText("");
                     new GlobalsController(null);
                     Globals.globalBlips = 2;
                     Globals.scriptTerminator = 2;
-                    Screen.ShowSubtitle("Fly to ~y~Ludendorff, North Yankton~w~");
+                    if (fEntity.IsEntityInArea(fPlayer.ped, new Vector3(2000f, 6205f, -7f), new Vector3(1084f, 8888f, 550f)) && fPlayer.ped.CurrentVehicle == StartHeli)
+                    {
+                        if (fPlayer.IsWanted)
+                            Screen.ShowSubtitle("Lose the Cops");
+                        else
+                            Screen.ShowSubtitle("Fly to ~y~Ludendorff, North Yankton~w~");
+                    }
+                    if (!fEntity.IsEntityInArea(fPlayer.ped, new Vector3(2000f, 6205f, -7f), new Vector3(1084f, 8888f, 550f)))
+                        Screen.ShowSubtitle("Return to the mission area");
+                    if (fPlayer.ped.CurrentVehicle != StartHeli && !fPlayer.IsWanted)
+                        Screen.ShowSubtitle("Get back into the ~b~Buzzard~w~");
                     if (Start.StartHeli != null)
                     {
                         StartHeli = Start.StartHeli;
                     }
                     if (LudendorffNorthYankton == null)
                     {
-                        LudendorffNorthYankton = fBlip.CreateBlipForCoordWithParams(new Vector3(1614f, 8098f, 259f), BlipSprite.Standard, (BlipColor)5, 1f, "Destination");
+                        LudendorffNorthYankton = fBlip.CreateBlipForCoordWithParams(new Vector3(1580f, 8745f, 259f), BlipSprite.Standard, (BlipColor)5, 1f, "Destination");
                     }
                     if (StartHeli != null)
                     {
-                        MidsizedMessage failWarning = new MidsizedMessage("Leaving the Mission Area", "Return to the mission area.");
-                        fVehicle.DisableVehicleWeapon(true, fMisc.GetHashKey("VEHICLE_WEAPON_PLAYER_BUZZARD"), StartHeli, fPlayer.ped);
-                        fVehicle.DisableVehicleWeapon(true, fMisc.GetHashKey("VEHICLE_WEAPON_PLANE_ROCKET"), StartHeli, fPlayer.ped);
-                        if (!fEntity.IsEntityInArea(fPlayer.ped, new Vector3(2000f, 6205f, -7f), new Vector3(1084f, 8888f, 525f)))
-                        {
-                            PlayerInArea = false;
-                            if (!FailCountdownVisible)
-                            {
-                                failCountdown = new CountdownTimerbar("TIME LEFT:", 30000);
-                                failCountdown.VariableTimer = failTimer;
-                                failCountdown.Draw(0.9f);
-                                failTimer.Start();
-                                FailCountdownVisible = true;
-                            }
-                            if (!WarningMessageShown)
-                            {
-                                failWarning.Color = 6;
-                                failWarning.ScreenTime = 6500;
-                                WarningMessageShown = true;
-                                failWarning.Show();
-                            }
-                        }
-                        if (fEntity.IsEntityInArea(fPlayer.ped, new Vector3(2000f, 6205f, -7f), new Vector3(1084f, 8888f, 525f)) && failTimer.Counter > 0 && FailCountdownVisible && !PlayerInArea)
-                        {
-                            Function.Call(Hash.TRIGGER_MUSIC_EVENT, "GTA_ONLINE_STOP_SCORE");
-                            failCountdown.VariableTimer.RemoveTime(30001);
-                            OnTimerExpired?.Invoke(this);
-                            WarningMessageShown = false;
-                            PlayerInArea = true;
-                            FailCountdownVisible = false;
-                        }
                         if (StartHeli.AttachedBlip != null)
                         {
                             if (fPlayer.ped.CurrentVehicle == StartHeli)
                             {
+                                if (LudendorffNorthYankton != null)
+                                {
+                                    if (fPlayer.GetCarDistanceTo(new Vector2(1580f, 8745f)) < 170f)
+                                    {
+                                        Globals.missionSwitch = 3;
+                                    }
+                                }
                                 Game.DisableControlThisFrame(GTA.Control.VehicleAttack);
                                 Game.DisableControlThisFrame(GTA.Control.VehicleAttack2);
                                 Game.DisableControlThisFrame(GTA.Control.VehicleFlyAttack);
@@ -860,6 +1026,285 @@ namespace BobcatSecurityDepotHeist
                         }
                     }
                     break;
+                case 3:
+                    switch (heliCutsceneSwitch)
+                    {
+                        case 0:
+                            if (cutscenePed1 == null)
+                            {
+                                cutscenePed1 = fPed.CreatePed("mp_m_freemode_01", new Vector3(0f, 0f, 0f), 0f);
+                            }
+                            else
+                            {
+                                cutscenePed1.IsPositionFrozen = true;
+                                cutscenePed1.IsVisible = false;
+                            }
+                            if (cutscenePed2 == null)
+                            {
+                                cutscenePed2 = fPed.CreatePed("mp_m_freemode_01", new Vector3(0f, 0f, 0f), 0f);
+                            }
+                            else
+                            {
+                                cutscenePed2.IsPositionFrozen = true;
+                                cutscenePed2.IsVisible = false;
+                            }
+                            if (cutscenePed3 == null)
+                            {
+                                cutscenePed3 = fPed.CreatePed("mp_m_freemode_01", new Vector3(0f, 0f, 0f), 0f);
+                            }
+                            else
+                            {
+                                cutscenePed3.IsPositionFrozen = true;
+                                cutscenePed3.IsVisible = false;
+                            }
+                            heliCutsceneSwitch = 1;
+                            break;
+                        case 1:
+                            heliCutscene = new fCutsceneCreation("mph_pri_fin_ext", new Vector3(1580f, 8745f, 259f), new Vector3(0f, 0f, 1f), false);
+                            heliCutscene.AddRegisterEntityToList(cutscenePed1, "MP_1", fCutscene.CutsceneUsage.CU_ANIMATE_AND_DELETE_EXISTING_SCRIPT_ENTITY, 0, fCutscene.CutsceneEntityOptionFlag.CEO_IGNORE_MODEL_NAME);
+                            heliCutscene.AddRegisterEntityToList(Game.Player.Character, "MP_2", fCutscene.CutsceneUsage.CU_ANIMATE_EXISTING_SCRIPT_ENTITY, 0, fCutscene.CutsceneEntityOptionFlag.CEO_IGNORE_MODEL_NAME);
+                            heliCutscene.AddRegisterEntityToList(cutscenePed2, "MP_3", fCutscene.CutsceneUsage.CU_ANIMATE_AND_DELETE_EXISTING_SCRIPT_ENTITY, 0, fCutscene.CutsceneEntityOptionFlag.CEO_IGNORE_MODEL_NAME);
+                            heliCutscene.AddRegisterEntityToList(cutscenePed3, "MP_4", fCutscene.CutsceneUsage.CU_ANIMATE_AND_DELETE_EXISTING_SCRIPT_ENTITY, 0, fCutscene.CutsceneEntityOptionFlag.CEO_IGNORE_MODEL_NAME);
+                            heliCutscene.AddRegisterEntityToList(StartHeli, "MPH_Helicopter", fCutscene.CutsceneUsage.CU_ANIMATE_AND_DELETE_EXISTING_SCRIPT_ENTITY, 0, fCutscene.CutsceneEntityOptionFlag.CEO_IGNORE_MODEL_NAME);
+                            heliCutscene.StartCutscene();
+                            while (!fCutscene.IsCutscenePlaying())
+                            {
+                                Wait(0);
+                            }
+                            while (!fCutscene.HasCutsceneFinished())
+                            {
+                                fCutscene.SetCutsceneCanBeSkipped(false);
+                                fCutscene.SetCutsceneOriginAndRotation("mph_pri_fin_ext", new Vector3(heliCutscene.Pos.X, heliCutscene.Pos.Y, heliCutscene.Pos.Z), new Vector3(heliCutscene.Rot.X, heliCutscene.Rot.Y, heliCutscene.Rot.Z));
+                                cutscenePed1.IsVisible = false;
+                                cutscenePed2.IsVisible = false;
+                                cutscenePed3.IsVisible = false;
+                                if (fCutscene.GetCutsceneTime() > 4850 && !Screen.IsFadingOut)
+                                {
+                                    Screen.FadeOut(3000);
+                                }
+                                if (Screen.IsFadedOut)
+                                {
+                                    fCutscene.StopCutsceneImmediately();
+                                }
+                                Wait(0);
+                            }
+                            heliCutscene.Cleanup();
+                            heliCutscene = null;
+                            if (cutscenePed1 != null)
+                            {
+                                cutscenePed1.Delete();
+                                cutscenePed1 = null;
+                            }
+                            if (cutscenePed2 != null)
+                            {
+                                cutscenePed2.Delete();
+                                cutscenePed2 = null;
+                            }
+                            if (cutscenePed2 != null)
+                            {
+                                cutscenePed2.Delete();
+                                cutscenePed2 = null;
+                            }
+                            if (LudendorffNorthYankton != null)
+                            {
+                                LudendorffNorthYankton.Delete();
+                                LudendorffNorthYankton = null;
+                            }
+                            if (StartHeli != null)
+                            {
+                                if (StartHeli.AttachedBlip != null)
+                                {
+                                    StartHeli.AttachedBlip.Delete();
+                                }
+                                StartHeli.Delete();
+                                StartHeli = null;
+                            }
+                            if (FailArea != null)
+                            {
+                                FailArea.Delete();
+                                FailArea = null;
+                            }
+                            fPlayer.ped.IsPositionFrozen = true;
+                            fPlayer.ped.IsInvincible = true;
+                            Game.Player.Character.Task.ClearAll();
+                            heliCutsceneSwitch = -1;
+                            break;
+                        case -1:
+                            Vector3 camPos = new Vector3(3575.468f, -4871.25f, 117.1896f);
+                            Vector3 camRot = new Vector3(20f, 0f, 26.39456f);
+                            Vector3 camPos2 = new Vector3(3576.268f, -4872.851f, 117.1896f);
+                            Vector3 camRot2 = new Vector3(25f, 0f, 26.39456f);
+                            Vector3 driveDestination = new Vector3(3612.947f, -4910.009f, 111.2528f);
+                            Vector3 carsPos = new Vector3(3528.305f, -4878.405f, 111.2986f);
+                            float carsHeading = 250.5463f;
+                            if (!fInterior.PrologueMap.IsPrologueMapLoading && !fInterior.PrologueMap.IsPrologueMapLoaded)
+                            {
+                                fInterior.PrologueMap.LoadPrologueMap();
+                            }
+                            if (fInterior.PrologueMap.IsPrologueMapLoaded)
+                            {
+                                fClock.SetClockTime(4, 30, 0);
+                                fWeather.SetOverrideWeather(WeatherTypes.Snow);
+                                fClock.PauseClock(true);
+                                fInterior.PrologueMap.EnableNorthYanktonTrains(true);
+                                fPathfind.SetAllowStreamPrologueNodes(true);
+                                fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), true);
+                                fHud.ToggleNorthYanktonMap(true);
+                                if (Screen.IsFadedOut)
+                                {
+                                    fPlayer.ped.IsPositionFrozen = false;
+                                    fHud.RadarAndHud(false, false);
+                                    fPlayer.PedPos(carsPos.X, carsPos.Y, carsPos.Z, carsHeading);
+                                    PlayerTeleportedToPrologue = true;
+                                    num = fMisc.GetRandomIntInRange(1, 4);
+                                    if (PrologueVehicle == null)
+                                    {
+                                        switch (num)
+                                        {
+                                            case 1:
+                                                PrologueVehicleName = "Mesa";
+                                                PrologueVehicle = fVehicle.CreateVehicle(new Model("Mesa2"), carsPos, carsHeading);
+                                                break;
+                                            case 2:
+                                                PrologueVehicleName = "RancherXL";
+                                                PrologueVehicle = fVehicle.CreateVehicle(new Model("RancherXL2"), carsPos, carsHeading);
+                                                break;
+                                            case 3:
+                                                PrologueVehicleName = "Asea";
+                                                PrologueVehicle = fVehicle.CreateVehicle(new Model("Asea2"), carsPos, carsHeading);
+                                                break;
+                                        }
+                                    }
+                                    if (PrologueIntroCam == null)
+                                        PrologueIntroCam = fCam.CreateScriptedCam();
+                                    while (PrologueIntroCam == null)
+                                        Wait(0);
+                                    if (PrologueIntroCam != null)
+                                        fCam.SetupMovingCam(PrologueIntroCam, camPos, camRot, 50f, CameraShake.Hand, 0.5f);
+                                    if (PrologueIntroCam2 == null)
+                                        PrologueIntroCam2 = fCam.CreateScriptedCam();
+                                    while (PrologueIntroCam2 == null)
+                                        Wait(0);
+                                    if (PrologueIntroCam2 != null)
+                                        fCam.SetupMovingCam(PrologueIntroCam2, camPos2, camRot2, 55f, CameraShake.Hand, 0.5f);
+                                    if (PrologueVehicle != null && PrologueIntroCam != null && PrologueIntroCam2 != null)
+                                    {
+                                        LoadingPrompt.Hide();
+                                        fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Suspense);
+                                        fCam.SetCamActiveWithInterp(PrologueIntroCam2, PrologueIntroCam, 5000, fCam.CamGraphType.GRAPH_TYPE_SLOW_IN_OUT, fCam.CamGraphType.GRAPH_TYPE_SLOW_IN_OUT);
+                                        fCam.RenderScriptCams(true, false, 3000, true, false, fCam.RenderingOptionFlag.RO_NO_OPTIONS);
+                                        Screen.FadeIn(3000);
+                                        fPlayer.ped.IsInvincible = false;
+                                        if (fPlayer.ped.CurrentVehicle != PrologueVehicle)
+                                        {
+                                            fPlayer.ped.SetIntoVehicle(PrologueVehicle, VehicleSeat.Driver);
+                                        }
+                                        else
+                                        {
+                                            PrologueVehicle.LockStatus = VehicleLockStatus.PlayerCannotLeaveCanBeBrokenIntoPersist;
+                                        }
+                                        Wait(2000);
+                                        fPlayer.ped.Task.DriveTo(PrologueVehicle, driveDestination, 55f, VehicleDrivingFlags.None, 5f);
+                                        PrologueVehicle.Speed = 10f;
+                                        while (fPlayer.GetCarDistanceTo(new Vector3(3572.151f, -4890.441f, 111.6943f)) > 15f)
+                                            Wait(0);
+                                        fCam.RenderScriptCams(false, true, 3000);
+                                        if (PrologueIntroCam != null)
+                                        {
+                                            PrologueIntroCam.Delete();
+                                            PrologueIntroCam = null;
+                                        }
+                                        if (PrologueIntroCam2 != null)
+                                        {
+                                            PrologueIntroCam2.Delete();
+                                            PrologueIntroCam2 = null;
+                                        }
+                                        fHud.RadarAndHud(true, true);
+                                        Globals.missionSwitch = 4;
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                    break;
+                case 4:
+                    if (!timeAdvanced1)
+                        fClock.SetClockTime(4, 30, 0);
+                    fWeather.SetOverrideWeather(WeatherTypes.Snow);
+                    fClock.PauseClock(true);
+                    fHud.HideHudComponentThisFrame((int)HudComponent.HelpText);
+                    fHud.DisplayHelpText("");
+                    if (!fInterior.PrologueMap.IsPrologueMapLoaded)
+                        fInterior.PrologueMap.LoadPrologueMap();
+                    if (fInterior.PrologueMap.IsPrologueMapLoaded)
+                    {
+                        fInterior.PrologueMap.EnableNorthYanktonTrains(true);
+                        fPathfind.SetAllowStreamPrologueNodes(true);
+                        fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), true);
+                        fHud.ToggleNorthYanktonMap(true);
+                    }
+                    if (DepotBlip == null)
+                    {
+                        DepotBlip = fBlip.CreateGPSBlip(new Vector3(5360.6f, -5187.516f, 82.76017f), 1, BlipColor.Yellow2);
+                    }
+                    if (DepotBlip != null)
+                    {
+                        DepotBlip.Name = "Bobcat Security Depot";
+                        if (PrologueVehicle != null)
+                        {
+                            if (fPlayer.ped.CurrentVehicle == PrologueVehicle)
+                            {
+                                Screen.ShowSubtitle("Go to ~y~Bobcat Security Depot~w~");
+                                PrologueVehicle.LockStatus = VehicleLockStatus.None;
+                                if (fPlayer.GetCarDistanceTo(DepotBlip.Position) < 1700f)
+                                {
+                                    if (!timeAdvanced2)
+                                    {
+                                        if (fClock.GetClockMinutes() <= 40)
+                                        {
+                                            fClock.PauseClock(true);
+                                            timeAdvanced1 = true;
+                                        }
+                                    }
+                                    if (fPlayer.GetCarDistanceTo(DepotBlip.Position) < 1000f)
+                                    {
+                                        if (!timeAdvanced3)
+                                        {
+                                            if (fClock.GetClockMinutes() <= 50)
+                                            {
+                                                fClock.PauseClock(true);
+                                                timeAdvanced2 = true;
+                                            }
+                                        }
+                                        if (fPlayer.GetCarDistanceTo(DepotBlip.Position) < 500f)
+                                        {
+                                            if (!timeAdvanced3)
+                                            {
+                                                if (fClock.GetClockMinutes() <= 0)
+                                                {
+                                                    fClock.PauseClock(true);
+                                                    timeAdvanced3 = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Screen.ShowSubtitle("Get back in the ~b~vehicle.~w~");
+                            }
+                        }
+                    }
+                    break;
+            }
+            if (Globals.missionSwitch != 0)
+            {
+                MissionFailHandler();
+            }
+            if (FailArea != null)
+            {
+                fBlip.SetBlipRotation(FailArea, fMath.CEIL(0f));
             }
             if (Start.StartHeli != null)
             {
@@ -867,41 +1312,759 @@ namespace BobcatSecurityDepotHeist
             }
         }
 
+        int heliCutsceneSwitch = 0;
+        fCutsceneCreation heliCutscene = null;
+        Ped cutscenePed1;
+        Ped cutscenePed2;
+        Ped cutscenePed3;
+        Camera failCam;
+        int failSceneID = 0;
+        bool timerElapsed = false;
+        bool timerStarted = false;
+        System.Timers.Timer timer = new System.Timers.Timer();
+        int resetSwitch = 0;
+        bool Restart = false;
+        Camera resetCam;
+        Vector3 resetCamCoord7 = new Vector3(1608.556f, 6619.675f, 14.95234f);
+        Vector3 resetCamRot7 = new Vector3(20f, 0f, 76.56645f);
+        Vector3 resetCamCoord8 = new Vector3(1463.94f, 6613.554f, 15.217f);
+        Vector3 resetCamRot8 = new Vector3(0f, 0f, -55f);
+        Vector3 resetCamCoord9 = new Vector3(1619.315f, 6699.822f, 12.37927f);
+        Vector3 resetCamRot9 = new Vector3(-8f, 0f, 0f);
+        Vector3 resetCamCoord10 = new Vector3(1696.306f, 6688.451f, 5.836189f);
+        Vector3 resetCamRot10 = new Vector3(0f, 0f, 17f);
+        Vector3 resetCamCoord = new Vector3(5344.149f, -5180.952f, 83.3f);
+        Vector3 resetCamRot = new Vector3(16f, 0f, 130.6f);
+        Vector3 resetCamCoord2 = new Vector3(5315.703f, -5175.806f, 84.61874f);
+        Vector3 resetCamRot2 = new Vector3(-5f, 0f, -160f);
+        Vector3 resetCamCoord3 = new Vector3(5304.587f, -5182.308f, 84.51872f);
+        Vector3 resetCamRot3 = new Vector3(-5f, 0f, -66.5f);
+        Vector3 resetCamCoord4 = new Vector3(5302.341f, -5176.98f, 84.81873f);
+        Vector3 resetCamRot4 = new Vector3(-12f, 0f, 60f);
+        Vector3 resetCamCoord5 = new Vector3(5292.429f, -5184.105f, 85.01872f);
+        Vector3 resetCamRot5 = new Vector3(-10f, 0f, -140f);
+        Vector3 resetCamCoord6 = new Vector3(5306.128f, -5213.86f, 85.11872f);
+        Vector3 resetCamRot6 = new Vector3(-10f, 0f, -46.8f);
+        InstructionalButtons resetButtons = new InstructionalButtons();
+        InstructionalButtonContainer ResetButtonContainer = new InstructionalButtonContainer(InputControl.FrontendAccept, "Restart Mission");
+        InstructionalButtonContainer GoBackToFreeroamContainer = new InstructionalButtonContainer(InputControl.FrontendCancel, "Leave Mission");
+        bool instructionalButtonsSetUp = false;
+        bool restartCanceled = false;
+        bool failShardJustShown = false;
+
+        void MissionFailHandler()
+        {
+            if (Globals.missionSwitch > 0 && Globals.missionSwitch < 3)
+            {
+                if (IsStartHeliDestroyed)
+                {
+                    justFailed = true;
+                    SetFailVariation(FailVariations.HelicopterDestroyed);
+                    MissionFailCleanUp();
+                }
+                if (FailArea == null)
+                {
+                    Vector3 areaCenter = new Vector3(1542f, 7546.5f, 0f);
+                    float areaWidth = 916f;
+                    float areaHeight = 2683f;
+                    FailArea = fBlip.AddBlipForArea(areaCenter, areaWidth, areaHeight);
+                    FailArea.Alpha = 0;
+                    FailArea.Color = BlipColor.Yellow;
+                }
+                else
+                {
+                    MidsizedMessage failWarning = new MidsizedMessage("Leaving the Mission Area", "Return to the mission area.");
+                    if (!fEntity.IsEntityInArea(fPlayer.ped, new Vector3(2000f, 6205f, -7f), new Vector3(1084f, 8888f, 550f)))
+                    {
+                        LudendorffNorthYankton.Alpha = 0;
+                        FailArea.Alpha = 128;
+                        PlayerInArea = false;
+                        if (!FailCountdownVisible)
+                        {
+                            failTimer.Reset();
+                            failCountdown = new CountdownTimerbar("TIME LEFT:", 30000);
+                            failCountdown.VariableTimer = failTimer;
+                            failCountdown.Draw(0.9f);
+                            failTimer.Start();
+                            FailCountdownVisible = true;
+                        }
+                        if (!WarningMessageShown)
+                        {
+                            failWarning.Color = 6;
+                            failWarning.ScreenTime = 6500;
+                            WarningMessageShown = true;
+                            failWarning.Show();
+                        }
+                    }
+                    if (fEntity.IsEntityInArea(fPlayer.ped, new Vector3(2000f, 6205f, -7f), new Vector3(1084f, 8888f, 550f)) && failTimer.Counter > 0 && FailCountdownVisible && !PlayerInArea)
+                    {
+                        LudendorffNorthYankton.Alpha = 255;
+                        FailArea.Alpha = 0;
+                        fAudio.PrepareMusicEvent("GTA_ONLINE_STOP_SCORE");
+                        fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                        fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.IdleStart);
+                        fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                        fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
+                        failCountdown.VariableTimer.RemoveTime(30001);
+                        OnTimerExpired?.Invoke(this);
+                        WarningMessageShown = false;
+                        PlayerInArea = true;
+                        FailCountdownVisible = false;
+                    }
+                }
+            }
+            if (Globals.missionSwitch > 3)
+            {
+                if (IsPrologueVehicleDestroyed)
+                {
+                    justFailed = true;
+                    Screen.FadeOut(1000);
+                    SetFailVariation(FailVariations.PrologueVehicleDestroyed);
+                    MissionFailCleanUp();
+                }
+                if (PrologueVehicle != null)
+                {
+                    MidsizedMessage failWarning = new MidsizedMessage("Return to the vehicle", "Get back in the vehicle before the Heist is blown.");
+                    if (fPlayer.ped.CurrentVehicle != PrologueVehicle)
+                    {
+                        DepotBlip.Alpha = 0;
+                        if (!FailCountdownVisible)
+                        {
+                            if (!timerStarted)
+                            {
+                                timer.AutoReset = true;
+                                timer.Interval = 20000;
+                                timer.Start();
+                                timerStarted = true;
+                            }
+                            if (timerElapsed)
+                            {
+                                failTimer.RemoveTime(9500);
+                                failCountdown = new CountdownTimerbar("TIME LEFT:", 20000);
+                                failCountdown.CountdownMusicEvent = "FM_COUNTDOWN_20S";
+                                failCountdown.VariableTimer = failTimer;
+                                failCountdown.Draw(0.9f);
+                                failTimer.Start();
+                                if (!WarningMessageShown)
+                                {
+                                    failWarning.Color = 6;
+                                    failWarning.ScreenTime = 6500;
+                                    WarningMessageShown = true;
+                                    failWarning.Show();
+                                }
+                                FailCountdownVisible = true;
+                            }
+
+                        }
+                    }
+                    if (fPlayer.ped.CurrentVehicle == PrologueVehicle && failTimer.Counter > 0 && FailCountdownVisible)
+                    {
+                        DepotBlip.Alpha = 255;
+                        fAudio.PrepareMusicEvent("GTA_ONLINE_STOP_SCORE");
+                        fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                        fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.SuspenseStart);
+                        fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                        fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Suspense);
+                        failCountdown.VariableTimer.RemoveTime(20001);
+                        OnTimerExpired?.Invoke(this);
+                        timer.Stop();
+                        timer.Interval = 20000;
+                        WarningMessageShown = false;
+                        FailCountdownVisible = false;
+                        timerElapsed = false;
+                        timerStarted = false;
+                    }
+                }
+            }
+        }
         void MissionFailCleanUp()
         {
-            fHud.ClearAllPrints();
-            fHud.ClearBrief();
-            fHud.ClearAllHelpMessages();
-            fHud.ClearGPSMultiRoute();
-            fHud.ClearHelp(true);
-            Audio.SetAudioFlag(AudioFlags.DisableFlightMusic, false);
-            Audio.SetAudioFlag(AudioFlags.WantedMusicDisabled, false);
-            fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.MusicStop);
-            new GlobalsController(null);
-            Globals.globalBlips = 3;
-            Globals.scriptTerminator = 3;
-            if (StartHeli != null)
+            if (justFailed)
             {
-                if (StartHeli.AttachedBlip != null)
+                Globals.missionSwitch = 0;
+                if (StartHeli != null)
                 {
-                    StartHeli.AttachedBlip.Delete();
+                    if (StartHeli.AttachedBlip != null)
+                    {
+                        StartHeli.AttachedBlip.Delete();
+                    }
+                    StartHeli.MarkAsNoLongerNeeded();
+                    StartHeli = null;
                 }
-                StartHeli.MarkAsNoLongerNeeded();
+                if (LudendorffNorthYankton != null)
+                {
+                    LudendorffNorthYankton.Delete();
+                    LudendorffNorthYankton = null;
+                }
+                if (FailArea != null)
+                {
+                    FailArea.Delete();
+                    FailArea = null;
+                }
+                if (PrologueIntroCam != null)
+                {
+                    PrologueIntroCam.Delete();
+                    PrologueIntroCam = null;
+                }
+                if (PrologueIntroCam2 != null)
+                {
+                    PrologueIntroCam2.Delete();
+                    PrologueIntroCam2 = null;
+                }
+                if (PrologueVehicle != null)
+                {
+                    if (PrologueVehicle.AttachedBlip != null)
+                    {
+                        PrologueVehicle.AttachedBlip.Delete();
+                    }
+                    PrologueVehicle.MarkAsNoLongerNeeded();
+                    PrologueVehicle = null;
+                }
+                if (heliCutscene != null)
+                {
+                    heliCutscene.Cleanup();
+                    heliCutscene = null;
+                }
+                if (cutscenePed1 != null)
+                {
+                    cutscenePed1.Delete();
+                    cutscenePed1 = null;
+                }
+                if (cutscenePed2 != null)
+                {
+                    cutscenePed2.Delete();
+                    cutscenePed2 = null;
+                }
+                if (cutscenePed2 != null)
+                {
+                    cutscenePed2.Delete();
+                    cutscenePed2 = null;
+                }
+                if (DepotBlip != null)
+                {
+                    DepotBlip.Delete();
+                    DepotBlip = null;
+                }
+                fHud.ClearAllPrints();
+                fHud.ClearBrief();
+                fHud.ClearAllHelpMessages();
+                fHud.ClearGPSMultiRoute();
+                fHud.ClearHelp(true);
+                Audio.SetAudioFlag(AudioFlags.DisableFlightMusic, false);
+                Audio.SetAudioFlag(AudioFlags.WantedMusicDisabled, false);
+                fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.MusicStop);
+                if (GetFailVariation() == FailVariations.LeftMissionArea)
+                {
+                    fMissionShard failShard = new fMissionShard();
+                    failShard.Shard_In("HEIST FAILED", "You left the mission area.", 6, 0.4f, 6, true);
+                    failShard = null;
+                    failShardJustShown = true;
+                    Screen.FadeOut(1500);
+                    justFailed = false;
+                    SetFailVariation(FailVariations.None);
+                }
+                if (GetFailVariation() == FailVariations.HelicopterDestroyed)
+                {
+                    fMissionShard failShard = new fMissionShard();
+                    failShard.Shard_In("HEIST FAILED", "Helicopter was destroyed.", 6, 0.4f, 6, true);
+                    failShard = null;
+                    failShardJustShown = true;
+                    Screen.FadeOut(1500);
+                    justFailed = false;
+                    SetFailVariation(FailVariations.None);
+                }
+                if (PlayerTeleportedToPrologue)
+                {
+                    if (GetFailVariation() == FailVariations.PrologueVehicleDestroyed)
+                    {
+                        fMissionShard failShard = new fMissionShard();
+                        failShard.Shard_In("HEIST FAILED", $"{PrologueVehicleName} was destroyed.", 6, 0.4f, 6, true);
+                        failShard = null;
+                        failShardJustShown = true;
+                        Screen.FadeOut(1500);
+                        justFailed = false;
+                        SetFailVariation(FailVariations.None);
+                    }
+                    if (GetFailVariation() == FailVariations.PrologueVehicleLeft_JobBlown)
+                    {
+                        fMissionShard failShard = new fMissionShard();
+                        failShard.Shard_In("HEIST FAILED", "Job was blown.", 6, 0.4f, 6, true);
+                        failShard = null;
+                        failShardJustShown = true;
+                        Screen.FadeOut(1500);
+                        justFailed = false;
+                        SetFailVariation(FailVariations.None);
+                    }
+                }
             }
-            if (LudendorffNorthYankton != null)
+            if (failShardJustShown)
             {
-                LudendorffNorthYankton.Delete();
-                LudendorffNorthYankton = null;
+                if (PlayerTeleportedToPrologue && resetSwitch == 0)
+                    resetSwitch = fMisc.GetRandomIntInRange(1, 7);
+                if (!PlayerTeleportedToPrologue && resetSwitch == 0)
+                    resetSwitch = fMisc.GetRandomIntInRange(-1, -5);
+                new GlobalsController(null);
+                Globals.globalBlips = 3;
+                Globals.scriptTerminator = 3;
+                if (resetSwitch > 0)
+                {
+                    if (PlayerTeleportedToPrologue)
+                    {
+                        if (!fInterior.PrologueMap.IsPrologueMapLoaded)
+                        {
+                            fInterior.PrologueMap.LoadPrologueMap();
+                        }
+                        else
+                        {
+                            fPlayer.PedPos(5304.088f, -5189.521f, 83.51835f, 0f);
+                            fPlayer.ped.IsVisible = false;
+                            fPlayer.ped.IsPositionFrozen = true;
+                            fClock.SetClockTime(5, 0, 0);
+                            fWeather.SetOverrideWeather(WeatherTypes.Snow);
+                            fClock.PauseClock(true);
+                            fInterior.PrologueMap.EnableNorthYanktonTrains(true);
+                            fPathfind.SetAllowStreamPrologueNodes(true);
+                            fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), true);
+                            fHud.ToggleNorthYanktonMap(true);
+                        }
+                    }
+                    if (!PlayerTeleportedToPrologue && !fInterior.PrologueMap.IsPrologueMapLoaded)
+                    {
+                        for (int i = 2; fClock.GetClockHours() != 12; fClock.AddToClockTime(0, i, 0))
+                        {
+                            Wait(0);
+                        }
+                        fClock.SetClockTime(12, 0, 0);
+                        fPlayer.ped.IsVisible = false;
+                        fPlayer.ped.IsPositionFrozen = true;
+                    }
+                }
+                if (Screen.IsFadedOut)
+                {
+                    switch (resetSwitch)
+                    {
+                        case -4:
+                            if (resetCam == null)
+                            {
+                                resetCam = fCam.CreateScriptedCam();
+                            }
+                            while (resetCam == null)
+                            {
+                                Wait(0);
+                            }
+                            if (resetCam != null)
+                            {
+                                fHud.RadarAndHud(false, false);
+                                resetCam.Position = resetCamCoord10;
+                                resetCam.Rotation = resetCamRot10;
+                                fCam.SetCamFov(resetCam, 65f);
+                                resetCam.IsActive = true;
+                                fCam.RenderScriptCams(true, false, 0);
+                                resetCam.Position = resetCamCoord10;
+                                resetCam.Rotation = resetCamRot10;
+                                if (!resetCam.IsShaking)
+                                    fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
+                            }
+                            break;
+                        case -3:
+                            if (resetCam == null)
+                            {
+                                resetCam = fCam.CreateScriptedCam();
+                            }
+                            while (resetCam == null)
+                            {
+                                Wait(0);
+                            }
+                            if (resetCam != null)
+                            {
+                                fHud.RadarAndHud(false, false);
+                                resetCam.Position = resetCamCoord9;
+                                resetCam.Rotation = resetCamRot9;
+                                fCam.SetCamFov(resetCam, 65f);
+                                resetCam.IsActive = true;
+                                fCam.RenderScriptCams(true, false, 0);
+                                resetCam.Position = resetCamCoord9;
+                                resetCam.Rotation = resetCamRot9;
+                                if (!resetCam.IsShaking)
+                                    fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
+                            }
+                            break;
+                        case -2:
+                            if (resetCam == null)
+                            {
+                                resetCam = fCam.CreateScriptedCam();
+                            }
+                            while (resetCam == null)
+                            {
+                                Wait(0);
+                            }
+                            if (resetCam != null)
+                            {
+                                fHud.RadarAndHud(false, false);
+                                resetCam.Position = resetCamCoord8;
+                                resetCam.Rotation = resetCamRot8;
+                                fCam.SetCamFov(resetCam, 65f);
+                                resetCam.IsActive = true;
+                                fCam.RenderScriptCams(true, false, 0);
+                                resetCam.Position = resetCamCoord8;
+                                resetCam.Rotation = resetCamRot8;
+                                if (!resetCam.IsShaking)
+                                    fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
+                            }
+                            break;
+                        case -1:
+                            if (resetCam == null)
+                            {
+                                resetCam = fCam.CreateScriptedCam();
+                            }
+                            while (resetCam == null)
+                            {
+                                Wait(0);
+                            }
+                            if (resetCam != null)
+                            {
+                                fHud.RadarAndHud(false, false);
+                                resetCam.Position = resetCamCoord7;
+                                resetCam.Rotation = resetCamRot7;
+                                fCam.SetCamFov(resetCam, 65f);
+                                resetCam.IsActive = true;
+                                fCam.RenderScriptCams(true, false, 0);
+                                resetCam.Position = resetCamCoord7;
+                                resetCam.Rotation = resetCamRot7;
+                                if (!resetCam.IsShaking)
+                                    fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
+                            }
+                            break;
+                        case 1:
+                            if (resetCam == null)
+                            {
+                                resetCam = fCam.CreateScriptedCam();
+                            }
+                            while (resetCam == null)
+                            {
+                                Wait(0);
+                            }
+                            if (resetCam != null)
+                            {
+                                fHud.RadarAndHud(false, false);
+                                resetCam.Position = resetCamCoord;
+                                resetCam.Rotation = resetCamRot;
+                                fCam.SetCamFov(resetCam, 65f);
+                                resetCam.IsActive = true;
+                                fCam.RenderScriptCams(true, false, 0);
+                                resetCam.Position = resetCamCoord;
+                                resetCam.Rotation = resetCamRot;
+                                if (!resetCam.IsShaking)
+                                    fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
+                            }
+                            break;
+                        case 2:
+                            if (resetCam == null)
+                            {
+                                resetCam = fCam.CreateScriptedCam();
+                            }
+                            while (resetCam == null)
+                            {
+                                Wait(0);
+                            }
+                            if (resetCam != null)
+                            {
+                                fHud.RadarAndHud(false, false);
+                                resetCam.Position = resetCamCoord2;
+                                resetCam.Rotation = resetCamRot2;
+                                fCam.SetCamFov(resetCam, 45f);
+                                resetCam.IsActive = true;
+                                fCam.RenderScriptCams(true, false, 0);
+                                resetCam.Position = resetCamCoord2;
+                                resetCam.Rotation = resetCamRot2;
+                                if (!resetCam.IsShaking)
+                                    fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
+                            }
+                            break;
+                        case 3:
+                            if (resetCam == null)
+                            {
+                                resetCam = fCam.CreateScriptedCam();
+                            }
+                            while (resetCam == null)
+                            {
+                                Wait(0);
+                            }
+                            if (resetCam != null)
+                            {
+                                fHud.RadarAndHud(false, false);
+                                resetCam.Position = resetCamCoord3;
+                                resetCam.Rotation = resetCamRot3;
+                                fCam.SetCamFov(resetCam, 55f);
+                                resetCam.IsActive = true;
+                                fCam.RenderScriptCams(true, false, 0);
+                                resetCam.Position = resetCamCoord3;
+                                resetCam.Rotation = resetCamRot3;
+                                if (!resetCam.IsShaking)
+                                    fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
+                            }
+                            break;
+                        case 4:
+                            if (resetCam == null)
+                            {
+                                resetCam = fCam.CreateScriptedCam();
+                            }
+                            while (resetCam == null)
+                            {
+                                Wait(0);
+                            }
+                            if (resetCam != null)
+                            {
+                                fHud.RadarAndHud(false, false);
+                                resetCam.Position = resetCamCoord4;
+                                resetCam.Rotation = resetCamRot4;
+                                fCam.SetCamFov(resetCam, 55f);
+                                resetCam.IsActive = true;
+                                fCam.RenderScriptCams(true, false, 0);
+                                resetCam.Position = resetCamCoord4;
+                                resetCam.Rotation = resetCamRot4;
+                                if (!resetCam.IsShaking)
+                                    fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
+                            }
+                            break;
+                        case 5:
+                            if (resetCam == null)
+                            {
+                                resetCam = fCam.CreateScriptedCam();
+                            }
+                            while (resetCam == null)
+                            {
+                                Wait(0);
+                            }
+                            if (resetCam != null)
+                            {
+                                fHud.RadarAndHud(false, false);
+                                resetCam.Position = resetCamCoord5;
+                                resetCam.Rotation = resetCamRot5;
+                                fCam.SetCamFov(resetCam, 42f);
+                                resetCam.IsActive = true;
+                                fCam.RenderScriptCams(true, false, 0);
+                                resetCam.Position = resetCamCoord5;
+                                resetCam.Rotation = resetCamRot5;
+                                if (!resetCam.IsShaking)
+                                    fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
+                            }
+                            break;
+                        case 6:
+                            if (resetCam == null)
+                            {
+                                resetCam = fCam.CreateScriptedCam();
+                            }
+                            while (resetCam == null)
+                            {
+                                Wait(0);
+                            }
+                            if (resetCam != null)
+                            {
+                                fHud.RadarAndHud(false, false);
+                                resetCam.Position = resetCamCoord6;
+                                resetCam.Rotation = resetCamRot6;
+                                fCam.SetCamFov(resetCam, 55f);
+                                resetCam.IsActive = true;
+                                fCam.RenderScriptCams(true, false, 0);
+                                resetCam.Position = resetCamCoord6;
+                                resetCam.Rotation = resetCamRot6;
+                                if (!resetCam.IsShaking)
+                                    fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
+                            }
+                            break;
+                    }
+                }
+                if (resetCam != null)
+                {
+                    if (resetCam.IsActive)
+                    {
+                        Screen.FadeIn(1500);
+                        if (!instructionalButtonsSetUp)
+                        {
+                            resetButtons.Load();
+                            resetButtons.AddContainer(GoBackToFreeroamContainer);
+                            resetButtons.AddContainer(ResetButtonContainer);
+                            instructionalButtonsSetUp = true;
+                        }
+                        else
+                        {
+                            resetButtons.UpdateScaleform();
+                            resetButtons.Draw();
+                        }
+                        if (resetButtons.IsLoaded)
+                        {
+                            if (Game.IsControlJustPressed(GTA.Control.FrontendAccept))
+                            {
+                                Screen.FadeOut(2500);
+                                Restart = true;
+                            }
+                            if (Game.IsControlJustPressed(GTA.Control.FrontendCancel))
+                            {
+                                Screen.FadeOut(2500);
+                                Restart = false;
+                                restartCanceled = true;
+                            }
+                        }
+                    }
+                }
+                if (Restart)
+                {
+                    resetButtons.RemoveContainer(ResetButtonContainer);
+                    resetButtons.RemoveContainer(GoBackToFreeroamContainer);
+                    resetButtons.Dispose();
+                    if (Screen.IsFadedOut)
+                    {
+                        fPlayer.ped.IsVisible = true;
+                        fPlayer.ped.IsPositionFrozen = false;
+                        if (resetCam != null)
+                        {
+                            fCam.RenderScriptCams(false, false, 0);
+                            resetCam.IsActive = false;
+                            resetCam.Delete();
+                            resetCam = null;
+                        }
+                    }
+                }
+                if (restartCanceled)
+                {
+                    resetButtons.RemoveContainer(ResetButtonContainer);
+                    resetButtons.RemoveContainer(GoBackToFreeroamContainer);
+                    resetButtons.Dispose();
+                    if (Screen.IsFadedOut)
+                    {
+                        if (resetCam != null)
+                        {
+                            fCam.RenderScriptCams(false, false, 0);
+                            resetCam.IsActive = false;
+                            resetCam.Delete();
+                            resetCam = null;
+                        }
+                        fWeather.SetOverrideWeather(weatherTypeBeforeMission);
+                        fClock.SetClockTime(12, 0, 0);
+                        fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), false);
+                        fClock.PauseClock(false);
+                        fInterior.PrologueMap.EnableNorthYanktonTrains(false);
+                        fPathfind.SetAllowStreamPrologueNodes(false);
+                        fHud.ToggleNorthYanktonMap(false);
+                        if (fInterior.PrologueMap.IsPrologueMapLoaded && PlayerTeleportedToPrologue)
+                        {
+                            Screen.FadeOut(1500);
+                            if (Screen.IsFadedOut)
+                                fInterior.PrologueMap.UnloadPrologueMap();
+                        }
+                        fStreaming.RequestAnimDict("switch@michael@sitting");
+                        if (failCam == null)
+                        {
+                            failCam = fCam.CreateScriptedCam();
+                        }
+                        while (failCam == null)
+                        {
+                            Wait(0);
+                        }
+                        if (failCam != null)
+                        {
+                            fCam.SetCamFov(failCam, 50f);
+                            fHud.RadarAndHud(false, false);
+                            failCam.Position = new Vector3(1522.0f, 6584.67f, 8.301389f);
+                            failCam.Rotation = new Vector3(0f, 0f, -8.4f);
+                            Vector3 animpos = new Vector3(1522.371f, 6585.832f, 7.304277f);
+                            if (!fPlayer.ped.IsInjured)
+                            {
+                                fPlayer.ped.IsVisible = true;
+                                fPlayer.ped.IsPositionFrozen = false;
+                                fPlayer.ped.Task.ClearAllImmediately();
+                                fPlayer.PedPos(1522.371f, 6585.832f, 7.304277f, -10f);
+                                failSceneID = fAnimations.CreateSynchronizedScene(animpos, 0f, 0f, -10f);
+                                fAnimations.TaskSynchronizedScene(fPlayer.ped, failSceneID, "switch@michael@sitting", "idle", 1000f, 1000f, 0, 0, 1000f, 0);
+                                failCam.IsActive = true;
+                                fCam.RenderScriptCams(true, false, 0, true, false, fCam.RenderingOptionFlag.RO_NO_OPTIONS);
+                                failCam.Position = new Vector3(1522.0f, 6584.67f, 8.301389f);
+                                failCam.Rotation = new Vector3(0f, 0f, -8.4f);
+                                Wait(50);
+                                Screen.FadeIn(2400);
+                                fCam.RenderScriptCams(false, true, 2700, true, false, fCam.RenderingOptionFlag.RO_NO_OPTIONS);
+                                failSceneID = 0;
+                                failSceneID = fAnimations.CreateSynchronizedScene(animpos, 0f, 0f, -10f);
+                                fAnimations.TaskSynchronizedScene(fPlayer.ped, failSceneID, "switch@michael@sitting", "exit_forward", 1000f, 1000f, 0, 0, 1000f, 0);
+                                failCam.IsActive = false;
+                                while (fAnimations.GetSynchronizedScenePhase(failSceneID) < 1f)
+                                    Wait(0);
+                                fPlayer.ped.Task.ClearAllImmediately();
+                                Wait(1000);
+                                fHud.RadarAndHud(true, true);
+                                fStreaming.RemoveAnimDict("switch@michael@sitting");
+                                failSceneID = 0;
+                                if (failCam != null)
+                                {
+                                    failCam.Delete();
+                                    failCam = null;
+                                }
+                                justFailed = false;
+                                PlayerTeleportedToPrologue = false;
+                            }
+                        }
+                    }
+                }
             }
-            Globals.missionSwitch = 0;
-            fMissionShard failShard = new fMissionShard();
-            failShard.Shard_In("HEIST FAILED", "You left the mission area.", 6);
-            failShard = null;
         }
 
         void CleanUp()
         {
+            if (weatherTypeSaved)
+                fWeather.SetOverrideWeather(weatherTypeBeforeMission);
+            fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), false);
+            fClock.PauseClock(false);
+            fInterior.PrologueMap.EnableNorthYanktonTrains(false);
+            fPathfind.SetAllowStreamPrologueNodes(false);
+            fHud.ToggleNorthYanktonMap(false);
+            if (fInterior.PrologueMap.IsPrologueMapLoaded && PlayerTeleportedToPrologue)
+            {
+                Screen.FadeOut(1000);
+                fInterior.PrologueMap.UnloadPrologueMap();
+                fPlayer.PedPos(1522.371f, 6585.832f, 7.304277f, -10f);
+            }
             fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.MusicStop);
+            if (PrologueIntroCam != null)
+            {
+                PrologueIntroCam.Delete();
+                PrologueIntroCam = null;
+            }
+            if (PrologueIntroCam2 != null)
+            {
+                PrologueIntroCam2.Delete();
+                PrologueIntroCam2 = null;
+            }
+            if (DepotBlip != null)
+            {
+                DepotBlip.Delete();
+                DepotBlip = null;
+            }
+            if (PrologueVehicle != null)
+            {
+                PrologueVehicle.Delete();
+                PrologueVehicle = null;
+            }
+            if (heliCutscene != null)
+            {
+                heliCutscene.Cleanup();
+                heliCutscene = null;
+            }
+            if (cutscenePed1 != null)
+            {
+                cutscenePed1.Delete();
+                cutscenePed1 = null;
+            }
+            if (cutscenePed2 != null)
+            {
+                cutscenePed2.Delete();
+                cutscenePed2 = null;
+            }
+            if (cutscenePed2 != null)
+            {
+                cutscenePed2.Delete();
+                cutscenePed2 = null;
+            }
             if (LudendorffNorthYankton != null)
             {
                 LudendorffNorthYankton.Delete();
@@ -915,6 +2078,11 @@ namespace BobcatSecurityDepotHeist
                 }
                 StartHeli.Delete();
                 StartHeli = null;
+            }
+            if (FailArea != null)
+            {
+                FailArea.Delete();
+                FailArea = null;
             }
         }
 

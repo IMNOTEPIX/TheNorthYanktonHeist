@@ -3279,6 +3279,13 @@ namespace BobcatSecurityDepotHeist
             {
                 return Function.Call<bool>(Hash.IS_ENTITY_IN_AREA, entity, xyz1.X, xyz1.Y, xyz1.Z, xyz2.X, xyz2.Y, xyz2.Z, p7, p8, p9);
             }
+            /// <summary>
+            /// By "Angled Area" they mean a rectangle.
+            /// </summary>
+            public static bool IsEntityInAngledArea(Entity entity, Vector3 xyz1, Vector3 xyz2, float width, bool debug = false, bool includeZ = true, int p10 = 0)
+            {
+                return Function.Call<bool>(Hash.IS_​ENTITY_​IN_​ANGLED_​AREA, entity, xyz1.X, xyz1.Y, xyz1.Z, xyz2.X, xyz2.Y, xyz2.Z, width, debug, includeZ, p10);
+            }
             public static bool HasCollisionLoadedAroundEntity(Entity entity)
             {
                 return Function.Call<bool>(Hash.HAS_​COLLISION_​LOADED_​AROUND_​ENTITY, entity);

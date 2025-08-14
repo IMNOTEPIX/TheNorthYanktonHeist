@@ -21,11 +21,11 @@ using System.Web;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
-using static BobcatSecurityDepotHeist.Functions;
+using static SnowboundScore.Functions;
 using Hash = GTA.Native.Hash;
 using Screen = GTA.UI.Screen;
 
-namespace BobcatSecurityDepotHeist
+namespace SnowboundScore
 {
     internal class Functions
     {

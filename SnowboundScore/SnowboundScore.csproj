@@ -7,8 +7,8 @@
     <ProjectGuid>{F895C264-DE12-492F-AC0A-61FD8080F29D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BobcatSecurityDepotHeist</RootNamespace>
-    <AssemblyName>BobcatSecurityDepotHeist</AssemblyName>
+    <RootNamespace>SnowboundScore</RootNamespace>
+    <AssemblyName>SnowboundScore</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -62,7 +62,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "C:\Users\lleva\source\repos\BobcatSecurityDepotHeist\BobcatSecurityDepotHeist\bin\Debug\BobcatSecurityDepotHeist.dll" "C:\Program Files\Rockstar Games\Grand Theft Auto V\Scripts\BobcatSecurityDepotHeist.dll" /y
-copy "C:\Users\lleva\source\repos\BobcatSecurityDepotHeist\BobcatSecurityDepotHeist\bin\Debug\BobcatSecurityDepotHeist.pdb" "C:\Program Files\Rockstar Games\Grand Theft Auto V\Scripts\BobcatSecurityDepotHeist.pdb" /y</PostBuildEvent>
+    <PostBuildEvent>copy "C:\Users\lleva\source\repos\SnowboundScore\SnowboundScore\bin\Debug\SnowboundScore.dll" "C:\Program Files\Rockstar Games\Grand Theft Auto V\Scripts\SnowboundScore.dll" /y
+copy "C:\Users\lleva\source\repos\SnowboundScore\SnowboundScore\bin\Debug\SnowboundScore.pdb" "C:\Program Files\Rockstar Games\Grand Theft Auto V\Scripts\SnowboundScore.pdb" /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

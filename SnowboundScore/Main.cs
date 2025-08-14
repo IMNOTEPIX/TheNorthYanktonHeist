@@ -1,7 +1,7 @@
 ﻿using BillsyLiamGTA.UI.Elements;
 using BillsyLiamGTA.UI.Scaleform;
 using BillsyLiamGTA.UI.Timerbars;
-using BobcatSecurityDepotHeist;
+using SnowboundScore;
 using Global;
 using GTA;
 using GTA.Math;
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Timers;
 using System.Windows.Forms;
 using static BillsyLiamGTA.UI.Elements.VariableTimer;
-using static BobcatSecurityDepotHeist.Functions;
+using static SnowboundScore.Functions;
 using Hash = GTA.Native.Hash;
 using Screen = GTA.UI.Screen;
 
@@ -764,7 +764,7 @@ namespace Global
     }
 }
 
-namespace BobcatSecurityDepotHeist
+namespace SnowboundScore
 {
     public class Start : Script
     {

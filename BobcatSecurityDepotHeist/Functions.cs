@@ -1345,7 +1345,6 @@ namespace BobcatSecurityDepotHeist
                     Script.Wait(0);
                 }
             }
-
             public void DrawShard()
             {
                 if (!Game.Player.Character.IsDead)

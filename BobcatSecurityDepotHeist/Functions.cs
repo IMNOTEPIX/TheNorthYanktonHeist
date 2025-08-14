@@ -479,9 +479,21 @@ namespace BobcatSecurityDepotHeist
                 return -1;
             }
 
-            public static void SetClockTime(int hour =0, int minute=0, int second=0)
+            public static void SetClockTime(int hour =0, int minute=0, int second=0, bool ease = false, int timeEaseAmountMin = 1)
             {
-                Function.Call(Hash.SET_CLOCK_TIME, hour, minute, second);
+                if (!ease)
+                    Function.Call(Hash.SET_CLOCK_TIME, hour, minute, second);
+                else
+                {
+                    for (int time = timeEaseAmountMin; GetClockHours() != hour && GetClockMinutes() != minute; AddToClockTime(0, time, 0))
+                    {
+                        Script.Wait(0);
+                    }
+                    if (GetClockHours() == hour && GetClockMinutes() > (minute - 10) && GetClockMinutes() < (minute + 10))
+                    {
+                        SetClockTime(hour, minute, second);
+                    }
+                }
             }
             public static void PauseClock(bool toggle)
             {
@@ -925,10 +937,23 @@ namespace BobcatSecurityDepotHeist
                 }
                 return float.NaN;
             }
-
+            public static float GetCarDistanceTo(Vector2 position)
+            {
+                if (Game.Player.Character.CurrentVehicle != null)
+                {
+                    float x = Game.Player.Character.CurrentVehicle.Position.X;
+                    float y = Game.Player.Character.CurrentVehicle.Position.Y;
+                    Vector2 xy = new Vector2(x, y);
+                    return (position - xy).Length();
+                }
+                return float.NaN;
+            }
             public static float GetDistanceTo(Vector2 position)
             {
-                return Game.Player.Character.Position.DistanceTo(position);
+                float x = Game.Player.Character.Position.X;
+                float y = Game.Player.Character.Position.Y;
+                Vector2 xy = new Vector2(x, y);
+                return (position - xy).Length();
             }
 
             public static uint GetPlayerModelHash()
@@ -1303,7 +1328,7 @@ namespace BobcatSecurityDepotHeist
             }
         }
 
-        public class fMissionShard
+        public class fMissionShard : Script
         {
             public unsafe void DeleteScaleformID()
             {
@@ -1356,6 +1381,7 @@ namespace BobcatSecurityDepotHeist
                     Script.Wait(0);
                 }
                 DeleteScaleformID();
+                Function.Call(Hash.RELEASE_NAMED_SCRIPT_AUDIO_BANK, "DLC_MP2023_1/DLC_MP2023_1_Bicycle_Race");
             }
 
             public void Shard_Out(int color, float speed)

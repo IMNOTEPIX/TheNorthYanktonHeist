@@ -4,29 +4,13 @@ using BillsyLiamGTA.UI.Timerbars;
 using BobcatSecurityDepotHeist;
 using Global;
 using GTA;
-using GTA.Graphics;
 using GTA.Math;
 using GTA.Native;
 using GTA.UI;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.Security.Policy;
-using System.Text;
-using System.Threading;
 using System.Timers;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Serialization;
 using static BillsyLiamGTA.UI.Elements.VariableTimer;
 using static BobcatSecurityDepotHeist.Functions;
 using Hash = GTA.Native.Hash;
@@ -52,7 +36,6 @@ namespace Global
 {
     using static Functions;
     using static Globals;
-    using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
     public class GlobalsController : Script
     {
@@ -106,7 +89,7 @@ namespace Global
             {
                 if (e.KeyCode == Keys.N)
                 {
-                    Debug2 = 1;
+                    Debug2++;
                     //Function.Call(Hash.ACTIVATE_​FRONTEND_​MENU, "DISPLAY_CORONA_BUTTONS", false, -1);
                     //HUD::PAUSE_MENU_ACTIVATE_CONTEXT(joaat("DISPLAY_CORONA_BUTTONS"));
                     //Function.Call(Hash.PAUSE_MENU_ACTIVATE_CONTEXT, fMisc.GetHashKey("CORONA_SHOW_PLANNING"));
@@ -277,6 +260,35 @@ namespace Global
             }
         }
 
+        Vector3 resetCamCoord7 = new Vector3(5355f, -5173f, 82.49858f);
+        Vector3 resetCamRot7 = new Vector3(17f, 0f, 130.4812f);
+        Vector3 resetCamCoord = new Vector3(5344.149f, -5180.952f, 83.3f);
+        Vector3 resetCamRot = new Vector3(16f, 0f, 130.6f);
+        Vector3 resetCamCoord2 = new Vector3(5315.703f, -5175.806f, 84.61874f);
+        Vector3 resetCamRot2 = new Vector3(-5f, 0f, -160f);
+        Vector3 resetCamCoord3 = new Vector3(5346.801f, -5178.461f, 82.4f);
+        Vector3 resetCamRot3 = new Vector3(15f, 0f, 129.449f);
+        Vector3 resetCamCoord4 = new Vector3(5302.341f, -5176.98f, 84.81873f);
+        Vector3 resetCamRot4 = new Vector3(-12f, 0f, 60f);
+        Vector3 resetCamCoord5 = new Vector3(5292.429f, -5184.105f, 85.01872f);
+        Vector3 resetCamRot5 = new Vector3(-10f, 0f, -140f);
+        Vector3 resetCamCoord6 = new Vector3(5306.128f, -5213.86f, 85.11872f);
+        Vector3 resetCamRot6 = new Vector3(-10f, 0f, -46.8f);
+        static List<Vehicle> depotVehicles = new List<Vehicle>();
+        public static void SpawnTrucks()
+        {
+            if (depotVehicles.Count == 0)
+            {
+                fVehicle.CreateVehicleForList(depotVehicles, new Model("stockade3"), new Vector3((5341.3525f + 1.365f), -5177.149f, 81.762f), 0.3367f);
+                Function.Call(Hash.SET_VEHICLE_IS_CONSIDERED_BY_PLAYER, depotVehicles[0], false);
+                Function.Call(Hash.SET_ENTITY_ONLY_DAMAGED_BY_PLAYER, depotVehicles[0], true);
+                fVehicle.CreateVehicleForList(depotVehicles, new Model("stockade3"), new Vector3((5337.0996f + 1.365f), -5177.0317f, 81.762f), 2.5903f);
+                Function.Call(Hash.SET_VEHICLE_IS_CONSIDERED_BY_PLAYER, depotVehicles[1], false);
+                Function.Call(Hash.SET_ENTITY_ONLY_DAMAGED_BY_PLAYER, depotVehicles[1], true);
+                Function.Call(Hash.SET_MODEL_AS_NO_LONGER_NEEDED, fMisc.GetHashKey("stockade3"));
+            }
+        }
+
         private void onTick(object sender, EventArgs e)
         {
             // Driveway to the depot: 
@@ -299,18 +311,169 @@ namespace Global
                 {
                     case 0:
                         break;
-                    case 1:
-                            break;
+                    case 1: // arrive at depot, depot shootout
+                        if (!fInterior.PrologueMap.IsPrologueMapLoaded)
+                        {
+                            fInterior.PrologueMap.LoadPrologueMap();
+                        }
+                        else
+                        {
+                            fPlayer.PedPos(5304.088f, -5189.521f, 83.51835f, 0f);
+                            fClock.SetClockTime(12, 0, 0);
+                            fPlayer.ped.IsVisible = false;
+                            fPlayer.ped.IsPositionFrozen = true;
+                            fPlayer.ped.IsInvincible = true;
+                            fWeather.SetOverrideWeather(WeatherTypes.SNOWLIGHT);
+                            fClock.PauseClock(true);
+                            fInterior.PrologueMap.EnableNorthYanktonTrains(true);
+                            fPathfind.SetAllowStreamPrologueNodes(true);
+                            fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), true);
+                            fHud.ToggleNorthYanktonMap(true);
+                        }
+                        SpawnTrucks();
+                        if (debugCam == null)
+                        {
+                            debugCam = fCam.CreateScriptedCam();
+                        }
+                        while (debugCam == null)
+                        {
+                            Wait(0);
+                        }
+                        if (debugCam != null)
+                        {
+                            fHud.RadarAndHud(false, false);
+                            debugCam.Position = resetCamCoord7;
+                            debugCam.Rotation = resetCamRot7;
+                            fCam.SetCamFov(debugCam, 50f);
+                            debugCam.IsActive = true;
+                            fCam.RenderScriptCams(true, false, 0);
+                            debugCam.Position = resetCamCoord7;
+                            debugCam.Rotation = resetCamRot7;
+                            if (!debugCam.IsShaking)
+                                fCam.ShakeCam(debugCam, "HAND_SHAKE", 0.5f);
+                        }
+                        break;
+                        /*
                     case 2:
+                        if (debugCam == null)
+                        {
+                            debugCam = fCam.CreateScriptedCam();
+                        }
+                        while (debugCam == null)
+                        {
+                            Wait(0);
+                        }
+                        if (debugCam != null)
+                        {
+                            fHud.RadarAndHud(false, false);
+                            debugCam.Position = resetCamCoord2;
+                            debugCam.Rotation = resetCamRot2;
+                            fCam.SetCamFov(debugCam, 45f);
+                            debugCam.IsActive = true;
+                            fCam.RenderScriptCams(true, false, 0);
+                            debugCam.Position = resetCamCoord2;
+                            debugCam.Rotation = resetCamRot2;
+                            if (!debugCam.IsShaking)
+                                fCam.ShakeCam(debugCam, "HAND_SHAKE", 0.5f);
+                        }
                         break;
+                        */
                     case 3:
+                        if (debugCam == null)
+                        {
+                            debugCam = fCam.CreateScriptedCam();
+                        }
+                        while (debugCam == null)
+                        {
+                            Wait(0);
+                        }
+                        if (debugCam != null)
+                        {
+                            fHud.RadarAndHud(false, false);
+                            debugCam.Position = resetCamCoord3;
+                            debugCam.Rotation = resetCamRot3;
+                            fCam.SetCamFov(debugCam, 60f);
+                            debugCam.IsActive = true;
+                            fCam.RenderScriptCams(true, false, 0);
+                            debugCam.Position = resetCamCoord3;
+                            debugCam.Rotation = resetCamRot3;
+                            if (!debugCam.IsShaking)
+                                fCam.ShakeCam(debugCam, "HAND_SHAKE", 0.5f);
+                        }
                         break;
+                        /*
                     case 4:
+                        if (debugCam == null)
+                        {
+                            debugCam = fCam.CreateScriptedCam();
+                        }
+                        while (debugCam == null)
+                        {
+                            Wait(0);
+                        }
+                        if (debugCam != null)
+                        {
+                            fHud.RadarAndHud(false, false);
+                            debugCam.Position = resetCamCoord4;
+                            debugCam.Rotation = resetCamRot4;
+                            fCam.SetCamFov(debugCam, 55f);
+                            debugCam.IsActive = true;
+                            fCam.RenderScriptCams(true, false, 0);
+                            debugCam.Position = resetCamCoord4;
+                            debugCam.Rotation = resetCamRot4;
+                            if (!debugCam.IsShaking)
+                                fCam.ShakeCam(debugCam, "HAND_SHAKE", 0.5f);
+                        }
                         break;
+                        
                     case 5:
+                        if (debugCam == null)
+                        {
+                            debugCam = fCam.CreateScriptedCam();
+                        }
+                        while (debugCam == null)
+                        {
+                            Wait(0);
+                        }
+                        if (debugCam != null)
+                        {
+                            fHud.RadarAndHud(false, false);
+                            debugCam.Position = resetCamCoord5;
+                            debugCam.Rotation = resetCamRot5;
+                            fCam.SetCamFov(debugCam, 42f);
+                            debugCam.IsActive = true;
+                            fCam.RenderScriptCams(true, false, 0);
+                            debugCam.Position = resetCamCoord5;
+                            debugCam.Rotation = resetCamRot5;
+                            if (!debugCam.IsShaking)
+                                fCam.ShakeCam(debugCam, "HAND_SHAKE", 0.5f);
+                        }
                         break;
+                        
                     case 6:
+                        if (debugCam == null)
+                        {
+                            debugCam = fCam.CreateScriptedCam();
+                        }
+                        while (debugCam == null)
+                        {
+                            Wait(0);
+                        }
+                        if (debugCam != null)
+                        {
+                            fHud.RadarAndHud(false, false);
+                            debugCam.Position = resetCamCoord6;
+                            debugCam.Rotation = resetCamRot6;
+                            fCam.SetCamFov(debugCam, 55f);
+                            debugCam.IsActive = true;
+                            fCam.RenderScriptCams(true, false, 0);
+                            debugCam.Position = resetCamCoord6;
+                            debugCam.Rotation = resetCamRot6;
+                            if (!debugCam.IsShaking)
+                                fCam.ShakeCam(debugCam, "HAND_SHAKE", 0.5f);
+                        }
                         break;
+                        */
                     case 7:
                         break;
                     case 8:
@@ -1018,7 +1181,7 @@ namespace BobcatSecurityDepotHeist
                             {
                                 if (LudendorffNorthYankton != null)
                                 {
-                                    if (fPlayer.GetCarDistanceTo(new Vector2(1580f, 8745f)) < 170f)
+                                    if (fPlayer.GetCarDistanceTo(new Vector2(1580f, 8745f)) < 500f && !fPlayer.IsWanted)
                                     {
                                         Globals.missionSwitch = 3;
                                     }
@@ -1206,7 +1369,6 @@ namespace BobcatSecurityDepotHeist
                                         fCam.SetupMovingCam(PrologueIntroCam2, camPos2, camRot2, 60f, CameraShake.Hand, 0.5f);
                                     if (PrologueVehicle != null && PrologueIntroCam != null && PrologueIntroCam2 != null)
                                     {
-                                        LoadingPrompt.Hide();
                                         fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Suspense);
                                         fCam.SetCamActiveWithInterp(PrologueIntroCam2, PrologueIntroCam, 5000, fCam.CamGraphType.GRAPH_TYPE_SLOW_IN_OUT, fCam.CamGraphType.GRAPH_TYPE_SLOW_IN_OUT);
                                         fCam.RenderScriptCams(true, false, 3000, true, false, fCam.RenderingOptionFlag.RO_NO_OPTIONS);
@@ -1287,7 +1449,7 @@ namespace BobcatSecurityDepotHeist
                                     }
                                     if (fClock.GetClockHours() == 5 || (fEntity.IsEntityInAngledArea(fPlayer.ped, new Vector3(5356.7324f, -5201.1553f, 80.83122f), new Vector3(5356.5454f, -5179.6f, 96.83691f), 20f, false, true, 0) || fEntity.IsEntityInAngledArea(fPlayer.ped, new Vector3(5417.894f, -5108.7925f, 75.56319f), new Vector3(5412.488f, -5240.66f, 95.59789f), 100f, false, true, 0)))
                                     {
-                                        fClock.SetClockTime(5);
+                                        fClock.SetClockTime(5, 0, 0, true, 1);
                                         fClock.PauseClock(true);
                                         timeAdvanced2 = true;
                                     }
@@ -1347,20 +1509,10 @@ namespace BobcatSecurityDepotHeist
         int resetSwitch = 0;
         bool Restart = false;
         Camera resetCam;
-        Vector3 resetCamCoord7 = new Vector3(5358.967f, -5170.512f, 82.49858f);
-        Vector3 resetCamRot7 = new Vector3(17f, 0f, 135.4812f);
-        Vector3 resetCamCoord = new Vector3(5344.149f, -5180.952f, 83.3f);
-        Vector3 resetCamRot = new Vector3(16f, 0f, 130.6f);
-        Vector3 resetCamCoord2 = new Vector3(5315.703f, -5175.806f, 84.61874f);
-        Vector3 resetCamRot2 = new Vector3(-5f, 0f, -160f);
-        Vector3 resetCamCoord3 = new Vector3(5304.587f, -5182.308f, 84.51872f);
-        Vector3 resetCamRot3 = new Vector3(-5f, 0f, -66.5f);
-        Vector3 resetCamCoord4 = new Vector3(5302.341f, -5176.98f, 84.81873f);
-        Vector3 resetCamRot4 = new Vector3(-12f, 0f, 60f);
-        Vector3 resetCamCoord5 = new Vector3(5292.429f, -5184.105f, 85.01872f);
-        Vector3 resetCamRot5 = new Vector3(-10f, 0f, -140f);
-        Vector3 resetCamCoord6 = new Vector3(5306.128f, -5213.86f, 85.11872f);
-        Vector3 resetCamRot6 = new Vector3(-10f, 0f, -46.8f);
+        Vector3 resetCamCoord7 = new Vector3(5355f, -5173f, 82.49858f);
+        Vector3 resetCamRot7 = new Vector3(17f, 0f, 130.4812f);
+        Vector3 resetCamCoord3 = new Vector3(5346.801f, -5178.461f, 82.4f);
+        Vector3 resetCamRot3 = new Vector3(15f, 0f, 129.449f);
         InstructionalButtons resetButtons = new InstructionalButtons();
         InstructionalButtonContainer ResetButtonContainer = new InstructionalButtonContainer(InputControl.FrontendAccept, "Restart Mission");
         InstructionalButtonContainer GoBackToFreeroamContainer = new InstructionalButtonContainer(InputControl.FrontendCancel, "Leave Mission");
@@ -1376,58 +1528,69 @@ namespace BobcatSecurityDepotHeist
             {
                 if (IsStartHeliDestroyed)
                 {
+                    fAudio.PrepareMusicEvent("GTA_ONLINE_STOP_SCORE");
+                    fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                    fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.IdleStart);
+                    fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                    fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
+                    TimerbarPool.Remove(failCountdown);
+                    WarningMessageShown = false;
+                    PlayerInArea = true;
+                    FailCountdownVisible = false;
                     justFailed = true;
                     SetFailVariation(FailVariations.HelicopterDestroyed);
                     MissionFailCleanUpRequired = true;
                 }
-                if (FailArea == null)
-                {
-                    Vector3 areaCenter = new Vector3(1542f, 7546.5f, 0f);
-                    float areaWidth = 916f;
-                    float areaHeight = 2683f;
-                    FailArea = fBlip.AddBlipForArea(areaCenter, areaWidth, areaHeight);
-                    FailArea.Alpha = 0;
-                    FailArea.Color = BlipColor.Yellow;
-                }
                 else
                 {
-                    MidsizedMessage failWarning = new MidsizedMessage("Leaving the Mission Area", "Return to the mission area.");
-                    if (!fEntity.IsEntityInArea(fPlayer.ped, new Vector3(2000f, 6205f, -7f), new Vector3(1084f, 8888f, 550f)))
+                    if (FailArea == null)
                     {
-                        LudendorffNorthYankton.Alpha = 0;
-                        FailArea.Alpha = 128;
-                        PlayerInArea = false;
-                        if (!FailCountdownVisible)
-                        {
-                            failTimer.Reset();
-                            failCountdown = new CountdownTimerbar("TIME LEFT:", 30000);
-                            failCountdown.VariableTimer = failTimer;
-                            failCountdown.Draw(0.9f);
-                            failTimer.Start();
-                            FailCountdownVisible = true;
-                        }
-                        if (!WarningMessageShown)
-                        {
-                            failWarning.Color = 6;
-                            failWarning.ScreenTime = 6500;
-                            WarningMessageShown = true;
-                            failWarning.Show();
-                        }
-                    }
-                    if (fEntity.IsEntityInArea(fPlayer.ped, new Vector3(2000f, 6205f, -7f), new Vector3(1084f, 8888f, 550f)) && failTimer.Counter > 0 && FailCountdownVisible && !PlayerInArea)
-                    {
-                        LudendorffNorthYankton.Alpha = 255;
+                        Vector3 areaCenter = new Vector3(1542f, 7546.5f, 0f);
+                        float areaWidth = 916f;
+                        float areaHeight = 2683f;
+                        FailArea = fBlip.AddBlipForArea(areaCenter, areaWidth, areaHeight);
                         FailArea.Alpha = 0;
-                        fAudio.PrepareMusicEvent("GTA_ONLINE_STOP_SCORE");
-                        fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
-                        fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.IdleStart);
-                        fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
-                        fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
-                        failCountdown.VariableTimer.RemoveTime(30001);
-                        OnTimerExpired?.Invoke(this);
-                        WarningMessageShown = false;
-                        PlayerInArea = true;
-                        FailCountdownVisible = false;
+                        FailArea.Color = BlipColor.Yellow;
+                    }
+                    else
+                    {
+                        MidsizedMessage failWarning = new MidsizedMessage("Leaving the Mission Area", "Return to the mission area.");
+                        if (!fEntity.IsEntityInArea(fPlayer.ped, new Vector3(2000f, 6205f, -7f), new Vector3(1084f, 8888f, 550f)))
+                        {
+                            LudendorffNorthYankton.Alpha = 0;
+                            FailArea.Alpha = 128;
+                            PlayerInArea = false;
+                            if (!FailCountdownVisible)
+                            {
+                                failTimer.Reset();
+                                failCountdown = new CountdownTimerbar("TIME LEFT:", 30000);
+                                failCountdown.VariableTimer = failTimer;
+                                failCountdown.Draw(0.9f);
+                                failTimer.Start();
+                                FailCountdownVisible = true;
+                            }
+                            if (!WarningMessageShown)
+                            {
+                                failWarning.Color = 6;
+                                failWarning.ScreenTime = 6500;
+                                WarningMessageShown = true;
+                                failWarning.Show();
+                            }
+                        }
+                        if (fEntity.IsEntityInArea(fPlayer.ped, new Vector3(2000f, 6205f, -7f), new Vector3(1084f, 8888f, 550f)) && failTimer.Counter > 0 && FailCountdownVisible && !PlayerInArea)
+                        {
+                            LudendorffNorthYankton.Alpha = 255;
+                            FailArea.Alpha = 0;
+                            fAudio.PrepareMusicEvent("GTA_ONLINE_STOP_SCORE");
+                            fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                            fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.IdleStart);
+                            fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                            fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
+                            TimerbarPool.Remove(failCountdown);
+                            WarningMessageShown = false;
+                            PlayerInArea = true;
+                            FailCountdownVisible = false;
+                        }
                     }
                 }
             }
@@ -1435,63 +1598,81 @@ namespace BobcatSecurityDepotHeist
             {
                 if (IsPrologueVehicleDestroyed)
                 {
+                    fAudio.PrepareMusicEvent("GTA_ONLINE_STOP_SCORE");
+                    fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                    fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.SuspenseStart);
+                    fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                    fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Suspense);
+                    TimerbarPool.Remove(failCountdown);
+                    failTimer.Stop();
+                    failTimer.Reset();
+                    timer.Stop();
+                    timer.Interval = 10000;
+                    WarningMessageShown = false;
+                    FailCountdownVisible = false;
+                    timerElapsed = false;
+                    timerStarted = false;
                     justFailed = true;
                     SetFailVariation(FailVariations.PrologueVehicleDestroyed);
                     MissionFailCleanUpRequired = true;
                 }
-                if (PrologueVehicle != null)
+                else
                 {
-                    MidsizedMessage failWarning = new MidsizedMessage("Return to the vehicle", "Get back in the vehicle before the Heist is blown.");
-                    if (fPlayer.ped.CurrentVehicle != PrologueVehicle)
+                    if (PrologueVehicle != null)
                     {
-                        DepotBlip.Alpha = 0;
-                        if (!FailCountdownVisible)
+                        MidsizedMessage failWarning = new MidsizedMessage("Return to the vehicle", "Get back in the vehicle before the Heist is blown.");
+                        if (fPlayer.ped.CurrentVehicle != PrologueVehicle)
                         {
-                            if (!timerStarted)
+                            DepotBlip.Alpha = 0;
+                            if (!FailCountdownVisible)
                             {
-                                timer.AutoReset = true;
-                                timer.Interval = 10000;
-                                timer.Start();
-                                timerStarted = true;
-                            }
-                            if (timerElapsed)
-                            {
-                                failTimer.RemoveTime(9500);
-                                failCountdown = new CountdownTimerbar("TIME LEFT:", 20000);
-                                failCountdown.CountdownMusicEvent = "FM_COUNTDOWN_20S";
-                                failCountdown.VariableTimer = failTimer;
-                                failCountdown.Draw(0.9f);
-                                failTimer.Start();
-                                if (!WarningMessageShown)
+                                if (!timerStarted)
                                 {
-                                    failWarning.Color = 6;
-                                    failWarning.ScreenTime = 6500;
-                                    WarningMessageShown = true;
-                                    failWarning.Show();
+                                    timer.Interval = 10000;
+                                    timer.Start();
+                                    timerStarted = true;
                                 }
-                                FailCountdownVisible = true;
-                            }
+                                if (timerElapsed)
+                                {
+                                    failTimer.RemoveTime(9250);
+                                    failCountdown = new CountdownTimerbar("TIME LEFT:", 20000);
+                                    failCountdown.CountdownMusicEvent = "FM_COUNTDOWN_20S";
+                                    failCountdown.VariableTimer = failTimer;
+                                    failCountdown.Draw(0.9f);
+                                    failTimer.Start();
+                                    if (!WarningMessageShown)
+                                    {
+                                        failWarning.Color = 6;
+                                        failWarning.ScreenTime = 6500;
+                                        WarningMessageShown = true;
+                                        if (fPlayer.ped.CurrentVehicle != PrologueVehicle)
+                                        {
+                                            failWarning.Show();
+                                        }
+                                    }
+                                    FailCountdownVisible = true;
+                                }
 
+                            }
                         }
-                    }
-                    if (fPlayer.ped.CurrentVehicle == PrologueVehicle && failTimer.Counter > 0 && FailCountdownVisible)
-                    {
-                        DepotBlip.Alpha = 255;
-                        fAudio.PrepareMusicEvent("GTA_ONLINE_STOP_SCORE");
-                        fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
-                        fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.SuspenseStart);
-                        fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
-                        fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Suspense);
-                        failCountdown.VariableTimer.RemoveTime(20001);
-                        failTimer.Stop();
-                        failTimer.Reset();
-                        OnTimerExpired?.Invoke(this);
-                        timer.Stop();
-                        timer.Interval = 20000;
-                        WarningMessageShown = false;
-                        FailCountdownVisible = false;
-                        timerElapsed = false;
-                        timerStarted = false;
+                        if (fPlayer.ped.CurrentVehicle == PrologueVehicle && failTimer.Counter > 0 && FailCountdownVisible)
+                        {
+                            DepotBlip.Alpha = 255;
+                            fAudio.PrepareMusicEvent("GTA_ONLINE_STOP_SCORE");
+                            fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                            fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.SuspenseStart);
+                            fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                            fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Suspense);
+                            TimerbarPool.Remove(failCountdown);
+                            failTimer.Stop();
+                            failTimer.Reset();
+                            timer.Stop();
+                            timer.Interval = 10000;
+                            WarningMessageShown = false;
+                            FailCountdownVisible = false;
+                            timerElapsed = false;
+                            timerStarted = false;
+                        }
                     }
                 }
             }
@@ -1631,7 +1812,7 @@ namespace BobcatSecurityDepotHeist
                 if (failShardJustShown)
                 {
                     if (PlayerTeleportedToPrologue && resetSwitch == 0)
-                        resetSwitch = fMisc.GetRandomIntInRange(1, 7);
+                        resetSwitch = fMisc.GetRandomIntInRange(1, 3);
                     if (!PlayerTeleportedToPrologue && resetSwitch == 0)
                     {
                         resetSwitch = 1;
@@ -1707,7 +1888,7 @@ namespace BobcatSecurityDepotHeist
                                     fHud.RadarAndHud(false, false);
                                     resetCam.Position = resetCamCoord7;
                                     resetCam.Rotation = resetCamRot7;
-                                    fCam.SetCamFov(resetCam, 55f);
+                                    fCam.SetCamFov(resetCam, 50f);
                                     resetCam.IsActive = true;
                                     fCam.RenderScriptCams(true, false, 0);
                                     resetCam.Position = resetCamCoord7;
@@ -1728,112 +1909,20 @@ namespace BobcatSecurityDepotHeist
                                 if (resetCam != null)
                                 {
                                     fHud.RadarAndHud(false, false);
-                                    resetCam.Position = resetCamCoord2;
-                                    resetCam.Rotation = resetCamRot2;
-                                    fCam.SetCamFov(resetCam, 45f);
-                                    resetCam.IsActive = true;
-                                    fCam.RenderScriptCams(true, false, 0);
-                                    resetCam.Position = resetCamCoord2;
-                                    resetCam.Rotation = resetCamRot2;
-                                    if (!resetCam.IsShaking)
-                                        fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
-                                }
-                                break;
-                            case 3:
-                                if (resetCam == null)
-                                {
-                                    resetCam = fCam.CreateScriptedCam();
-                                }
-                                while (resetCam == null)
-                                {
-                                    Wait(0);
-                                }
-                                if (resetCam != null)
-                                {
-                                    fHud.RadarAndHud(false, false);
                                     resetCam.Position = resetCamCoord3;
                                     resetCam.Rotation = resetCamRot3;
-                                    fCam.SetCamFov(resetCam, 55f);
+                                    fCam.SetCamFov(resetCam, 60f);
                                     resetCam.IsActive = true;
                                     fCam.RenderScriptCams(true, false, 0);
                                     resetCam.Position = resetCamCoord3;
                                     resetCam.Rotation = resetCamRot3;
-                                    if (!resetCam.IsShaking)
-                                        fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
-                                }
-                                break;
-                            case 4:
-                                if (resetCam == null)
-                                {
-                                    resetCam = fCam.CreateScriptedCam();
-                                }
-                                while (resetCam == null)
-                                {
-                                    Wait(0);
-                                }
-                                if (resetCam != null)
-                                {
-                                    fHud.RadarAndHud(false, false);
-                                    resetCam.Position = resetCamCoord4;
-                                    resetCam.Rotation = resetCamRot4;
-                                    fCam.SetCamFov(resetCam, 55f);
-                                    resetCam.IsActive = true;
-                                    fCam.RenderScriptCams(true, false, 0);
-                                    resetCam.Position = resetCamCoord4;
-                                    resetCam.Rotation = resetCamRot4;
-                                    if (!resetCam.IsShaking)
-                                        fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
-                                }
-                                break;
-                            case 5:
-                                if (resetCam == null)
-                                {
-                                    resetCam = fCam.CreateScriptedCam();
-                                }
-                                while (resetCam == null)
-                                {
-                                    Wait(0);
-                                }
-                                if (resetCam != null)
-                                {
-                                    fHud.RadarAndHud(false, false);
-                                    resetCam.Position = resetCamCoord5;
-                                    resetCam.Rotation = resetCamRot5;
-                                    fCam.SetCamFov(resetCam, 42f);
-                                    resetCam.IsActive = true;
-                                    fCam.RenderScriptCams(true, false, 0);
-                                    resetCam.Position = resetCamCoord5;
-                                    resetCam.Rotation = resetCamRot5;
-                                    if (!resetCam.IsShaking)
-                                        fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
-                                }
-                                break;
-                            case 6:
-                                if (resetCam == null)
-                                {
-                                    resetCam = fCam.CreateScriptedCam();
-                                }
-                                while (resetCam == null)
-                                {
-                                    Wait(0);
-                                }
-                                if (resetCam != null)
-                                {
-                                    fHud.RadarAndHud(false, false);
-                                    resetCam.Position = resetCamCoord6;
-                                    resetCam.Rotation = resetCamRot6;
-                                    fCam.SetCamFov(resetCam, 55f);
-                                    resetCam.IsActive = true;
-                                    fCam.RenderScriptCams(true, false, 0);
-                                    resetCam.Position = resetCamCoord6;
-                                    resetCam.Rotation = resetCamRot6;
                                     if (!resetCam.IsShaking)
                                         fCam.ShakeCam(resetCam, "HAND_SHAKE", 0.5f);
                                 }
                                 break;
                         }
                     }
-                    if (resetCam != null)
+                    if (resetCam != null && restartCanceled == false && Restart == false)
                     {
                         if (ScriptCameraDirector.RenderingCam == resetCam)
                         {
@@ -1903,8 +1992,7 @@ namespace BobcatSecurityDepotHeist
                     }
                     if (restartCanceled)
                     {
-                        if (fInterior.PrologueMap.IsPrologueMapLoaded)
-                            Screen.FadeOut(2500);
+                        Screen.FadeOut(2500);
                         resetButtons.RemoveContainer(ResetButtonContainer);
                         resetButtons.RemoveContainer(GoBackToFreeroamContainer);
                         resetButtons.Dispose();
@@ -1943,30 +2031,6 @@ namespace BobcatSecurityDepotHeist
                                 failCam.Position = new Vector3(1522.0f, 6584.67f, 8.301389f);
                                 failCam.Rotation = new Vector3(0f, 0f, -8.4f);
                                 Vector3 animpos = new Vector3(1522.371f, 6585.832f, 7.304277f);
-                                if (Start.HeliBlip == null)
-                                {
-                                    Start.HeliBlip = fBlip.CreateBlipForCoordWithParams(new Vector3(1600.979f, 6623.252f, 15f), (BlipSprite)64, (BlipColor)5, 1f, "The Ludendorff Heist");
-                                }
-                                if (Start.HeliBlip != null)
-                                {
-                                    if (Start.StartHeli == null)
-                                    {
-                                        num = fMisc.GetRandomIntInRange(1, 8);
-                                        Start.StartHeli = fVehicle.CreateVehicle("buzzard", new Vector3(1600.979f, 6623.252f, 15f), 5.047073f);
-                                    }
-                                }
-                                if (Start.StartHeli != null)
-                                {
-                                    if (!fEntity.HasCollisionLoadedAroundEntity(Start.StartHeli))
-                                    {
-                                        fEntity.SetEntityLoadCollisionFlag(Start.StartHeli, true);
-                                    }
-                                    if (!Start.fixedPosition)
-                                    {
-                                        fVehicle.SetVehicleOnGroundProperly(Start.StartHeli);
-                                        Start.fixedPosition = true;
-                                    }
-                                }
                                 Function.Call(Hash.CLEAR_PED_WETNESS, fPlayer.ped);
                                 fPlayer.ped.Weapons.Select(WeaponHash.Unarmed);
                                 fPlayer.ped.IsVisible = true;
@@ -1991,6 +2055,7 @@ namespace BobcatSecurityDepotHeist
                                     Wait(0);
                                 fPlayer.ped.Task.ClearAllImmediately();
                                 Wait(1000);
+                                fPlayer.SetMaxWantedLevelToNormal();
                                 Globals.globalBlips = 3;
                                 Globals.scriptTerminator = 3;
                                 fHud.RadarAndHud(true, true);

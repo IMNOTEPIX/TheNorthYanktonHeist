@@ -38,7 +38,7 @@
   <ItemGroup>
     <Reference Include="BillsyLiamGTA.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files\Rockstar Games\Grand Theft Auto V\scripts\TheLudendorffHeist Assets\UI\BillsyLiamGTA.UI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Rockstar Games\Grand Theft Auto V\scripts\SnowboundScoreAssets\UI\BillsyLiamGTA.UI.dll</HintPath>
     </Reference>
     <Reference Include="ScriptHookVDotNet3">
       <HintPath>..\..\..\..\..\..\Program Files\Rockstar Games\Grand Theft Auto V\ScriptHookVDotNet3.dll</HintPath>

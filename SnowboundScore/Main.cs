@@ -89,7 +89,9 @@ namespace Global
             {
                 if (e.KeyCode == Keys.N)
                 {
-                    Debug2++;
+                    //fInterior.PrologueMap.EnableYanktonTraffic = true;
+                    missionSwitch = 3;
+                    //Debug2 = 20;
                     //Function.Call(Hash.ACTIVATE_​FRONTEND_​MENU, "DISPLAY_CORONA_BUTTONS", false, -1);
                     //HUD::PAUSE_MENU_ACTIVATE_CONTEXT(joaat("DISPLAY_CORONA_BUTTONS"));
                     //Function.Call(Hash.PAUSE_MENU_ACTIVATE_CONTEXT, fMisc.GetHashKey("CORONA_SHOW_PLANNING"));
@@ -100,7 +102,7 @@ namespace Global
                     Function.Call(Hash.PAUSE_MENU_DEACTIVATE_CONTEXT, fMisc.GetHashKey("CORONA_MAP_CLOSE"));
                     Function.Call(Hash.PAUSE_MENU_DEACTIVATE_CONTEXT, fMisc.GetHashKey("CORONA_VIEW_VSTAT"));
                     Function.Call(Hash.PAUSE_MENU_DEACTIVATE_CONTEXT, fMisc.GetHashKey("CORONA_VIEW_VMODS"));
-                    //missionSwitch = 3;
+                    
                     //Debug2++;
                     //missionSwitch = 2;
                     /*
@@ -819,7 +821,7 @@ namespace SnowboundScore
                     case 0:
                         if (HeliBlip == null && fPlayer.GetDistanceTo(HeliPos) > 500f && !WasDestroyed && !SpawnedIn)
                         {
-                            HeliBlip = fBlip.CreateBlipForCoordWithParams(HeliPos, (BlipSprite)64, (BlipColor)5, 1f, "The Ludendorff Heist");
+                            HeliBlip = fBlip.CreateBlipForCoordWithParams(HeliPos, (BlipSprite)64, (BlipColor)5, 1f, "Snowbound Score");
                         }
                         if (HeliBlip != null)
                         {
@@ -897,7 +899,7 @@ namespace SnowboundScore
                                     StartHeli.AttachedBlip.Alpha = 255;
                                     StartHeli.AttachedBlip.Sprite = (BlipSprite)64;
                                     StartHeli.AttachedBlip.Color = (BlipColor)5;
-                                    StartHeli.AttachedBlip.Name = "The Ludendorff Heist";
+                                    StartHeli.AttachedBlip.Name = "Snowbound Score";
                                     if (HeliBlip != null)
                                         HeliBlip.DisplayType = BlipDisplayType.NoDisplay;
                                     if (HeliBlip.DisplayType == BlipDisplayType.NoDisplay)
@@ -910,7 +912,7 @@ namespace SnowboundScore
                         if (fPlayer.GetDistanceTo(StartHeli.Position) < 6f)
                         {
                             if (!fPlayer.ped.IsEnteringVehicle || !fPlayer.ped.IsSittingInVehicle(StartHeli) && !fPlayer.IsWanted)
-                                fHud.DisplayHelpText("Press ~INPUT_ENTER~ to start The Ludendorff Heist.");
+                                fHud.DisplayHelpText("Press ~INPUT_ENTER~ to start the Snowbound Score.");
                             if (fPlayer.IsWanted)
                                 fHud.DisplayHelpText("Lose the cops before starting the heist.");
                             if (fPlayer.ped.IsEnteringVehicle || fPlayer.ped.IsSittingInVehicle(StartHeli))
@@ -1023,12 +1025,6 @@ namespace SnowboundScore
             Tick += onTick; ;
             Aborted += onShutdown;
             failTimer.OnTimerExpired += OnFailTimerExpired;
-            timer.Elapsed += onTimerElapsed;
-        }
-
-        private void onTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            timerElapsed = true;
         }
 
         private void OnFailTimerExpired(object sender)
@@ -1061,7 +1057,7 @@ namespace SnowboundScore
         bool FailCountdownVisible = false;
         bool PlayerInArea = false;
         bool WarningMessageShown = false;
-        bool PlayerTeleportedToPrologue = false;
+        public static bool PlayerTeleportedToPrologue = false;
         bool IsStartHeliDestroyed
         {
             get
@@ -1118,8 +1114,7 @@ namespace SnowboundScore
         bool weatherTypeSaved = false;
         bool timeAdvanced1 = false;
         bool timeAdvanced2 = false;
-
-        public event TimerExpired OnTimerExpired;
+        int iVar0;
 
         private void onTick(object sender, EventArgs e)
         {
@@ -1144,7 +1139,7 @@ namespace SnowboundScore
                     fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
                     Wait(100);
                     fMissionShard missionShard = new fMissionShard();
-                    missionShard.Shard_In("~a~The Ludendorff Heist~w~", "Break into the ~y~Bobcat Security Depot~w~ in Ludendorff and clean out the ~g~vault.~w~", 2, 0.375f);
+                    missionShard.Shard_In("~a~Snowbound Score~w~", "Break into the ~y~Bobcat Security Depot~w~ in Ludendorff and clean out the ~g~vault.~w~", 2, 0.375f);
                     missionShard = null;
                     Globals.missionSwitch = 2;
                     break;
@@ -1346,7 +1341,7 @@ namespace SnowboundScore
                                                 PrologueVehicle = fVehicle.CreateVehicle(new Model("Mesa2"), carsPos, carsHeading);
                                                 break;
                                             case 2:
-                                                PrologueVehicleName = "RancherXL";
+                                                PrologueVehicleName = "Rancher";
                                                 PrologueVehicle = fVehicle.CreateVehicle(new Model("RancherXL2"), carsPos, carsHeading);
                                                 break;
                                             case 3:
@@ -1385,9 +1380,9 @@ namespace SnowboundScore
                                         Wait(2000);
                                         fPlayer.ped.Task.DriveTo(PrologueVehicle, driveDestination, 55f, VehicleDrivingFlags.None, 5f);
                                         PrologueVehicle.Speed = 10f;
-                                        while (fPlayer.GetCarDistanceTo(new Vector3(3572.151f, -4890.441f, 111.6943f)) > 15f)
+                                        while (fPlayer.GetCarDistanceTo(new Vector2(3572.151f, -4890.441f)) > 5f)
                                             Wait(0);
-                                        fCam.RenderScriptCams(false, true, 3000);
+                                        fCam.RenderScriptCams(false, true, 1500);
                                         if (PrologueIntroCam != null)
                                         {
                                             PrologueIntroCam.Delete();
@@ -1419,9 +1414,14 @@ namespace SnowboundScore
                         fInterior.PrologueMap.LoadPrologueMap();
                     if (fInterior.PrologueMap.IsPrologueMapLoaded)
                     {
+                        fInterior.PrologueMap.EnableYanktonTraffic = true;
+                        fStreaming.SetMapDataCullboxEnabled("prologue", true);
+                        fStreaming.SetMapDataCullboxEnabled("Prologue_Main", true);
                         fInterior.PrologueMap.EnableNorthYanktonTrains(true);
                         fPathfind.SetAllowStreamPrologueNodes(true);
+                        Function.Call<bool>(Hash.LOAD_ALL_PATH_NODES, true);
                         fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), true);
+                        fZone.SetZoneEnabled(fZone.GetZoneFromNameID("PrLog"), true);
                         fHud.ToggleNorthYanktonMap(true);
                     }
                     if (DepotBlip == null)
@@ -1435,6 +1435,8 @@ namespace SnowboundScore
                         {
                             if (fPlayer.ped.CurrentVehicle == PrologueVehicle)
                             {
+                                if (PrologueVehicle.AttachedBlip != null)
+                                    PrologueVehicle.AttachedBlip.DisplayType = BlipDisplayType.NoDisplay;
                                 Screen.ShowSubtitle("Go to ~y~Bobcat Security Depot~w~");
                                 PrologueVehicle.LockStatus = VehicleLockStatus.None;
                                 if (fPlayer.GetCarDistanceTo(DepotBlip.Position) < 1500f)
@@ -1447,9 +1449,15 @@ namespace SnowboundScore
                                             timeAdvanced1 = true;
                                         }
                                     }
-                                    if (fClock.GetClockHours() == 5 || (fEntity.IsEntityInAngledArea(fPlayer.ped, new Vector3(5356.7324f, -5201.1553f, 80.83122f), new Vector3(5356.5454f, -5179.6f, 96.83691f), 20f, false, true, 0) || fEntity.IsEntityInAngledArea(fPlayer.ped, new Vector3(5417.894f, -5108.7925f, 75.56319f), new Vector3(5412.488f, -5240.66f, 95.59789f), 100f, false, true, 0)))
+                                    if (fClock.GetClockHours() != 5 && (fEntity.IsEntityInAngledArea(fPlayer.ped, new Vector3(5356.7324f, -5201.1553f, 80.83122f), new Vector3(5356.5454f, -5179.6f, 96.83691f), 20f, false, true, 0) || fEntity.IsEntityInAngledArea(fPlayer.ped, new Vector3(5417.894f, -5108.7925f, 75.56319f), new Vector3(5412.488f, -5240.66f, 95.59789f), 100f, false, true, 0)))
                                     {
                                         fClock.SetClockTime(5, 0, 0, true, 1);
+                                        fClock.PauseClock(true);
+                                        timeAdvanced2 = true;
+                                    }
+                                    if (fClock.GetClockHours() == 5)
+                                    {
+                                        fClock.SetClockTime(5, 0, 0);
                                         fClock.PauseClock(true);
                                         timeAdvanced2 = true;
                                     }
@@ -1457,6 +1465,19 @@ namespace SnowboundScore
                             }
                             else
                             {
+                                if (PrologueVehicle.AttachedBlip == null)
+                                {
+                                    PrologueVehicle.AddBlip();
+                                    PrologueVehicle.AttachedBlip.Color = BlipColor.Blue;
+                                    PrologueVehicle.AttachedBlip.Sprite = BlipSprite.Standard;
+                                    PrologueVehicle.AttachedBlip.Name = "Vehicle";
+                                    PrologueVehicle.AttachedBlip.IsFriendly = true;
+                                    PrologueVehicle.AttachedBlip.IsShortRange = false;
+                                }
+                                else
+                                {
+                                    PrologueVehicle.AttachedBlip.DisplayType = BlipDisplayType.Default;
+                                }
                                 Screen.ShowSubtitle("Get back in the ~b~vehicle.~w~");
                             }
                         }
@@ -1505,9 +1526,9 @@ namespace SnowboundScore
         int failSceneID = 0;
         bool timerElapsed = false;
         bool timerStarted = false;
-        System.Timers.Timer timer = new System.Timers.Timer();
         int resetSwitch = 0;
         bool Restart = false;
+        int getGametime = Game.GameTime;
         Camera resetCam;
         Vector3 resetCamCoord7 = new Vector3(5355f, -5173f, 82.49858f);
         Vector3 resetCamRot7 = new Vector3(17f, 0f, 130.4812f);
@@ -1606,8 +1627,6 @@ namespace SnowboundScore
                     TimerbarPool.Remove(failCountdown);
                     failTimer.Stop();
                     failTimer.Reset();
-                    timer.Stop();
-                    timer.Interval = 10000;
                     WarningMessageShown = false;
                     FailCountdownVisible = false;
                     timerElapsed = false;
@@ -1628,9 +1647,12 @@ namespace SnowboundScore
                             {
                                 if (!timerStarted)
                                 {
-                                    timer.Interval = 10000;
-                                    timer.Start();
+                                    fTimer.SetTimerA(0);
                                     timerStarted = true;
+                                }
+                                if (timerStarted && fTimer.TimerA() > 10000)
+                                {
+                                    timerElapsed = true;
                                 }
                                 if (timerElapsed)
                                 {
@@ -1666,8 +1688,6 @@ namespace SnowboundScore
                             TimerbarPool.Remove(failCountdown);
                             failTimer.Stop();
                             failTimer.Reset();
-                            timer.Stop();
-                            timer.Interval = 10000;
                             WarningMessageShown = false;
                             FailCountdownVisible = false;
                             timerElapsed = false;
@@ -2080,6 +2100,7 @@ namespace SnowboundScore
 
         void CleanUp()
         {
+            Screen.FadeOut(0);
             if (weatherTypeSaved)
                 fWeather.SetOverrideWeather(weatherTypeBeforeMission);
             fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), false);
@@ -2089,9 +2110,8 @@ namespace SnowboundScore
             fHud.ToggleNorthYanktonMap(false);
             if (fInterior.PrologueMap.IsPrologueMapLoaded && PlayerTeleportedToPrologue)
             {
-                Screen.FadeOut(0);
-                fInterior.PrologueMap.UnloadPrologueMap();
                 fPlayer.PedPos(1522.371f, 6585.832f, 7.304277f, -10f);
+                fInterior.PrologueMap.UnloadPrologueMap();
             }
             fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.MusicStop);
             fVehicle.DeleteVehiclesInList(depotVehicles);
@@ -2112,8 +2132,20 @@ namespace SnowboundScore
             }
             if (PrologueVehicle != null)
             {
-                PrologueVehicle.Delete();
-                PrologueVehicle = null;
+                if (PrologueVehicle.AttachedBlip != null)
+                {
+                    PrologueVehicle.AttachedBlip.Delete();
+                }
+                if (!fPlayer.ped.IsInVehicle(PrologueVehicle))
+                {
+                    PrologueVehicle.Delete();
+                    PrologueVehicle = null;
+                }
+                else
+                {
+                    PrologueVehicle.MarkAsNoLongerNeeded();
+                    PrologueVehicle = null;
+                }
             }
             if (heliCutscene != null)
             {
@@ -2146,14 +2178,23 @@ namespace SnowboundScore
                 {
                     StartHeli.AttachedBlip.Delete();
                 }
-                StartHeli.Delete();
-                StartHeli = null;
+                if (!fPlayer.ped.IsInVehicle(StartHeli))
+                {
+                    StartHeli.Delete();
+                    StartHeli = null;
+                }
+                else
+                {
+                    StartHeli.MarkAsNoLongerNeeded();
+                    StartHeli = null;
+                }
             }
             if (FailArea != null)
             {
                 FailArea.Delete();
                 FailArea = null;
             }
+            Screen.FadeIn(1300);
         }
 
         private void onShutdown(object sender, EventArgs e)

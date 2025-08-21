@@ -23,11 +23,11 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using static BillsyLiamGTA.UI.Elements.VariableTimer;
-using static SnowboundScore.Functions;
+using static TheNorthYanktonHeist.Functions;
 using Hash = GTA.Native.Hash;
 using Screen = GTA.UI.Screen;
 
-namespace SnowboundScore
+namespace TheNorthYanktonHeist
 {
     internal class Functions
     {
@@ -3441,8 +3441,21 @@ namespace SnowboundScore
                     vehList.Clear();
                 }
             }
+            public static void DeleteVehiclesInArray(Vehicle[] vehArray)
+            {
+                if (vehArray.Length > 0)
+                {
+                    for (int i = 0; i < vehArray.Length; i++)
+                    {
+                        if (vehArray[i] != null)
+                        {
+                            vehArray[i].Delete();
+                        }
+                    }
+                }
+            }
 
-            public static void CreateVehicleForList(List<Vehicle> vehList, Model model, Vector3 pos, float heading = 0)
+            public static Vehicle CreateVehicleForList(List<Vehicle> vehList, Model model, Vector3 pos, float heading = 0)
             {
                 Vehicle veh = World.CreateVehicle(model, pos, heading);
                 while (veh != null && !veh.Exists())
@@ -3451,6 +3464,7 @@ namespace SnowboundScore
                 }
                 if (!vehList.Contains(veh))
                     vehList.Add(veh);
+                return veh;
             }
 
             public static Vehicle CreateVehicle(Model model, Vector3 pos, float heading = 0)
@@ -3549,6 +3563,19 @@ namespace SnowboundScore
                     pedList.Clear();
                 }
             }
+            public static void DeletePedsInArray(Ped[] pedArray)
+            {
+                if (pedArray.Length > 0)
+                {
+                    for (int i = 0; i < pedArray.Length; i++)
+                    {
+                        if (pedArray[i] != null)
+                        {
+                            pedArray[i].Delete();
+                        }
+                    }
+                }
+            }
 
             public static void SetListPedBlip(List<Ped> pedList, int SpriteID, BlipColor color, string blipName, float scale)
             {
@@ -3582,7 +3609,7 @@ namespace SnowboundScore
                 }
             }
 
-            public static void CreatePedForList(List<Ped> pedList, Model model, Vector3 pos, float heading = 0)
+            public static Ped CreatePedForList(List<Ped> pedList, Model model, Vector3 pos, float heading = 0)
             {
                 Ped ped = World.CreatePed(model, pos, heading);
                 while (ped != null && !ped.Exists())
@@ -3591,6 +3618,7 @@ namespace SnowboundScore
                 }
                 if (!pedList.Contains(ped))
                     pedList.Add(ped);
+                return ped;
             }
 
             public static Ped CreatePed(Model model, Vector3 pos, float heading = 0)
@@ -3849,42 +3877,53 @@ namespace SnowboundScore
 
                 private void OnTick(object sender, EventArgs e)
                 {
-                    fHud.ShowNotification($"{spawnedVehs.Count}", false, false);
-                    if (spawnedVehs.Count < 3)
+                    fHud.ShowNotification($"{spawnedVehs.Count()}", false, false);
+                    if (spawnedVehs.Count() < 3)
                     {
                         NorthYanktonTraffic(EnableYanktonTraffic);
                     }
-                    for (int j = 0; j < spawnedVehs.Count; j++)
+                    if (spawnedVehs.Count() > 3)
                     {
-                        if (spawnedVehs[j] != null)
+                        NorthYanktonTraffic(false);
+                    }
+                    for (int j = 0; j < spawnedVehs.Count(); j++)
+                    {
+                        for (int i = 0; i < spawnedPeds.Count(); i++)
                         {
-                            if (fPlayer.GetDistanceTo(spawnedVehs[j].Position) > 280f)
+                            if (spawnedVehs[j] != null)
                             {
-                                for (int i = 0; i < spawnedPeds.Count; i++)
+                                if (!fPlayer.ped.IsInVehicle() && fPlayer.GetDistanceTo(spawnedVehs[j].Position) > 280f)
                                 {
-                                    if (spawnedPeds[i] != null)
+                                    if (spawnedPeds[i] != null && spawnedPeds[i].IsInVehicle(spawnedVehs[j]))
                                     {
                                         spawnedPeds[i].Delete();
                                         spawnedPeds.Remove(spawnedPeds[i]);
                                     }
+                                    if (spawnedVehs[j] != null)
+                                    {
+                                        spawnedVehs[j].Delete();
+                                        spawnedVehs.Remove(spawnedVehs[j]);
+                                    }
                                 }
-                                if (spawnedVehs[j] != null)
+                                if (fPlayer.ped.IsInVehicle() && fPlayer.GetCarDistanceTo(spawnedVehs[j].Position) > 280f)
                                 {
-                                    spawnedVehs[j].Delete();
-                                    spawnedVehs.Remove(spawnedVehs[j]);
+                                    if (spawnedPeds[i] != null && spawnedPeds[i].IsInVehicle(spawnedVehs[j]))
+                                    {
+                                        spawnedPeds[i].Delete();
+                                        spawnedPeds.Remove(spawnedPeds[i]);
+                                    }
+                                    if (spawnedVehs[j] != null)
+                                    {
+                                        spawnedVehs[j].Delete();
+                                        spawnedVehs.Remove(spawnedVehs[j]);
+                                    }
                                 }
-                            }
-                            else
-                            {
                                 if (spawnedVehs[j].IsConsideredDestroyed)
                                 {
-                                    for (int i = 0; i < spawnedPeds.Count; i++)
+                                    if (spawnedPeds[i] != null && spawnedPeds[i].IsInVehicle(spawnedVehs[j]))
                                     {
-                                        if (spawnedPeds[i] != null && spawnedVehs[j].Driver == spawnedPeds[i] || spawnedVehs[j].Passengers.Contains(spawnedPeds[i]))
-                                        {
-                                            spawnedPeds[i].MarkAsNoLongerNeeded();
-                                            spawnedPeds.Remove(spawnedPeds[i]);
-                                        }
+                                        spawnedPeds[i].MarkAsNoLongerNeeded();
+                                        spawnedPeds.Remove(spawnedPeds[i]);
                                     }
                                     if (spawnedVehs[j] != null)
                                     {
@@ -3894,25 +3933,19 @@ namespace SnowboundScore
                                 }
                                 if (spawnedVehs[j].Driver == null)
                                 {
-                                    for (int i = 0; i < spawnedPeds.Count; i++)
-                                    {
-                                        if (spawnedPeds[i] != null && !spawnedPeds[i].IsInVehicle(spawnedVehs[j]))
-                                        {
-                                            spawnedPeds[i].Delete();
-                                            spawnedPeds.Remove(spawnedPeds[i]);
-                                        }
-                                    }
                                     if (spawnedVehs[j] != null)
                                     {
                                         spawnedVehs[j].Delete();
                                         spawnedVehs.Remove(spawnedVehs[j]);
                                     }
                                 }
+                                if (spawnedPeds[i] != null && !spawnedPeds[i].IsInVehicle(spawnedVehs[j]))
+                                {
+                                    spawnedPeds[i].Delete();
+                                    spawnedPeds.Remove(spawnedPeds[i]);
+                                }
                             }
-                        }
-                        else
-                        {
-                            for (int i = 0; i < spawnedPeds.Count; i++)
+                            else
                             {
                                 if (spawnedPeds[i] != null)
                                 {
@@ -3944,8 +3977,22 @@ namespace SnowboundScore
                     }
                 }
 
-                static List<Vehicle> spawnedVehs = new List<Vehicle>();
-                static List<Ped> spawnedPeds = new List<Ped>();
+                //static List<Vehicle> spawnedVehs = new List<Vehicle>();
+                //static List<Ped> spawnedPeds = new List<Ped>();
+                static Vehicle veh1;
+                static Vehicle veh2;
+                static Vehicle veh3;
+                static Vehicle veh4;
+                static Vehicle veh5;
+                //static Vehicle veh6;
+                static Ped[] pedPack1 = new Ped[1];
+                static Ped[] pedPack2 = new Ped[2];
+                static Ped[] pedPack3 = new Ped[1];
+                static Ped[] pedPack4 = new Ped[1];
+                static Ped[] pedPack5 = new Ped[2];
+                //static Ped[] pedPack6 = new Ped[2];
+                static int spawnCtrl = 0;
+
                 static Random rng = new Random();
                 static int num;
                 static int num2;
@@ -3983,23 +4030,21 @@ namespace SnowboundScore
                         OutputArgument outPos = new OutputArgument();
                         OutputArgument outFloat = new OutputArgument();
                         Function.Call<bool>(Hash.GET_​CLOSEST_​VEHICLE_​NODE_​WITH_​HEADING, rawPos.X, rawPos.Y, rawPos.Z, outPos, outFloat, 1, 3.0f, 0);
-                        outNodeVector = outPos.GetResult<Vector3>();
-                        outNodeFloat = outFloat.GetResult<float>();
+                        //outNodeVector = outPos.GetResult<Vector3>();
+                        //outNodeFloat = outFloat.GetResult<float>();
+                        Vector3 roadPos = outPos.GetResult<Vector3>();
+                        float roadHeading = outFloat.GetResult<float>();
                         //OutputArgument outSidePos = new OutputArgument();
                         float perpHeading = outNodeFloat + 90f;
                         float laneOffset = 3.0f;
-
                         Vector3 offsetVec = new Vector3(
                             (float)Math.Cos(perpHeading * Math.PI / 180f) * laneOffset,
                             (float)Math.Sin(perpHeading * Math.PI / 180f) * laneOffset,
                             0f
                         );
-
-                        Vector3 rightLanePos = outNodeVector + offsetVec;
-
-                        Vector3 leftLanePos = outNodeVector - offsetVec;
-                        float oppositeHeading = (outNodeFloat + 180f) % 360f;
-
+                        Vector3 rightLanePos = roadPos + offsetVec;
+                        Vector3 leftLanePos = roadPos - offsetVec;
+                        float oppositeHeading = (roadHeading + 180f)/* % 360f*/;
                         /*
                     if (outNodeVector != default(Vector3) && outNodeFloat != default(float))
                         {
@@ -4012,14 +4057,16 @@ namespace SnowboundScore
                             {
                                 float y = outNodeVector.Y + 5f;
                                 Function.Call<bool>(Hash.GET_​POSITION_​BY_​SIDE_​OF_​ROAD, outNodeVector.X, y, outNodeVector.Z, -1, outSidePos);
-                            }
+                            }   
                         }*/
                         if (num5 == 1)
                         {
+                            //outNodeFloat = oppositeHeading;
                             outSideOfRoadVector = rightLanePos;
                         }
                         if (num5 == 2)
                         {
+                            outNodeFloat = oppositeHeading;
                             outSideOfRoadVector = leftLanePos;
                         }
                         //outSideOfRoadVector = outSidePos.GetResult<Vector3>();
@@ -4051,132 +4098,155 @@ namespace SnowboundScore
                         {
                             return;
                         }
-                        Vehicle veh = fVehicle.CreateVehicle(prolVeh, outSideOfRoadVector, outNodeFloat);
+                        switch (spawnCtrl)
+                        {
+                            case 1:
+                                Vehicle veh = fVehicle.CreateVehicleForList(spawnedVehs, prolVeh, outSideOfRoadVector, outNodeFloat);
+                                while (veh == null)
+                                    Wait(0);
+                                fEntity.SetEntityLoadCollisionFlag(veh, true);
+                                fVehicle.SetVehicleOnGroundProperly(veh);
+                                veh.IsEngineRunning = true;
+                                num2 = fMisc.GetRandomIntInRange(1, 3);
+                                num3 = fMisc.GetRandomIntInRange(1, 9);
+                                num4 = fMisc.GetRandomIntInRange(1, 9);
+                                while (num4 == num3 && num2 == 2)
+                                {
+                                    num4 = fMisc.GetRandomIntInRange(1, 9);
+                                }
+                                switch (num2)
+                                {
+                                    case 1:
+                                        switch (num3)
+                                        {
+                                            case 1:
+                                                prolPed = PedHash.Socenlat01AMM;
+                                                break;
+                                            case 2:
+                                                prolPed = PedHash.Business02AMY;
+                                                break;
+                                            case 3:
+                                                prolPed = PedHash.Soucent01AMO;
+                                                break;
+                                            case 4:
+                                                prolPed = PedHash.ChiGoon02GMM;
+                                                break;
+                                            case 5:
+                                                prolPed = PedHash.Soucent01AFO;
+                                                break;
+                                            case 6:
+                                                prolPed = PedHash.StudioParty02AFY;
+                                                break;
+                                            case 7:
+                                                prolPed = PedHash.Business02AFY;
+                                                break;
+                                            case 8:
+                                                prolPed = PedHash.PrologueHostage01AFM;
+                                                break;
+                                        }
+                                        Ped ped = fPed.CreatePedForList(spawnedPeds, prolPed, outSideOfRoadVector);
+                                        while (ped == null)
+                                            Wait(0);
+                                        ped.SetIntoVehicle(veh, VehicleSeat.Driver);
+                                        ped.Task.CruiseWithVehicle(veh, 12f, VehicleDrivingFlags.DrivingModeAvoidVehiclesStopForPedsObeyLights);
+                                        outNodeVector = default(Vector3);
+                                        outNodeFloat = default(float);
+                                        outSideOfRoadVector = default(Vector3);
+                                        headingOffset = (float)((rng.NextDouble() * 120) - 60);
+                                        spawnAngle = (Game.Player.Character.Heading + headingOffset) * (float)(Math.PI / 180);
+                                        rawPos = Game.Player.Character.Position + new Vector3((float)Math.Cos((double)spawnAngle) * offsetDist, (float)Math.Sin((double)spawnAngle) * offsetDist, 0f);
+                                        break;
+                                    case 2:
+                                        switch (num3)
+                                        {
+                                            case 1:
+                                                prolPed = PedHash.Socenlat01AMM;
+                                                break;
+                                            case 2:
+                                                prolPed = PedHash.Business02AMY;
+                                                break;
+                                            case 3:
+                                                prolPed = PedHash.Soucent01AMO;
+                                                break;
+                                            case 4:
+                                                prolPed = PedHash.ChiGoon02GMM;
+                                                break;
+                                            case 5:
+                                                prolPed = PedHash.Soucent01AFO;
+                                                break;
+                                            case 6:
+                                                prolPed = PedHash.StudioParty02AFY;
+                                                break;
+                                            case 7:
+                                                prolPed = PedHash.Business02AFY;
+                                                break;
+                                            case 8:
+                                                prolPed = PedHash.PrologueHostage01AFM;
+                                                break;
+                                        }
+                                        switch (num4)
+                                        {
+                                            case 1:
+                                                prolPed2 = PedHash.Socenlat01AMM;
+                                                break;
+                                            case 2:
+                                                prolPed2 = PedHash.Business02AMY;
+                                                break;
+                                            case 3:
+                                                prolPed2 = PedHash.Soucent01AMO;
+                                                break;
+                                            case 4:
+                                                prolPed2 = PedHash.ChiGoon02GMM;
+                                                break;
+                                            case 5:
+                                                prolPed2 = PedHash.Soucent01AFO;
+                                                break;
+                                            case 6:
+                                                prolPed2 = PedHash.StudioParty02AFY;
+                                                break;
+                                            case 7:
+                                                prolPed2 = PedHash.Business02AFY;
+                                                break;
+                                            case 8:
+                                                prolPed2 = PedHash.PrologueHostage01AFM;
+                                                break;
+                                        }
+                                        Ped ped1 = fPed.CreatePedForList(spawnedPeds, prolPed, outSideOfRoadVector);
+                                        while (ped1 == null)
+                                            Wait(0);
+                                        Ped ped2 = fPed.CreatePedForList(spawnedPeds, prolPed2, outSideOfRoadVector);
+                                        while (ped2 == null)
+                                            Wait(0);
+                                        ped1.SetIntoVehicle(veh, VehicleSeat.Driver);
+                                        ped2.SetIntoVehicle(veh, VehicleSeat.Passenger);
+                                        ped1.Task.CruiseWithVehicle(veh, 12f, VehicleDrivingFlags.DrivingModeAvoidVehiclesStopForPedsObeyLights);
+                                        fVehicle.SetVehicleOnGroundProperly(veh);
+                                        outNodeVector = default(Vector3);
+                                        outNodeFloat = default(float);
+                                        outSideOfRoadVector = default(Vector3);
+                                        headingOffset = (float)((rng.NextDouble() * 120) - 60);
+                                        spawnAngle = (Game.Player.Character.Heading + headingOffset) * (float)(Math.PI / 180);
+                                        rawPos = Game.Player.Character.Position + new Vector3((float)Math.Cos((double)spawnAngle) * offsetDist, (float)Math.Sin((double)spawnAngle) * offsetDist, 0f);
+                                        break;
+                                }
+                                break;
+                            case 2:
+                                break;
+                            case 3:
+                                break;
+                            case 4:
+                                break;
+                            case 5:
+                                break;
+                            case 6:
+                                break;
+                        }
+                        Vehicle veh = fVehicle.CreateVehicleForList(spawnedVehs, prolVeh, outSideOfRoadVector, outNodeFloat);
                         while (veh == null)
                             Wait(0);
                         fEntity.SetEntityLoadCollisionFlag(veh, true);
                         fVehicle.SetVehicleOnGroundProperly(veh);
-                        spawnedVehs.Add(veh);
-                        num2 = fMisc.GetRandomIntInRange(1, 3);
-                        num3 = fMisc.GetRandomIntInRange(1, 9);
-                        num4 = fMisc.GetRandomIntInRange(1, 9);
-                        switch (num2)
-                        {
-                            case 1:
-                                switch (num3)
-                                {
-                                    case 1:
-                                        prolPed = PedHash.Socenlat01AMM;
-                                        break;
-                                    case 2:
-                                        prolPed = PedHash.Business02AMY;
-                                        break;
-                                    case 3:
-                                        prolPed = PedHash.Soucent01AMO;
-                                        break;
-                                    case 4:
-                                        prolPed = PedHash.ChiGoon02GMM;
-                                        break;
-                                    case 5:
-                                        prolPed = PedHash.Soucent01AFO;
-                                        break;
-                                    case 6:
-                                        prolPed = PedHash.StudioParty02AFY;
-                                        break;
-                                    case 7:
-                                        prolPed = PedHash.Business02AFY;
-                                        break;
-                                    case 8:
-                                        prolPed = PedHash.PrologueHostage01AFM;
-                                        break;
-                                }
-                                Ped ped = fPed.CreatePed(prolPed, outSideOfRoadVector);
-                                while (ped == null)
-                                    Wait(0);
-                                ped.SetIntoVehicle(veh, VehicleSeat.Driver);
-                                ped.Task.CruiseWithVehicle(veh, 12f, VehicleDrivingFlags.DrivingModeAvoidVehiclesStopForPedsObeyLights);
-                                spawnedPeds.Add(ped);
-                                outNodeVector = default(Vector3);
-                                outNodeFloat = default(float);
-                                outSideOfRoadVector = default(Vector3);
-                                headingOffset = (float)((rng.NextDouble() * 120) - 60);
-                                spawnAngle = (Game.Player.Character.Heading + headingOffset) * (float)(Math.PI / 180);
-                                rawPos = Game.Player.Character.Position + new Vector3((float)Math.Cos((double)spawnAngle) * offsetDist, (float)Math.Sin((double)spawnAngle) * offsetDist, 0f);
-                                break;
-                            case 2:
-                                switch (num3)
-                                {
-                                    case 1:
-                                        prolPed = PedHash.Socenlat01AMM;
-                                        break;
-                                    case 2:
-                                        prolPed = PedHash.Business02AMY;
-                                        break;
-                                    case 3:
-                                        prolPed = PedHash.Soucent01AMO;
-                                        break;
-                                    case 4:
-                                        prolPed = PedHash.ChiGoon02GMM;
-                                        break;
-                                    case 5:
-                                        prolPed = PedHash.Soucent01AFO;
-                                        break;
-                                    case 6:
-                                        prolPed = PedHash.StudioParty02AFY;
-                                        break;
-                                    case 7:
-                                        prolPed = PedHash.Business02AFY;
-                                        break;
-                                    case 8:
-                                        prolPed = PedHash.PrologueHostage01AFM;
-                                        break;
-                                }
-                                switch (num4)
-                                {
-                                    case 1:
-                                        prolPed2 = PedHash.Socenlat01AMM;
-                                        break;
-                                    case 2:
-                                        prolPed2 = PedHash.Business02AMY;
-                                        break;
-                                    case 3:
-                                        prolPed2 = PedHash.Soucent01AMO;
-                                        break;
-                                    case 4:
-                                        prolPed2 = PedHash.ChiGoon02GMM;
-                                        break;
-                                    case 5:
-                                        prolPed2 = PedHash.Soucent01AFO;
-                                        break;
-                                    case 6:
-                                        prolPed2 = PedHash.StudioParty02AFY;
-                                        break;
-                                    case 7:
-                                        prolPed2 = PedHash.Business02AFY;
-                                        break;
-                                    case 8:
-                                        prolPed2 = PedHash.PrologueHostage01AFM;
-                                        break;
-                                }
-                                Ped ped1 = fPed.CreatePed(prolPed, outSideOfRoadVector);
-                                while (ped1 == null)
-                                    Wait(0);
-                                Ped ped2 = fPed.CreatePed(prolPed2, outSideOfRoadVector);
-                                while (ped2 == null)
-                                    Wait(0);
-                                ped1.SetIntoVehicle(veh, VehicleSeat.Driver);
-                                ped2.SetIntoVehicle(veh, VehicleSeat.Passenger);
-                                ped1.Task.CruiseWithVehicle(veh, 12f, VehicleDrivingFlags.DrivingModeAvoidVehiclesStopForPedsObeyLights);
-                                spawnedPeds.Add(ped1);
-                                spawnedPeds.Add(ped2);
-                                outNodeVector = default(Vector3);
-                                outNodeFloat = default(float);
-                                outSideOfRoadVector = default(Vector3);
-                                headingOffset = (float)((rng.NextDouble() * 120) - 60);
-                                spawnAngle = (Game.Player.Character.Heading + headingOffset) * (float)(Math.PI / 180);
-                                rawPos = Game.Player.Character.Position + new Vector3((float)Math.Cos((double)spawnAngle) * offsetDist, (float)Math.Sin((double)spawnAngle) * offsetDist, 0f);
-                                break;
-                        }
+                        veh.IsEngineRunning = true;
                     }
 
                 }
@@ -5000,4 +5070,3 @@ namespace SnowboundScore
     }
     
 }
-// mph_pri_fin_ext

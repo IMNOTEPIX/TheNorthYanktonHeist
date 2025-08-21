@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SnowboundScore
+namespace TheNorthYanktonHeist
 {
     internal class KeepTrackOfExtraBoolUses
     {

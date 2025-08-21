@@ -1,7 +1,7 @@
 ﻿using BillsyLiamGTA.UI.Elements;
 using BillsyLiamGTA.UI.Scaleform;
 using BillsyLiamGTA.UI.Timerbars;
-using SnowboundScore;
+using TheNorthYanktonHeist;
 using Global;
 using GTA;
 using GTA.Math;
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Timers;
 using System.Windows.Forms;
 using static BillsyLiamGTA.UI.Elements.VariableTimer;
-using static SnowboundScore.Functions;
+using static TheNorthYanktonHeist.Functions;
 using Hash = GTA.Native.Hash;
 using Screen = GTA.UI.Screen;
 
@@ -766,7 +766,7 @@ namespace Global
     }
 }
 
-namespace SnowboundScore
+namespace TheNorthYanktonHeist
 {
     public class Start : Script
     {
@@ -821,7 +821,7 @@ namespace SnowboundScore
                     case 0:
                         if (HeliBlip == null && fPlayer.GetDistanceTo(HeliPos) > 500f && !WasDestroyed && !SpawnedIn)
                         {
-                            HeliBlip = fBlip.CreateBlipForCoordWithParams(HeliPos, (BlipSprite)64, (BlipColor)5, 1f, "Snowbound Score");
+                            HeliBlip = fBlip.CreateBlipForCoordWithParams(HeliPos, (BlipSprite)64, (BlipColor)5, 1f, "The North Yankton Heist");
                         }
                         if (HeliBlip != null)
                         {
@@ -899,7 +899,7 @@ namespace SnowboundScore
                                     StartHeli.AttachedBlip.Alpha = 255;
                                     StartHeli.AttachedBlip.Sprite = (BlipSprite)64;
                                     StartHeli.AttachedBlip.Color = (BlipColor)5;
-                                    StartHeli.AttachedBlip.Name = "Snowbound Score";
+                                    StartHeli.AttachedBlip.Name = "The North Yankton Heist";
                                     if (HeliBlip != null)
                                         HeliBlip.DisplayType = BlipDisplayType.NoDisplay;
                                     if (HeliBlip.DisplayType == BlipDisplayType.NoDisplay)
@@ -912,7 +912,7 @@ namespace SnowboundScore
                         if (fPlayer.GetDistanceTo(StartHeli.Position) < 6f)
                         {
                             if (!fPlayer.ped.IsEnteringVehicle || !fPlayer.ped.IsSittingInVehicle(StartHeli) && !fPlayer.IsWanted)
-                                fHud.DisplayHelpText("Press ~INPUT_ENTER~ to start the Snowbound Score.");
+                                fHud.DisplayHelpText("Press ~INPUT_ENTER~ to start The North Yankton Heist.");
                             if (fPlayer.IsWanted)
                                 fHud.DisplayHelpText("Lose the cops before starting the heist.");
                             if (fPlayer.ped.IsEnteringVehicle || fPlayer.ped.IsSittingInVehicle(StartHeli))
@@ -1139,7 +1139,7 @@ namespace SnowboundScore
                     fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
                     Wait(100);
                     fMissionShard missionShard = new fMissionShard();
-                    missionShard.Shard_In("~a~Snowbound Score~w~", "Break into the ~y~Bobcat Security Depot~w~ in Ludendorff and clean out the ~g~vault.~w~", 2, 0.375f);
+                    missionShard.Shard_In("~a~The North Yankton Heist~w~", "Break into the ~y~Bobcat Security Depot~w~ in Ludendorff and clean out the ~g~vault.~w~", 2, 0.375f);
                     missionShard = null;
                     Globals.missionSwitch = 2;
                     break;
@@ -1157,7 +1157,7 @@ namespace SnowboundScore
                             Screen.ShowSubtitle("Fly to ~y~Ludendorff, North Yankton~w~");
                     }
                     if (!fEntity.IsEntityInArea(fPlayer.ped, new Vector3(2000f, 6205f, -7f), new Vector3(1084f, 8888f, 550f)))
-                        Screen.ShowSubtitle("Return to the mission area");
+                        Screen.ShowSubtitle("Return to the mission area.");
                     if (fPlayer.ped.CurrentVehicle != StartHeli && !fPlayer.IsWanted)
                         Screen.ShowSubtitle("Get back into the ~b~Buzzard~w~");
                     if (Start.StartHeli != null)

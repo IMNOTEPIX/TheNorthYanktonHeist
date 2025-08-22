@@ -62,7 +62,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "C:\Users\lleva\source\repos\SnowboundScore\SnowboundScore\bin\Debug\SnowboundScore.dll" "C:\Program Files\Rockstar Games\Grand Theft Auto V\Scripts\SnowboundScore.dll" /y
-copy "C:\Users\lleva\source\repos\SnowboundScore\SnowboundScore\bin\Debug\SnowboundScore.pdb" "C:\Program Files\Rockstar Games\Grand Theft Auto V\Scripts\SnowboundScore.pdb" /y</PostBuildEvent>
+    <PostBuildEvent>copy "C:\Users\lleva\source\repos\TheNorthYanktonHeist\TheNorthYanktonHeist\bin\Debug\TheNorthYanktonHeist.dll" "C:\Program Files\Rockstar Games\Grand Theft Auto V\Scripts\TheNorthYanktonHeist.dll" /y
+copy "C:\Users\lleva\source\repos\TheNorthYanktonHeist\TheNorthYanktonHeist\bin\Debug\TheNorthYanktonHeist.pdb" "C:\Program Files\Rockstar Games\Grand Theft Auto V\Scripts\TheNorthYanktonHeist.pdb" /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

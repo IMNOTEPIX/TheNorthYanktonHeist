@@ -89,8 +89,9 @@ namespace Global
             {
                 if (e.KeyCode == Keys.N)
                 {
+                    //fInterior.PrologueMap.LoadYankton();
                     //fInterior.PrologueMap.EnableYanktonTraffic = true;
-                    missionSwitch = 3;
+                    //missionSwitch = 3;
                     //Debug2 = 20;
                     //Function.Call(Hash.ACTIVATE_​FRONTEND_​MENU, "DISPLAY_CORONA_BUTTONS", false, -1);
                     //HUD::PAUSE_MENU_ACTIVATE_CONTEXT(joaat("DISPLAY_CORONA_BUTTONS"));
@@ -314,9 +315,9 @@ namespace Global
                     case 0:
                         break;
                     case 1: // arrive at depot, depot shootout
-                        if (!fInterior.PrologueMap.IsPrologueMapLoaded)
+                        if (!fInterior.PrologueMap.YankTon)
                         {
-                            fInterior.PrologueMap.LoadPrologueMap();
+                            fInterior.PrologueMap.LoadYankton();
                         }
                         else
                         {
@@ -1029,7 +1030,7 @@ namespace TheNorthYanktonHeist
 
         private void OnFailTimerExpired(object sender)
         {
-            if (!fInterior.PrologueMap.IsPrologueMapLoaded)
+            if (!fInterior.PrologueMap.YankTon)
             {
                 if (!PlayerInArea)
                 {
@@ -1312,11 +1313,11 @@ namespace TheNorthYanktonHeist
                             Vector3 driveDestination = new Vector3(3612.947f, -4910.009f, 111.2528f);
                             Vector3 carsPos = new Vector3(3528.305f, -4878.405f, 111.2986f);
                             float carsHeading = 250.5463f;
-                            if (!fInterior.PrologueMap.IsPrologueMapLoading && !fInterior.PrologueMap.IsPrologueMapLoaded)
+                            if (!fInterior.PrologueMap.YankTon)
                             {
-                                fInterior.PrologueMap.LoadPrologueMap();
+                                fInterior.PrologueMap.LoadYankton();
                             }
-                            if (fInterior.PrologueMap.IsPrologueMapLoaded)
+                            if (fInterior.PrologueMap.YankTon)
                             {
                                 fClock.SetClockTime(4, 30, 0);
                                 fWeather.SetOverrideWeather(WeatherTypes.Snow);
@@ -1410,11 +1411,10 @@ namespace TheNorthYanktonHeist
                     fWeather.SetOverrideWeather(WeatherTypes.Snow);
                     fHud.HideHudComponentThisFrame((int)HudComponent.HelpText);
                     fHud.DisplayHelpText("");
-                    if (!fInterior.PrologueMap.IsPrologueMapLoaded)
-                        fInterior.PrologueMap.LoadPrologueMap();
-                    if (fInterior.PrologueMap.IsPrologueMapLoaded)
+                    if (!fInterior.PrologueMap.YankTon)
+                        fInterior.PrologueMap.LoadYankton();
+                    if (fInterior.PrologueMap.YankTon)
                     {
-                        fInterior.PrologueMap.EnableYanktonTraffic = true;
                         fStreaming.SetMapDataCullboxEnabled("prologue", true);
                         fStreaming.SetMapDataCullboxEnabled("Prologue_Main", true);
                         fInterior.PrologueMap.EnableNorthYanktonTrains(true);
@@ -1842,9 +1842,9 @@ namespace TheNorthYanktonHeist
                     {
                         if (extraBools[1])
                         {
-                            if (!fInterior.PrologueMap.IsPrologueMapLoaded)
+                            if (!fInterior.PrologueMap.YankTon)
                             {
-                                fInterior.PrologueMap.LoadPrologueMap();
+                                fInterior.PrologueMap.LoadYankton();
                             }
                             else
                             {
@@ -1866,9 +1866,9 @@ namespace TheNorthYanktonHeist
                         }
                         if (PlayerTeleportedToPrologue)
                         {
-                            if (!fInterior.PrologueMap.IsPrologueMapLoaded)
+                            if (!fInterior.PrologueMap.YankTon)
                             {
-                                fInterior.PrologueMap.LoadPrologueMap();
+                                fInterior.PrologueMap.LoadYankton();
                             }
                             else
                             {
@@ -2035,9 +2035,9 @@ namespace TheNorthYanktonHeist
                             fInterior.PrologueMap.EnableNorthYanktonTrains(false);
                             fPathfind.SetAllowStreamPrologueNodes(false);
                             fHud.ToggleNorthYanktonMap(false);
-                            if (fInterior.PrologueMap.IsPrologueMapLoaded && PlayerTeleportedToPrologue)
+                            if (fInterior.PrologueMap.YankTon && PlayerTeleportedToPrologue)
                             {
-                                fInterior.PrologueMap.UnloadPrologueMap();
+                                fInterior.PrologueMap.UnloadYankton();
                             }
                             while (failCam == null)
                             {
@@ -2108,10 +2108,10 @@ namespace TheNorthYanktonHeist
             fInterior.PrologueMap.EnableNorthYanktonTrains(false);
             fPathfind.SetAllowStreamPrologueNodes(false);
             fHud.ToggleNorthYanktonMap(false);
-            if (fInterior.PrologueMap.IsPrologueMapLoaded && PlayerTeleportedToPrologue)
+            if (fInterior.PrologueMap.YankTon && PlayerTeleportedToPrologue)
             {
                 fPlayer.PedPos(1522.371f, 6585.832f, 7.304277f, -10f);
-                fInterior.PrologueMap.UnloadPrologueMap();
+                fInterior.PrologueMap.UnloadYankton();
             }
             fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.MusicStop);
             fVehicle.DeleteVehiclesInList(depotVehicles);

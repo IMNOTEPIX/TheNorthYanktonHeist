@@ -1082,6 +1082,10 @@ namespace TheNorthYanktonHeist
             {
                 Function.Call(Hash.SIMULATE_PLAYER_INPUT_GAIT, Game.Player, moveBlendRatio, timer, heading, useRelativeHeading, noInputInterruption);
             }
+            public static Ped PlayerPedID()
+            {
+                return Function.Call<Ped>(Hash.PLAYER_​PED_​ID);
+            }
         }
 
         public class fAnimations
@@ -2017,6 +2021,10 @@ namespace TheNorthYanktonHeist
                 bool result = Function.Call<bool>(Hash.GET_​POSITION_​BY_​SIDE_​OF_​ROAD, pos.X, pos.Y, pos.Z, p3, &vector);
                 outPosition = vector;
                 return result;
+            }
+            public static void SetRoadsInAngledArea(Vector3 xyz1, Vector3 xyz2, float width, bool unknown1, bool unknown2, bool unknown3)
+            {
+                Function.Call(Hash.SET_​ROADS_​IN_​ANGLED_​AREA, xyz1.X, xyz1.Y, xyz1.Z, xyz2.X, xyz2.Y, xyz2.Z, width, unknown1, unknown2, unknown3);
             }
         }
 
@@ -3403,6 +3411,20 @@ namespace TheNorthYanktonHeist
             {
                 Function.Call(Hash.SET_​ENTITY_​LOAD_​COLLISION_​FLAG, entity, toggle, p2);
             }
+            /// <summary>
+            /// Axis - Invert Axis Flags
+            /// </summary>
+            /// <param name="entity"></param>
+            /// <param name="xPos"></param>
+            /// <param name="yPos"></param>
+            /// <param name="zPos"></param>
+            /// <param name="xAxis"></param>
+            /// <param name="yAxis"></param>
+            /// <param name="zAxis"></param>
+            public static void SetEntityCoordsNoOffset(Entity entity, Vector3 coords, bool xAxis, bool yAxis, bool zAxis)
+            {
+                Function.Call(Hash.SET_​ENTITY_​COORDS_​NO_​OFFSET, entity, coords.X, coords.Y, coords.Z, xAxis, yAxis, zAxis);
+            }
         }
 
         public class fVehicle
@@ -3621,6 +3643,16 @@ namespace TheNorthYanktonHeist
                 return ped;
             }
 
+            public static bool IsPedInAnyVehicle(Ped ped, bool atGetIn)
+            {
+                return Function.Call<bool>(Hash.IS_​PED_​IN_​ANY_​VEHICLE, ped, atGetIn);
+            }
+
+            public static Vehicle GetVehiclePedIsUsing(Ped ped)
+            {
+                return Function.Call<Vehicle>(Hash.GET_​VEHICLE_​PED_​IS_​USING, ped);
+            }
+
             public static Ped CreatePed(Model model, Vector3 pos, float heading = 0)
             {
                 return World.CreatePed(model, pos, heading);
@@ -3674,6 +3706,19 @@ namespace TheNorthYanktonHeist
             {
                 return Function.Call<uint>(Hash.GET_INTERIOR_AT_COORDS, coords.X, coords.Y, coords.Z);
             }
+            public static int GetInteriorAtCoordsWithType(Vector3 xyz, string interiorType)
+            {
+                return Function.Call<int>(Hash.GET_​INTERIOR_​AT_​COORDS_​WITH_​TYPE, xyz.X, xyz.Y, xyz.Z, interiorType);
+            }
+            public static void PinInteriorInMemory(int interior)
+            {
+                Function.Call(Hash.PIN_​INTERIOR_​IN_​MEMORY, interior);
+            }
+            public static bool IsInteriorReady(int interior)
+            {
+                return Function.Call<bool>(Hash.IS_​INTERIOR_​READY, interior);
+            }
+
 
             public class MPMaps
             {
@@ -3857,399 +3902,222 @@ namespace TheNorthYanktonHeist
 
             public class PrologueMap : Script
             {
-                public PrologueMap()
+                public static bool YankTon = false;
+                public static bool YankTonRemove = true;
+                void Yankton()
                 {
-                    Aborted += onAbort;
-                    Tick += OnTick;
-                    UnloadPrologueMap();
-                }
-
-                private void onAbort(object sender, EventArgs e)
-                {
-                    CleanUp();
-                }
-
-                void CleanUp()
-                {
-                    fVehicle.DeleteVehiclesInList(spawnedVehs);
-                    fPed.DeletePedsInList(spawnedPeds);
-                }
-
-                private void OnTick(object sender, EventArgs e)
-                {
-                    fHud.ShowNotification($"{spawnedVehs.Count()}", false, false);
-                    if (spawnedVehs.Count() < 3)
+                    if (!YankTon)
                     {
-                        NorthYanktonTraffic(EnableYanktonTraffic);
-                    }
-                    if (spawnedVehs.Count() > 3)
-                    {
-                        NorthYanktonTraffic(false);
-                    }
-                    for (int j = 0; j < spawnedVehs.Count(); j++)
-                    {
-                        for (int i = 0; i < spawnedPeds.Count(); i++)
+                        #region EnableYankton + CashDepot
+                        fInterior.RequestIpl("prologue06_int");
+                        int l_1196 = fInterior.GetInteriorAtCoordsWithType(new Vector3(5311.236f, -5212.563f, (85.7187f - 3.2f)), "V_CashDepot");
+                        fInterior.PinInteriorInMemory(l_1196);
+                        while (true)
                         {
-                            if (spawnedVehs[j] != null)
+                            if (fInterior.IsInteriorReady(l_1196))
                             {
-                                if (!fPlayer.ped.IsInVehicle() && fPlayer.GetDistanceTo(spawnedVehs[j].Position) > 280f)
-                                {
-                                    if (spawnedPeds[i] != null && spawnedPeds[i].IsInVehicle(spawnedVehs[j]))
-                                    {
-                                        spawnedPeds[i].Delete();
-                                        spawnedPeds.Remove(spawnedPeds[i]);
-                                    }
-                                    if (spawnedVehs[j] != null)
-                                    {
-                                        spawnedVehs[j].Delete();
-                                        spawnedVehs.Remove(spawnedVehs[j]);
-                                    }
-                                }
-                                if (fPlayer.ped.IsInVehicle() && fPlayer.GetCarDistanceTo(spawnedVehs[j].Position) > 280f)
-                                {
-                                    if (spawnedPeds[i] != null && spawnedPeds[i].IsInVehicle(spawnedVehs[j]))
-                                    {
-                                        spawnedPeds[i].Delete();
-                                        spawnedPeds.Remove(spawnedPeds[i]);
-                                    }
-                                    if (spawnedVehs[j] != null)
-                                    {
-                                        spawnedVehs[j].Delete();
-                                        spawnedVehs.Remove(spawnedVehs[j]);
-                                    }
-                                }
-                                if (spawnedVehs[j].IsConsideredDestroyed)
-                                {
-                                    if (spawnedPeds[i] != null && spawnedPeds[i].IsInVehicle(spawnedVehs[j]))
-                                    {
-                                        spawnedPeds[i].MarkAsNoLongerNeeded();
-                                        spawnedPeds.Remove(spawnedPeds[i]);
-                                    }
-                                    if (spawnedVehs[j] != null)
-                                    {
-                                        spawnedVehs[j].MarkAsNoLongerNeeded();
-                                        spawnedVehs.Remove(spawnedVehs[j]);
-                                    }
-                                }
-                                if (spawnedVehs[j].Driver == null)
-                                {
-                                    if (spawnedVehs[j] != null)
-                                    {
-                                        spawnedVehs[j].Delete();
-                                        spawnedVehs.Remove(spawnedVehs[j]);
-                                    }
-                                }
-                                if (spawnedPeds[i] != null && !spawnedPeds[i].IsInVehicle(spawnedVehs[j]))
-                                {
-                                    spawnedPeds[i].Delete();
-                                    spawnedPeds.Remove(spawnedPeds[i]);
-                                }
+                                break;
                             }
-                            else
-                            {
-                                if (spawnedPeds[i] != null)
-                                {
-                                    spawnedPeds[i].Delete();
-                                    spawnedPeds.Remove(spawnedPeds[i]);
-                                }
-                            }
-                        }
-                    }
-                    for (int i = 0; i < LoadPrologueIPLS.Count; i++)
-                    {
-                        if (Function.Call<bool>(Hash.IS_IPL_ACTIVE, LoadPrologueIPLS[i]))
-                        {
-                            if (PrologueIPLSLoaded < LoadPrologueIPLS.Count)
-                                PrologueIPLSLoaded++;
-                            else
-                                PrologueIPLSLoaded = LoadPrologueIPLS.Count;
-                        }
-                    }
-                    for (int i = 0; i < UnloadPrologueIPLS.Count; i++)
-                    {
-                        if (!Function.Call<bool>(Hash.IS_IPL_ACTIVE, UnloadPrologueIPLS[i]))
-                        {
-                            if (PrologueIPLSUnloaded < UnloadPrologueIPLS.Count)
-                                PrologueIPLSUnloaded++;
-                            else
-                                PrologueIPLSUnloaded = UnloadPrologueIPLS.Count;
-                        }
-                    }
-                }
-
-                //static List<Vehicle> spawnedVehs = new List<Vehicle>();
-                //static List<Ped> spawnedPeds = new List<Ped>();
-                static Vehicle veh1;
-                static Vehicle veh2;
-                static Vehicle veh3;
-                static Vehicle veh4;
-                static Vehicle veh5;
-                //static Vehicle veh6;
-                static Ped[] pedPack1 = new Ped[1];
-                static Ped[] pedPack2 = new Ped[2];
-                static Ped[] pedPack3 = new Ped[1];
-                static Ped[] pedPack4 = new Ped[1];
-                static Ped[] pedPack5 = new Ped[2];
-                //static Ped[] pedPack6 = new Ped[2];
-                static int spawnCtrl = 0;
-
-                static Random rng = new Random();
-                static int num;
-                static int num2;
-                static int num3;
-                static int num4;
-                static int num5;
-                public static bool EnableYanktonTraffic = false;
-                static VehicleHash prolVeh;
-                static PedHash prolPed;
-                static PedHash prolPed2;
-
-                static float offsetDist = 180f;
-                static float headingOffset = (float)((rng.NextDouble() * 120) - 60);
-                static float spawnAngle = (Game.Player.Character.Heading + headingOffset) * (float)(Math.PI / 180);
-                static Vector3 rawPos = Game.Player.Character.Position + new Vector3((float)Math.Cos((double)spawnAngle) * offsetDist, (float)Math.Sin((double)spawnAngle) * offsetDist, 0f);
-                static Vector3 outNodeVector = default(Vector3);
-                static float outNodeFloat = default(float);
-                static Vector3 outSideOfRoadVector = default(Vector3);
-                /*					MISC::CLEAR_WEATHER_TYPE_PERSIST();
-					MISC::SET_WEATHER_TYPE_NOW_PERSIST("SNOWLIGHT");
-					MISC::UNLOAD_ALL_CLOUD_HATS();
-					MISC::LOAD_CLOUD_HAT("Snowy 01", 0f);*/
-                public static void NorthYanktonTraffic(bool toggle)
-                {
-                    if (toggle)
-                    {
-                        num5 = fMisc.GetRandomIntInRange(1, 3);
-                        outNodeVector = default(Vector3);
-                        outNodeFloat = default(float);
-                        outSideOfRoadVector = default(Vector3);
-                        headingOffset = (float)((rng.NextDouble() * 120) - 60);
-                        spawnAngle = (Game.Player.Character.Heading + headingOffset) * (float)(Math.PI / 180);
-                        rawPos = Game.Player.Character.Position + new Vector3((float)Math.Cos((double)spawnAngle) * offsetDist, (float)Math.Sin((double)spawnAngle) * offsetDist, 0f);
-                        World.GetGroundHeight(rawPos, out rawPos.Z, GetGroundHeightMode.Normal);
-                        OutputArgument outPos = new OutputArgument();
-                        OutputArgument outFloat = new OutputArgument();
-                        Function.Call<bool>(Hash.GET_​CLOSEST_​VEHICLE_​NODE_​WITH_​HEADING, rawPos.X, rawPos.Y, rawPos.Z, outPos, outFloat, 1, 3.0f, 0);
-                        //outNodeVector = outPos.GetResult<Vector3>();
-                        //outNodeFloat = outFloat.GetResult<float>();
-                        Vector3 roadPos = outPos.GetResult<Vector3>();
-                        float roadHeading = outFloat.GetResult<float>();
-                        //OutputArgument outSidePos = new OutputArgument();
-                        float perpHeading = outNodeFloat + 90f;
-                        float laneOffset = 3.0f;
-                        Vector3 offsetVec = new Vector3(
-                            (float)Math.Cos(perpHeading * Math.PI / 180f) * laneOffset,
-                            (float)Math.Sin(perpHeading * Math.PI / 180f) * laneOffset,
-                            0f
-                        );
-                        Vector3 rightLanePos = roadPos + offsetVec;
-                        Vector3 leftLanePos = roadPos - offsetVec;
-                        float oppositeHeading = (roadHeading + 180f)/* % 360f*/;
-                        /*
-                    if (outNodeVector != default(Vector3) && outNodeFloat != default(float))
-                        {
-                            if (outNodeFloat > 0)
-                            {
-                                float y = outNodeVector.Y - 5f;
-                                Function.Call<bool>(Hash.GET_​POSITION_​BY_​SIDE_​OF_​ROAD, outNodeVector.X, y, outNodeVector.Z, -1, outSidePos);
-                            }
-                            if (outNodeFloat < 0)
-                            {
-                                float y = outNodeVector.Y + 5f;
-                                Function.Call<bool>(Hash.GET_​POSITION_​BY_​SIDE_​OF_​ROAD, outNodeVector.X, y, outNodeVector.Z, -1, outSidePos);
-                            }   
-                        }*/
-                        if (num5 == 1)
-                        {
-                            //outNodeFloat = oppositeHeading;
-                            outSideOfRoadVector = rightLanePos;
-                        }
-                        if (num5 == 2)
-                        {
-                            outNodeFloat = oppositeHeading;
-                            outSideOfRoadVector = leftLanePos;
-                        }
-                        //outSideOfRoadVector = outSidePos.GetResult<Vector3>();
-                        num = fMisc.GetRandomIntInRange(1, 7);
-                        switch (num)
-                        {
-                            case 1:
-                                prolVeh = VehicleHash.RancherXL2;
-                                break;
-                            case 2:
-                                prolVeh = VehicleHash.Mesa2;
-                                break;
-                            case 3:
-                                prolVeh = VehicleHash.Emperor3;
-                                break;
-                            case 4:
-                                prolVeh = VehicleHash.Asea2;
-                                break;
-                            case 5:
-                                prolVeh = VehicleHash.Burrito5;
-                                break;
-                            case 6:
-                                prolVeh = VehicleHash.Sadler2;
-                                break;
-                        }
-                        const float minDistance = 8.0f;
-                        Vehicle[] nearby = World.GetNearbyVehicles(outSideOfRoadVector, minDistance);
-                        if (nearby.Length > 0)
-                        {
-                            return;
-                        }
-                        switch (spawnCtrl)
-                        {
-                            case 1:
-                                Vehicle veh = fVehicle.CreateVehicleForList(spawnedVehs, prolVeh, outSideOfRoadVector, outNodeFloat);
-                                while (veh == null)
-                                    Wait(0);
-                                fEntity.SetEntityLoadCollisionFlag(veh, true);
-                                fVehicle.SetVehicleOnGroundProperly(veh);
-                                veh.IsEngineRunning = true;
-                                num2 = fMisc.GetRandomIntInRange(1, 3);
-                                num3 = fMisc.GetRandomIntInRange(1, 9);
-                                num4 = fMisc.GetRandomIntInRange(1, 9);
-                                while (num4 == num3 && num2 == 2)
-                                {
-                                    num4 = fMisc.GetRandomIntInRange(1, 9);
-                                }
-                                switch (num2)
-                                {
-                                    case 1:
-                                        switch (num3)
-                                        {
-                                            case 1:
-                                                prolPed = PedHash.Socenlat01AMM;
-                                                break;
-                                            case 2:
-                                                prolPed = PedHash.Business02AMY;
-                                                break;
-                                            case 3:
-                                                prolPed = PedHash.Soucent01AMO;
-                                                break;
-                                            case 4:
-                                                prolPed = PedHash.ChiGoon02GMM;
-                                                break;
-                                            case 5:
-                                                prolPed = PedHash.Soucent01AFO;
-                                                break;
-                                            case 6:
-                                                prolPed = PedHash.StudioParty02AFY;
-                                                break;
-                                            case 7:
-                                                prolPed = PedHash.Business02AFY;
-                                                break;
-                                            case 8:
-                                                prolPed = PedHash.PrologueHostage01AFM;
-                                                break;
-                                        }
-                                        Ped ped = fPed.CreatePedForList(spawnedPeds, prolPed, outSideOfRoadVector);
-                                        while (ped == null)
-                                            Wait(0);
-                                        ped.SetIntoVehicle(veh, VehicleSeat.Driver);
-                                        ped.Task.CruiseWithVehicle(veh, 12f, VehicleDrivingFlags.DrivingModeAvoidVehiclesStopForPedsObeyLights);
-                                        outNodeVector = default(Vector3);
-                                        outNodeFloat = default(float);
-                                        outSideOfRoadVector = default(Vector3);
-                                        headingOffset = (float)((rng.NextDouble() * 120) - 60);
-                                        spawnAngle = (Game.Player.Character.Heading + headingOffset) * (float)(Math.PI / 180);
-                                        rawPos = Game.Player.Character.Position + new Vector3((float)Math.Cos((double)spawnAngle) * offsetDist, (float)Math.Sin((double)spawnAngle) * offsetDist, 0f);
-                                        break;
-                                    case 2:
-                                        switch (num3)
-                                        {
-                                            case 1:
-                                                prolPed = PedHash.Socenlat01AMM;
-                                                break;
-                                            case 2:
-                                                prolPed = PedHash.Business02AMY;
-                                                break;
-                                            case 3:
-                                                prolPed = PedHash.Soucent01AMO;
-                                                break;
-                                            case 4:
-                                                prolPed = PedHash.ChiGoon02GMM;
-                                                break;
-                                            case 5:
-                                                prolPed = PedHash.Soucent01AFO;
-                                                break;
-                                            case 6:
-                                                prolPed = PedHash.StudioParty02AFY;
-                                                break;
-                                            case 7:
-                                                prolPed = PedHash.Business02AFY;
-                                                break;
-                                            case 8:
-                                                prolPed = PedHash.PrologueHostage01AFM;
-                                                break;
-                                        }
-                                        switch (num4)
-                                        {
-                                            case 1:
-                                                prolPed2 = PedHash.Socenlat01AMM;
-                                                break;
-                                            case 2:
-                                                prolPed2 = PedHash.Business02AMY;
-                                                break;
-                                            case 3:
-                                                prolPed2 = PedHash.Soucent01AMO;
-                                                break;
-                                            case 4:
-                                                prolPed2 = PedHash.ChiGoon02GMM;
-                                                break;
-                                            case 5:
-                                                prolPed2 = PedHash.Soucent01AFO;
-                                                break;
-                                            case 6:
-                                                prolPed2 = PedHash.StudioParty02AFY;
-                                                break;
-                                            case 7:
-                                                prolPed2 = PedHash.Business02AFY;
-                                                break;
-                                            case 8:
-                                                prolPed2 = PedHash.PrologueHostage01AFM;
-                                                break;
-                                        }
-                                        Ped ped1 = fPed.CreatePedForList(spawnedPeds, prolPed, outSideOfRoadVector);
-                                        while (ped1 == null)
-                                            Wait(0);
-                                        Ped ped2 = fPed.CreatePedForList(spawnedPeds, prolPed2, outSideOfRoadVector);
-                                        while (ped2 == null)
-                                            Wait(0);
-                                        ped1.SetIntoVehicle(veh, VehicleSeat.Driver);
-                                        ped2.SetIntoVehicle(veh, VehicleSeat.Passenger);
-                                        ped1.Task.CruiseWithVehicle(veh, 12f, VehicleDrivingFlags.DrivingModeAvoidVehiclesStopForPedsObeyLights);
-                                        fVehicle.SetVehicleOnGroundProperly(veh);
-                                        outNodeVector = default(Vector3);
-                                        outNodeFloat = default(float);
-                                        outSideOfRoadVector = default(Vector3);
-                                        headingOffset = (float)((rng.NextDouble() * 120) - 60);
-                                        spawnAngle = (Game.Player.Character.Heading + headingOffset) * (float)(Math.PI / 180);
-                                        rawPos = Game.Player.Character.Position + new Vector3((float)Math.Cos((double)spawnAngle) * offsetDist, (float)Math.Sin((double)spawnAngle) * offsetDist, 0f);
-                                        break;
-                                }
-                                break;
-                            case 2:
-                                break;
-                            case 3:
-                                break;
-                            case 4:
-                                break;
-                            case 5:
-                                break;
-                            case 6:
-                                break;
-                        }
-                        Vehicle veh = fVehicle.CreateVehicleForList(spawnedVehs, prolVeh, outSideOfRoadVector, outNodeFloat);
-                        while (veh == null)
                             Wait(0);
-                        fEntity.SetEntityLoadCollisionFlag(veh, true);
-                        fVehicle.SetVehicleOnGroundProperly(veh);
-                        veh.IsEngineRunning = true;
+                        }
+                        fInterior.RequestIpl("prologue01");
+                        fInterior.RequestIpl("prologue02");
+                        fInterior.RequestIpl("prologue03");
+                        fInterior.RequestIpl("prologue04");
+                        fInterior.RequestIpl("prologue05");
+                        fInterior.RequestIpl("prologue06");
+                        fInterior.RequestIpl("prologuerd");
+                        fInterior.RequestIpl("Prologue01c");
+                        fInterior.RequestIpl("Prologue01d");
+                        fInterior.RequestIpl("Prologue01e");
+                        fInterior.RequestIpl("Prologue01f");
+                        fInterior.RequestIpl("Prologue01g");
+                        fInterior.RequestIpl("prologue01h");
+                        fInterior.RequestIpl("prologue01i");
+                        fInterior.RequestIpl("prologue01j");
+                        fInterior.RequestIpl("prologue01k");
+                        fInterior.RequestIpl("prologue01z");
+                        fInterior.RequestIpl("prologue03b");
+                        fInterior.RequestIpl("prologue04b");
+                        fInterior.RequestIpl("prologue05b");
+                        fInterior.RequestIpl("prologue06b");
+                        fInterior.RequestIpl("prologuerdb");
+                        fInterior.RequestIpl("DES_ProTree_start");
+                        fInterior.RequestIpl("DES_ProTree_start_lod");
+                        fInterior.RequestIpl("prologue04_cover");
+                        fInterior.RequestIpl("prologue03_grv_fun");
+                        fInterior.RequestIpl("prologue03_grv_cov");
+                        fInterior.RequestIpl("prologue_LODLights");
+                        fInterior.RequestIpl("prologue_DistantLights");
+                        int zone = fZone.GetZoneFromNameID("PrLog");
+                        fZone.SetZoneEnabled(zone, true);
+                        fHud.ToggleNorthYanktonMap(true);
+                        fPathfind.SetAllowStreamPrologueNodes(true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(5526.24f, -5137.23f, 61.78925f), new Vector3(3679.327f, -4973.879f, 125.0828f), 192.0f, false, true, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3691.211f, -4941.24f, 94.59368f), new Vector3(3511.115f, -4689.191f, 126.7621f), 16.0f, false, true, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3510.004f, -4865.81f, 94.69557f), new Vector3(3204.424f, -4833.8147f, 126.8152f), 16.0f, false, true, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3186.534f, -4832.798f, 109.8148f), new Vector3(3204.187f, -4833.993f, 114.815f), 16.0f, false, true, true);
+                        Entity e = fPlayer.PlayerPedID();
+                        if (fPed.IsPedInAnyVehicle((Ped)e, false))
+                            e = fPed.GetVehiclePedIsUsing((Ped)e);
+                        fEntity.SetEntityCoordsNoOffset(e, new Vector3(5342.45f, -5189.75f, 82.77f), false, false, true);
+                        YankTon = true;
+                        #endregion
                     }
-
+                    else if (YankTonRemove)
+                    {
+                        #region YanktonRemove
+                        fInterior.RemoveIpl("prologue06_int");
+                        fInterior.RemoveIpl("prologue01");
+                        fInterior.RemoveIpl("prologue02");
+                        fInterior.RemoveIpl("prologue03");
+                        fInterior.RemoveIpl("prologue04");
+                        fInterior.RemoveIpl("prologue05");
+                        fInterior.RemoveIpl("prologue06");
+                        fInterior.RemoveIpl("prologuerd");
+                        fInterior.RemoveIpl("Prologue01c");
+                        fInterior.RemoveIpl("Prologue01d");
+                        fInterior.RemoveIpl("Prologue01e");
+                        fInterior.RemoveIpl("Prologue01f");
+                        fInterior.RemoveIpl("Prologue01g");
+                        fInterior.RemoveIpl("prologue01h");
+                        fInterior.RemoveIpl("prologue01i");
+                        fInterior.RemoveIpl("prologue01j");
+                        fInterior.RemoveIpl("prologue01k");
+                        fInterior.RemoveIpl("prologue01z");
+                        fInterior.RemoveIpl("prologue03b");
+                        fInterior.RemoveIpl("prologue04b");
+                        fInterior.RemoveIpl("prologue05b");
+                        fInterior.RemoveIpl("prologue06b");
+                        fInterior.RemoveIpl("prologuerdb");
+                        fInterior.RemoveIpl("DES_ProTree_start");
+                        fInterior.RemoveIpl("DES_ProTree_start_lod");
+                        fInterior.RemoveIpl("prologue04_cover");
+                        fInterior.RemoveIpl("prologue03_grv_fun");
+                        fInterior.RemoveIpl("prologue03_grv_cov");
+                        fInterior.RemoveIpl("prologue_LODLights");
+                        fInterior.RemoveIpl("prologue_DistantLights");
+                        int zone = fZone.GetZoneFromNameID("PrLog");
+                        fZone.SetZoneEnabled(zone, false);
+                        fHud.ToggleNorthYanktonMap(false);
+                        fPathfind.SetAllowStreamPrologueNodes(false);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(5526.24f, -5137.23f, 61.78925f), new Vector3(3679.327f, -4973.879f, 125.0828f), 192.0f, false, false, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3691.211f, -4941.24f, 94.59368f), new Vector3(3511.115f, -4689.191f, 126.7621f), 16.0f, false, false, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3510.004f, -4865.81f, 94.69557f), new Vector3(3204.424f, -4833.8147f, 126.8152f), 16.0f, false, false, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3186.534f, -4832.798f, 109.8148f), new Vector3(3204.187f, -4833.993f, 114.815f), 16.0f, false, false, true);
+                        YankTon = false;
+                        #endregion
+                    }
                 }
+                public static void LoadYankton(bool teleportToDepot = false)
+                {
+                    if (!YankTon)
+                    {
+                        fInterior.RequestIpl("prologue06_int");
+                        int l_1196 = fInterior.GetInteriorAtCoordsWithType(new Vector3(5311.236f, -5212.563f, (85.7187f - 3.2f)), "V_CashDepot");
+                        fInterior.PinInteriorInMemory(l_1196);
+                        while (true)
+                        {
+                            if (fInterior.IsInteriorReady(l_1196))
+                            {
+                                break;
+                            }
+                            Wait(0);
+                        }
+                        fInterior.RequestIpl("prologue01");
+                        fInterior.RequestIpl("prologue02");
+                        fInterior.RequestIpl("prologue03");
+                        fInterior.RequestIpl("prologue04");
+                        fInterior.RequestIpl("prologue05");
+                        fInterior.RequestIpl("prologue06");
+                        fInterior.RequestIpl("prologuerd");
+                        fInterior.RequestIpl("Prologue01c");
+                        fInterior.RequestIpl("Prologue01d");
+                        fInterior.RequestIpl("Prologue01e");
+                        fInterior.RequestIpl("Prologue01f");
+                        fInterior.RequestIpl("Prologue01g");
+                        fInterior.RequestIpl("prologue01h");
+                        fInterior.RequestIpl("prologue01i");
+                        fInterior.RequestIpl("prologue01j");
+                        fInterior.RequestIpl("prologue01k");
+                        fInterior.RequestIpl("prologue01z");
+                        fInterior.RequestIpl("prologue03b");
+                        fInterior.RequestIpl("prologue04b");
+                        fInterior.RequestIpl("prologue05b");
+                        fInterior.RequestIpl("prologue06b");
+                        fInterior.RequestIpl("prologuerdb");
+                        fInterior.RequestIpl("DES_ProTree_start");
+                        fInterior.RequestIpl("DES_ProTree_start_lod");
+                        fInterior.RequestIpl("prologue04_cover");
+                        fInterior.RequestIpl("prologue03_grv_fun");
+                        fInterior.RequestIpl("prologue03_grv_cov");
+                        fInterior.RequestIpl("prologue_LODLights");
+                        fInterior.RequestIpl("prologue_DistantLights");
+                        int zone = fZone.GetZoneFromNameID("PrLog");
+                        fZone.SetZoneEnabled(zone, true);
+                        fHud.ToggleNorthYanktonMap(true);
+                        fPathfind.SetAllowStreamPrologueNodes(true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(5526.24f, -5137.23f, 61.78925f), new Vector3(3679.327f, -4973.879f, 125.0828f), 192.0f, false, true, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3691.211f, -4941.24f, 94.59368f), new Vector3(3511.115f, -4689.191f, 126.7621f), 16.0f, false, true, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3510.004f, -4865.81f, 94.69557f), new Vector3(3204.424f, -4833.8147f, 126.8152f), 16.0f, false, true, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3186.534f, -4832.798f, 109.8148f), new Vector3(3204.187f, -4833.993f, 114.815f), 16.0f, false, true, true);
+                        if (teleportToDepot)
+                        {
+                            Entity e = fPlayer.PlayerPedID();
+                            if (fPed.IsPedInAnyVehicle((Ped)e, false))
+                                e = fPed.GetVehiclePedIsUsing((Ped)e);
+                            fEntity.SetEntityCoordsNoOffset(e, new Vector3(5342.45f, -5189.75f, 82.77f), false, false, true);
+                        }
+                        YankTon = true;
+                    }
+                }
+                public static void UnloadYankton()
+                {
+                    if (YankTon && YankTonRemove)
+                    {
+                        fInterior.RemoveIpl("prologue06_int");
+                        fInterior.RemoveIpl("prologue01");
+                        fInterior.RemoveIpl("prologue02");
+                        fInterior.RemoveIpl("prologue03");
+                        fInterior.RemoveIpl("prologue04");
+                        fInterior.RemoveIpl("prologue05");
+                        fInterior.RemoveIpl("prologue06");
+                        fInterior.RemoveIpl("prologuerd");
+                        fInterior.RemoveIpl("Prologue01c");
+                        fInterior.RemoveIpl("Prologue01d");
+                        fInterior.RemoveIpl("Prologue01e");
+                        fInterior.RemoveIpl("Prologue01f");
+                        fInterior.RemoveIpl("Prologue01g");
+                        fInterior.RemoveIpl("prologue01h");
+                        fInterior.RemoveIpl("prologue01i");
+                        fInterior.RemoveIpl("prologue01j");
+                        fInterior.RemoveIpl("prologue01k");
+                        fInterior.RemoveIpl("prologue01z");
+                        fInterior.RemoveIpl("prologue03b");
+                        fInterior.RemoveIpl("prologue04b");
+                        fInterior.RemoveIpl("prologue05b");
+                        fInterior.RemoveIpl("prologue06b");
+                        fInterior.RemoveIpl("prologuerdb");
+                        fInterior.RemoveIpl("DES_ProTree_start");
+                        fInterior.RemoveIpl("DES_ProTree_start_lod");
+                        fInterior.RemoveIpl("prologue04_cover");
+                        fInterior.RemoveIpl("prologue03_grv_fun");
+                        fInterior.RemoveIpl("prologue03_grv_cov");
+                        fInterior.RemoveIpl("prologue_LODLights");
+                        fInterior.RemoveIpl("prologue_DistantLights");
+                        int zone = fZone.GetZoneFromNameID("PrLog");
+                        fZone.SetZoneEnabled(zone, false);
+                        fHud.ToggleNorthYanktonMap(false);
+                        fPathfind.SetAllowStreamPrologueNodes(false);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(5526.24f, -5137.23f, 61.78925f), new Vector3(3679.327f, -4973.879f, 125.0828f), 192.0f, false, false, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3691.211f, -4941.24f, 94.59368f), new Vector3(3511.115f, -4689.191f, 126.7621f), 16.0f, false, false, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3510.004f, -4865.81f, 94.69557f), new Vector3(3204.424f, -4833.8147f, 126.8152f), 16.0f, false, false, true);
+                        fPathfind.SetRoadsInAngledArea(new Vector3(3186.534f, -4832.798f, 109.8148f), new Vector3(3204.187f, -4833.993f, 114.815f), 16.0f, false, false, true);
+                        YankTon = false;
+                    }
+                }
+
+
                 public static void EnableNorthYanktonTrains(bool enabled)
                 {
                     if (enabled)
@@ -4261,127 +4129,6 @@ namespace TheNorthYanktonHeist
                     fVehicle.SwitchTrainTrack(fVehicle.TrainTracks.YanktonPrologueMissionTrain, false);
                     fVehicle.SwitchTrainTrack(fVehicle.TrainTracks.YanktonTrain, false);
                 }
-                public static bool IsPrologueMapLoading;
-                public static bool IsPrologueMapUnloading;
-                public static bool IsPrologueMapLoaded
-                {
-                    get
-                    {
-                        if (PrologueIPLSLoaded == 30)
-                        {
-                            PrologueIPLSUnloaded = 0;
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                }
-                public static bool IsPrologueMapUnloaded
-                {
-                    get
-                    {
-                        if (PrologueIPLSUnloaded == 30)
-                        {
-                            PrologueIPLSLoaded = 0;
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                }
-                public static void LoadPrologueMap()
-                {
-                    IsPrologueMapLoading = true;
-                    IsPrologueMapUnloading = false;
-                    foreach (string ipl in LoadPrologueIPLS)
-                    {
-                        Function.Call(Hash.REMOVE_IPL, ipl);
-                        Function.Call(Hash.REQUEST_IPL, ipl);
-                    }
-                }
-                public static void UnloadPrologueMap()
-                {
-                    IsPrologueMapUnloading = true;
-                    IsPrologueMapLoading = false;
-                    foreach (string ipl in UnloadPrologueIPLS)
-                    {
-                        Function.Call(Hash.REMOVE_IPL, ipl);
-                    }
-                }
-                public static int PrologueIPLSLoaded = 0;
-                public static int PrologueIPLSUnloaded = 0;
-                public static List<string> LoadPrologueIPLS = new List<string>
-                {
-                    "prologue01",
-                    "prologue02",
-                    "prologue03",
-                    "prologue04",
-                    "prologue05",
-                    "prologue06",
-                    "prologuerd",
-                    "prologue01c",
-                    "prologue01d",
-                    "prologue01e",
-                    "prologue01f",
-                    "prologue01g",
-                    "prologue01h",
-                    "prologue01i",
-                    "prologue01j",
-                    "prologue01k",
-                    "prologue01z",
-                    "prologue03b",
-                    "prologue04b",
-                    "prologue05b",
-                    "prologue06b",
-                    "prologue_occl",
-                    "prologue06_int",
-                    "prologue03_grv_dug",
-                    "prologue_grv_torch",
-                    "des_protree_end",
-                    "des_protree_start",
-                    "prologue06_pannel",
-                    "plg_occl_00",
-                    "prologuerdb"
-                };
-                public static List<string> UnloadPrologueIPLS = new List<string>
-                {
-                    "prologue01",
-                    "prologue02",
-                    "prologue03",
-                    "prologue04",
-                    "prologue05",
-                    "prologue06",
-                    "prologuerd",
-                    "prologue01c",
-                    "prologue01d",
-                    "prologue01e",
-                    "prologue01f",
-                    "prologue01g",
-                    "prologue01h",
-                    "prologue01i",
-                    "prologue01j",
-                    "prologue01k",
-                    "prologue01z",
-                    "prologue03b",
-                    "prologue04b",
-                    "prologue05b",
-                    "prologue06b",
-                    "prologue_occl",
-                    "prologue06_int",
-                    "prologue03_grv_dug",
-                    "prologue_grv_torch",
-                    "des_protree_end",
-                    "des_protree_start",
-                    "prologue06_pannel",
-                    "plg_occl_00",
-                    "prologuerdb",
-                    "prologue_DistantLights",
-                    "prologue_LODLights"
-                };
             }
 
             public static void RequestIpl(string iplName)

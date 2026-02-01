@@ -11,6 +11,43 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fCam
     {
+        public static void StopRenderingScriptCamsIntoFirstPerson(bool bShouldApplyAcrossAllThreads, float distanceToBlend = 0.0f, eCamSplineSmoothingFlags blendType = eCamSplineSmoothingFlags.CAM_SPLINE_NO_SMOOTH)
+        {
+            Function.Call(Hash.STOP_RENDERING_SCRIPT_CAMS_USING_CATCH_UP, bShouldApplyAcrossAllThreads, distanceToBlend, (int)blendType);
+        }
+        public enum eCamSplineSmoothingFlags
+        {
+            // No smoothing just moves at a constant rate
+            CAM_SPLINE_NO_SMOOTH = 0,
+            // Decelerates when approaching a node
+            CAM_SPLINE_SLOW_IN_SMOOTH = 1,
+            // Accelerates slowly when leaving a node
+            CAM_SPLINE_SLOW_OUT_SMOOTH = 2,
+            // Decelerates when approaching a node and accelerates slowly when leaving a node
+            CAM_SPLINE_SLOW_IN_OUT_SMOOTH = 3,
+            CAM_SPLINE_VERY_SLOW_IN = 4,
+            CAM_SPLINE_VERY_SLOW_OUT = 5,
+            CAM_SPLINE_VERY_SLOW_IN_SLOW_OUT = 6,
+            CAM_SPLINE_SLOW_IN_VERY_SLOW_OUT = 7,
+            CAM_SPLINE_VERY_SLOW_IN_VERY_SLOW_OUT = 8,
+            CAM_SPLINE_EASE_IN = 9,
+            CAM_SPLINE_EASE_OUT = 10,
+            CAM_SPLINE_QUADRATIC_EASE_IN = 11,
+            CAM_SPLINE_QUADRATIC_EASE_OUT = 12,
+            CAM_SPLINE_QUADRATIC_EASE_IN_OUT = 13,
+            CAM_SPLINE_CUBIC_EASE_IN = 14,
+            CAM_SPLINE_CUBIC_EASE_OUT = 15,
+            CAM_SPLINE_CUBIC_EASE_IN_OUT = 16,
+            CAM_SPLINE_QUARTIC_EASE_IN = 17,
+            CAM_SPLINE_QUARTIC_EASE_OUT = 18,
+            CAM_SPLINE_QUARTIC_EASE_IN_OUT = 19,
+            CAM_SPLINE_QUINTIC_EASE_IN = 20,
+            CAM_SPLINE_QUINTIC_EASE_OUT = 21,
+            CAM_SPLINE_QUINTIC_EASE_IN_OUT = 22,
+            CAM_SPLINE_CIRCULAR_EASE_IN = 23,
+            CAM_SPLINE_CIRCULAR_EASE_OUT = 24,
+            CAM_SPLINE_CIRCULAR_EASE_IN_OUT = 25
+        };
         public static void ShakeCam(Camera cam, string type, float amplitude)
         {
             Function.Call(Hash.SHAKE_CAM, cam, type, amplitude);
@@ -43,12 +80,15 @@ namespace TheNorthYanktonHeist.Funcs
         }
         public static void SetupMovingCam(Camera cam, Vector3 pos, Vector3 rot, float fov, CameraShake camShakeType, float camShakeIntensity)
         {
-            cam.Detach();
-            cam.StopPointing();
-            cam.Position = pos;
-            cam.Rotation = rot;
-            Function.Call(Hash.SET_CAM_FOV, cam, fov);
-            cam.Shake(camShakeType, camShakeIntensity);
+            if (cam != null)
+            {
+                cam.Detach();
+                cam.StopPointing();
+                cam.Position = pos;
+                cam.Rotation = rot;
+                Function.Call(Hash.SET_CAM_FOV, cam, fov);
+                cam.Shake(camShakeType, camShakeIntensity);
+            }
         }
         public static void SetCamActiveWithInterp(Camera DestinationCam, Camera OriginCam, int Duration, CamGraphType GraphTypePos = CamGraphType.GRAPH_TYPE_SIN_ACCEL_DECEL, CamGraphType GraphTypeRot = CamGraphType.GRAPH_TYPE_SIN_ACCEL_DECEL)
         {

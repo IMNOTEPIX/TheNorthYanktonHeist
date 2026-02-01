@@ -160,7 +160,7 @@ namespace TheNorthYanktonHeist
                                         Plane.AttachedBlip.Alpha = 0;
                                     if (fPlayer.GetDistanceTo(Plane.Position) < 6f)
                                     {
-                                        if (Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC))
+                                        if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
                                             fHud.DisplayGXTHelpText("NTH_STARTWANTED");
                                         else
                                             fHud.DisplayHelpText("~s~Lose the cops to begin the heist.");
@@ -177,7 +177,7 @@ namespace TheNorthYanktonHeist
                                         fHud.ClearBrief();
                                         if (!fPlayer.ped.IsEnteringVehicle || !fPlayer.ped.IsSittingInVehicle(Plane))
                                         {
-                                            if (Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC))
+                                            if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
                                                 fHud.DisplayGXTHelpText("NTH_TOSTART");
                                             else
                                                 fHud.DisplayHelpText("~s~Press ~INPUT_ENTER~ to start the North Yankton Heist.");
@@ -383,7 +383,7 @@ namespace TheNorthYanktonHeist
 
         private void onTick(object sender, EventArgs e)
         {
-            //Screen.ShowHelpText($"{Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC)}");
+            //Screen.ShowHelpText($"{Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString)}");
             //fPathfind.GetClosestVehicleNode(fPlayer.ped.CurrentVehicle.Position, out local);
             //Screen.ShowSubtitle($"{local}");
             if (Globals.missionSwitch > 3)
@@ -501,7 +501,7 @@ namespace TheNorthYanktonHeist
                     Globals.globalScripts = 2;
                     if (fPlayer.IsWanted)
                     {
-                        if (Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC))
+                        if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
                             fHud.ShowGXTSubtitle("NTH_WANTED");
                         else
                             Screen.ShowSubtitle("~s~Lose the Cops.");
@@ -516,7 +516,7 @@ namespace TheNorthYanktonHeist
                         {
                             if (!fPlayer.IsWanted)
                             {
-                                if (Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC))
+                                if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
                                     fHud.ShowGXTSubtitle("NTH_FLYTONY");
                                 else
                                     Screen.ShowSubtitle("~s~Fly to ~y~North Yankton.~s~");
@@ -549,7 +549,7 @@ namespace TheNorthYanktonHeist
                         {
                             if (!fPlayer.IsWanted)
                             {
-                                if (Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC))
+                                if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
                                     fHud.ShowGXTSubtitle("NTH_GETBKINTOPLANE");
                                 else
                                     Screen.ShowSubtitle("~s~Get back in the ~b~Plane.~s~");
@@ -722,7 +722,7 @@ namespace TheNorthYanktonHeist
                             {
                                 if (!fEntity.IsEntityInArea(fPlayer.ped, new Vector3(3543.267f, -4875.534f, 61f), new Vector3(3649.131f, -4929.502f, 125f)) || fPlayer.GetCarDistanceTo(local) > 27f)
                                 {
-                                    if (Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC))
+                                    if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
                                         fHud.ShowGXTSubtitle("NTH_GETBKONROAD");
                                     else
                                         Screen.ShowSubtitle("~s~Get back en route to the ~y~Depot.~s~");
@@ -731,7 +731,7 @@ namespace TheNorthYanktonHeist
                                 {
                                     if (PrologueVehicle.AttachedBlip != null)
                                         PrologueVehicle.AttachedBlip.DisplayType = BlipDisplayType.NoDisplay;
-                                    if (Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC))
+                                    if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
                                         fHud.ShowGXTSubtitle("NTH_GOTODEPOT");
                                     else
                                         Screen.ShowSubtitle("~s~Go to the ~y~Depot.~s~");
@@ -780,7 +780,7 @@ namespace TheNorthYanktonHeist
                                 {
                                     PrologueVehicle.AttachedBlip.DisplayType = BlipDisplayType.Default;
                                 }
-                                if (Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC))
+                                if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
                                     fHud.ShowGXTSubtitle("NTH_GETBKINTOVEH");
                                 else
                                     Screen.ShowSubtitle("~s~Get back in the ~b~car.~s~");
@@ -850,7 +850,7 @@ namespace TheNorthYanktonHeist
                         {
                             fPlayer.SetMaxWantedLevelTo0();
                             fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Suspense);
-                            if (Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC))
+                            if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
                                 fHud.ShowGXTSubtitle("NTH_KILLGUARD");
                             else
                                 Screen.ShowSubtitle("~s~Take out the ~r~Guard.~s~");
@@ -860,7 +860,7 @@ namespace TheNorthYanktonHeist
                             fPlayer.SetMaxWantedLevelToNormal();
                             if (DepotBlip.Alpha == 255)
                             {
-                                if (Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC))
+                                if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
                                     fHud.ShowGXTSubtitle("NTH_ENTRDEPOT");
                                 else
                                     Screen.ShowSubtitle("~s~Enter the ~y~Depot.~s~");

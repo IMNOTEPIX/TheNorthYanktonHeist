@@ -76,6 +76,7 @@
     <Compile Include="Funcs\Prop.cs" />
     <Compile Include="Funcs\Script.cs" />
     <Compile Include="Funcs\Streaming.cs" />
+    <Compile Include="Funcs\SynchronizedScene.cs" />
     <Compile Include="Funcs\Vehicle.cs" />
     <Compile Include="Funcs\RegisterEntityChunk.cs" />
     <Compile Include="Global.cs" />

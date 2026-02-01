@@ -10,6 +10,14 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fAudio
     {
+        public static void PlaySoundFrontend(int soundId, string audioName, string audioRef, bool p3 = true)
+        {
+            Function.Call(Hash.PLAY_​SOUND_​FRONTEND, soundId, audioName, audioRef, p3);
+        }
+        public static void PlaySoundFrontend(string audioName, string audioRef)
+        {
+            Function.Call(Hash.PLAY_​SOUND_​FRONTEND, -1, audioName, audioRef, true);
+        }
         public static bool TriggerMusicEvent(string eventName)
         {
             return Function.Call<bool>(Hash.TRIGGER_MUSIC_EVENT, eventName);

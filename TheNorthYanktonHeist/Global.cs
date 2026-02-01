@@ -15,7 +15,8 @@ using Screen = GTA.UI.Screen;
 
 public static class Globals
 {
-    public static Hash NorthYanktonHeistDLC = fMisc.GetHashKey("dlc_northyanktonheist");
+    //public static Hash NorthYanktonHeistDLC = fMisc.GetHashKey("northyanktonheist");
+    public const string NYHeistDLCgxtString = "NTH_TOSTART";
 
     public static int missionSwitch = 0;
 
@@ -185,6 +186,11 @@ namespace Global
             bool flag = true;
             if (true == flag)
             {
+                if (cam != null)
+                {
+                    cam.Delete();
+                    cam = null;
+                }
                 if (plane != null)
                 {
                     plane.Delete();
@@ -332,6 +338,7 @@ namespace Global
 
         Ped iLocal_659_0;
         Prop iLocal_1176;
+        Camera cam;
         int iLocal_589 = 0;
         int iLocal_588 = 0;
         string sLocal_563 = "anim@apt_trans@hinge_l_action";
@@ -362,7 +369,7 @@ namespace Global
                 }
                 if (Screen.IsFadingIn)
                 {
-                    if (!Function.Call<bool>(Hash.IS_DLC_PRESENT, Globals.NorthYanktonHeistDLC) && !dlcPackWarningShown)
+                    if (!Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString) && !dlcPackWarningShown)
                     {
                         if (!instructionalButtonsSetUp)
                         {
@@ -397,7 +404,28 @@ namespace Global
                 {
                     case 0:
                         fStreaming.RequestAnimDict(sLocal_563);
-                        //func_470(iLocal_659_0, "IG_ProlSec_02", new Vector3(5310.6543f, -5207.032f, (85.7187f - 3.2f)), 139.6356f, 1);
+                        if (!Function.Call<bool>(Hash.DOES_ENTITY_EXIST, iLocal_659_0))
+                        {
+                            iLocal_659_0 = fPed.CreatePed(new Model("IG_ProlSec_02"), new Vector3(5318.503f, -5206.221f, (85.7187f - 3.2f)), 139.6356f);//  Function.Call<Ped>(Hash.CREATE_PED, 26, fMisc.GetHashKey("IG_ProlSec_02"), 5310.6543f, -5207.032f, (85.7187f - 3.2f), 139.6356f, true, true);
+                            Function.Call(Hash.SET_PED_DEFAULT_COMPONENT_VARIATION, iLocal_659_0);
+                            Function.Call(Hash.SET_ENTITY_SHOULD_FREEZE_WAITING_ON_COLLISION, iLocal_659_0, true);
+                            Wait(50);
+                        }
+                        if (cam == null)
+                        {
+                            cam = fCam.CreateScriptedCam();
+                            fCam.SetupMovingCam(cam, new Vector3(5308.226f, -5208.727f, 83.959f), new Vector3(-1.000001f, -3.000001f, -92.49069f), 55f, CameraShake.Hand, 0.5f);
+                        }
+                        while (cam == null)
+                        {
+                            Wait(0);
+                        }
+                        if (cam != null)
+                        {
+                            fCam.SetupMovingCam(cam, new Vector3(5308.226f, -5208.727f, 83.959f), new Vector3(0f, 0f, -92.49069f), 44f, CameraShake.Hand, 1f);
+                            ScriptCameraDirector.StartRendering();
+                        }
+                        Wait(500);
                         if (!Function.Call<bool>(Hash.DOES_ENTITY_EXIST, iLocal_1176))
                         {
                             iLocal_1176 = Function.Call<Prop>(Hash.CREATE_OBJECT_NO_OFFSET, fMisc.GetHashKey("v_ilev_cd_door2"), 5308.8574f, -5208.156f, ((86.9186f - 3.2f) - 0.05f), true, true, false, 0);
@@ -407,25 +435,51 @@ namespace Global
                             Debug2++;
                         break;
                     case 1:
-                        fHud.DisplayHelpText("Press ~INPUT_CONTEXT~ to bust down the door.");
-                        if (Game.IsControlJustPressed(GTA.Control.Context))
+                        if (!Function.Call<bool>(Hash.IS_SYNCHRONIZED_SCENE_RUNNING, iLocal_589))
                         {
-                            if (!Function.Call<bool>(Hash.IS_SYNCHRONIZED_SCENE_RUNNING, iLocal_589))
-                            {
-                                iLocal_589 = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, 5309.55f, -5210.1f, (86.9186f - 3.41f), 0f, 0f, 0f, 2);
-                                iLocal_588 = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, (5309.55f - 0.7f), (-5210.1f + 1.902f), ((86.9186f - 3.2f) - 0.05f), 0f, 0f, 0f, 2);
-                                Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, fPlayer.ped, iLocal_589, sLocal_563, "player_exit", 1000f, -8f, 0, 0, 1000f, 0);
-                                Function.Call(Hash.FORCE_PED_AI_AND_ANIMATION_UPDATE, fPlayer.ped, false, false);
-                                Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, iLocal_1176, iLocal_588, "door_exit", sLocal_563, 8f, -8f, 0, 1000f);
-                                Function.Call(Hash.PLAY_SYNCHRONIZED_AUDIO_EVENT, iLocal_588);
-                            }
-                            else
-                                Debug2++;
+                            fPlayer.ped.Weapons.Select(WeaponHash.Unarmed);
+                            iLocal_589 = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, 5309.55f, -5210.1f, (86.9186f - 3.41f), 0f, 0f, 0f, 2);
+                            iLocal_588 = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, (5309.55f - 0.7f), (-5210.1f + 1.902f), ((86.9186f - 3.2f) - 0.05f), 0f, 0f, 0f, 2);
+                            Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, fPlayer.ped, iLocal_589, fStreaming.RequestAnimDict(sLocal_563), "player_exit", 1000f, -8f, 0, 0, 1000f, 0);
+                            Function.Call(Hash.FORCE_PED_AI_AND_ANIMATION_UPDATE, fPlayer.ped, false, false);
+                            Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, iLocal_1176, iLocal_588, "door_exit", fStreaming.RequestAnimDict(sLocal_563), 8f, -8f, 0, 1000f);
+                            Function.Call(Hash.PLAY_SYNCHRONIZED_AUDIO_EVENT, iLocal_588);
                         }
+                        if (Function.Call<bool>(Hash.IS_SYNCHRONIZED_SCENE_RUNNING, iLocal_589))
+                            Debug2++;
                         break;
                     case 2:
-                        break;
+                        if (Function.Call<bool>(Hash.IS_SYNCHRONIZED_SCENE_RUNNING, iLocal_589))
+                        {
+                            if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, iLocal_589) >= 0.18f)
+                            {
+                                cam.Shake(CameraShake.Jolt, 2f);
+                                while (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, iLocal_589) < 0.75f)
+                                {
+                                    Wait(0);
+                                }
+                                Debug2++;
+                            }
+                        }
+                            break;
                     case 3:
+                        fPlayer.ped.Weapons.Give(WeaponHash.PumpShotgun, 260, true, true);
+                        fPlayer.ped.Weapons.Select(WeaponHash.PumpShotgun);
+                        fPlayer.ped.Task.ClearAllImmediately();
+                        GameplayCamera.SetCamViewModeForContext(CamViewModeContext.OnFoot, CamViewMode.FirstPerson);
+                        fGraphics.AnimpostFXPlay("CamPushInNeutral", 1700, false);
+                        fAudio.PlaySoundFrontend("1st_Person_Transition", "PLAYER_SWITCH_CUSTOM_SOUNDSET");
+                        iLocal_659_0.Weapons.Give(WeaponHash.Pistol, 8, true, true);
+                        iLocal_659_0.Weapons.Select(WeaponHash.Pistol);
+                        iLocal_659_0.Task.RunTo(new Vector3(5314.563f, -5206.421f, 83.51863f), true);
+                        Wait(400);
+                        ScriptCameraDirector.StopRendering();
+                        Wait(500);
+                        Debug2++;
+                        break;
+                    case 4:
+                        iLocal_659_0.Task.AimGunAtEntity(fPlayer.ped, 10000);
+                        Debug2++;
                         break;
                     case 8:
                         break;

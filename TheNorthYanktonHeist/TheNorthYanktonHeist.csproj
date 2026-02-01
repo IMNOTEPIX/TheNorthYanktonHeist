@@ -38,7 +38,7 @@
   <ItemGroup>
     <Reference Include="BillsyLiamGTA.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\Program Files\Rockstar Games\Grand Theft Auto V\scripts\SnowboundScoreAssets\UI\BillsyLiamGTA.UI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files\Rockstar Games\Grand Theft Auto V\scripts\TNYHAssets\UI\BillsyLiamGTA.UI.dll</HintPath>
     </Reference>
     <Reference Include="ScriptHookVDotNet3">
       <HintPath>..\..\..\..\..\..\Program Files\Rockstar Games\Grand Theft Auto V\ScriptHookVDotNet3.dll</HintPath>
@@ -55,8 +55,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Funcs\Audio.cs" />
+    <Compile Include="Funcs\Blip.cs" />
+    <Compile Include="Funcs\Cam.cs" />
+    <Compile Include="Funcs\Clock.cs" />
+    <Compile Include="Funcs\Clouds.cs" />
+    <Compile Include="Funcs\Cutscene.cs" />
+    <Compile Include="Funcs\CutsceneCreation.cs" />
+    <Compile Include="Funcs\Debug.cs" />
+    <Compile Include="Funcs\Entity.cs" />
+    <Compile Include="Funcs\Graphics.cs" />
+    <Compile Include="Funcs\Hud.cs" />
+    <Compile Include="Funcs\InGameScripts.cs" />
+    <Compile Include="Funcs\Interior.cs" />
+    <Compile Include="Funcs\Math.cs" />
+    <Compile Include="Funcs\Misc.cs" />
+    <Compile Include="Funcs\Pathfind.cs" />
+    <Compile Include="Funcs\Ped.cs" />
+    <Compile Include="Funcs\Phone.cs" />
+    <Compile Include="Funcs\Prop.cs" />
+    <Compile Include="Funcs\Script.cs" />
+    <Compile Include="Funcs\Streaming.cs" />
+    <Compile Include="Funcs\Vehicle.cs" />
+    <Compile Include="Funcs\RegisterEntityChunk.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="Scaleforms\MissionShard.cs" />
+    <Compile Include="Funcs\Player.cs" />
+    <Compile Include="Funcs\Respawn.cs" />
+    <Compile Include="Funcs\Scaleforms.cs" />
+    <Compile Include="Funcs\Timer.cs" />
+    <Compile Include="Funcs\Weather.cs" />
+    <Compile Include="Funcs\Zone.cs" />
+    <Compile Include="Interfaces\IScaleform.cs" />
+    <Compile Include="NOTES.cs" />
     <Compile Include="Functions.cs" />
-    <Compile Include="KeepTrackOfExtraBoolUses.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

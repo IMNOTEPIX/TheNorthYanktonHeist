@@ -14,8 +14,8 @@ namespace TheNorthYanktonHeist.Funcs
     public class SynchronizedScene : IDisposable
     {
         public int _handle { get; protected set; } = -1;
-        public bool IsActive => _handle != -1;
-        public bool IsRunning => Function.Call<bool>(Hash.IS_​SYNCHRONIZED_​SCENE_​RUNNING, _handle);
+        public bool IsActive { get => _handle != -1; }
+        public bool IsRunning { get => Function.Call<bool>(Hash.IS_​SYNCHRONIZED_​SCENE_​RUNNING, _handle); }
         public float Phase
         {
             get => Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, _handle);

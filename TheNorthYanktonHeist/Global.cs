@@ -20,10 +20,11 @@ public static class Globals
 
     public static int missionSwitch = 0;
 
-    public static int globalBlips = 3;
-    public static int globalScripts = 3;
+    //public static int globalBlips = 3;
+    //public static int globalScripts = 3;
     public static int Debug2 = -1;
     public static int Debug = -1;
+    public static bool LogScriptManager = false;
     public static bool debug = true;
     public static int integer1 = 0;
     public static int switch1 = 0;
@@ -84,6 +85,16 @@ namespace Global
         static Camera debugCam;
         int scaleID = 0;
 
+        unsafe void test()
+        {
+            int iVar32 = 0;
+            Function.Call(Hash.CLEAR_SEQUENCE_TASK, &iVar32);
+            Function.Call(Hash.OPEN_SEQUENCE_TASK, &iVar32);
+            Function.Call(Hash.TASK_FOLLOW_NAV_MESH_TO_COORD, fPlayer.ped, 5297.9f, -5188.12f, 83.51837f, 1f, -1, 0.5f, 0, -68f);
+            Function.Call(Hash.CLOSE_SEQUENCE_TASK, iVar32);
+            Function.Call(Hash.TASK_PERFORM_SEQUENCE, fPlayer.ped, iVar32);
+            Function.Call(Hash.CLEAR_SEQUENCE_TASK, &iVar32);
+        }
         private void onKeyDown(object sender, KeyEventArgs e)
         {
             if (debug)
@@ -93,16 +104,17 @@ namespace Global
                     Debug2 = 0;
                     //SpawnBooth();
                     /*
-                    Heist.checkpoint = 2;
+                    ScriptManager.ScriptManager.KillScripts();
+                    TheNorthYanktonHeist.Heist.checkpoint = 2;
                     Globals.missionSwitch = 1000;
-                    Heist.justFailed = true;
+                    TheNorthYanktonHeist.Heist.justFailed = true;
                     SetFailVariation(FailVariations.PlaneDestroyed);
-                    Heist.MissionFailCleanUpRequired = true;
+                    TheNorthYanktonHeist.Heist.MissionFailCleanUpRequired = true;
                     //fPlayer.PedPos(3263.05f, -4704.67f, 104.67f, 0f);
                     //fInterior.PrologueMap.LoadYankton();
                     //fInterior.PrologueMap.EnableYanktonTraffic = true;
                     //missionSwitch = 3;
-                    Debug2 = 0;
+                    //Debug2 = 0;
                     /*
                     Blip[] allBlips = World.GetAllBlips();
                     if (allBlips.Length > 0)
@@ -125,7 +137,7 @@ namespace Global
                 }
                 if (e.KeyCode == Keys.NumPad9)
                 {
-                    TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() + "f");
+                    //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() + "f");
                 }
                 GTA.Entity[] anyEntity = World.GetAllEntities();
                 foreach (GTA.Entity entity in anyEntity)
@@ -186,10 +198,10 @@ namespace Global
             bool flag = true;
             if (true == flag)
             {
-                if (cam != null)
+                if (iLocal_1176 != null)
                 {
-                    cam.Delete();
-                    cam = null;
+                    iLocal_1176.Delete();
+                    iLocal_1176 = null;
                 }
                 if (plane != null)
                 {
@@ -335,25 +347,8 @@ namespace Global
         Scaleform warning = Scaleform.RequestMovie("POPUP_WARNING");
         bool instructionalButtonsSetUp = false;
         Ped[] allPeds = World.GetAllPeds();
-
-        Ped iLocal_659_0;
         Prop iLocal_1176;
-        Camera cam;
-        int iLocal_589 = 0;
-        int iLocal_588 = 0;
-        string sLocal_563 = "anim@apt_trans@hinge_l_action";
-        unsafe void func_470(GTA.Entity iParam0, string iParam1, Vector3 Param2, float fParam5, int iParam6)
-        {
-            if (!Function.Call<bool>(Hash.DOES_ENTITY_EXIST, iParam0))
-            {
-                iParam0 = Function.Call<Ped>(Hash.CREATE_PED, 26, fMisc.GetHashKey(iParam1), Param2.X, Param2.Y, Param2.Z, fParam5, true, true);
-                if (iParam6 == 1)
-                {
-                    Function.Call(Hash.SET_PED_DEFAULT_COMPONENT_VARIATION, iParam0);
-                }
-                Function.Call(Hash.SET_ENTITY_SHOULD_FREEZE_WAITING_ON_COLLISION, iParam0, true);
-            }
-        }
+        //SynchronizedScene test = new SynchronizedScene(new Vector3(5297.9f, -5188.12f, 83.51837f), -68f);
         private void onTick(object sender, EventArgs e)
         {
             // Driveway to the depot: 
@@ -403,96 +398,26 @@ namespace Global
                 switch (Debug2)
                 {
                     case 0:
-                        fStreaming.RequestAnimDict(sLocal_563);
-                        if (!Function.Call<bool>(Hash.DOES_ENTITY_EXIST, iLocal_659_0))
-                        {
-                            iLocal_659_0 = fPed.CreatePed(new Model("IG_ProlSec_02"), new Vector3(5318.503f, -5206.221f, (85.7187f - 3.2f)), 139.6356f);//  Function.Call<Ped>(Hash.CREATE_PED, 26, fMisc.GetHashKey("IG_ProlSec_02"), 5310.6543f, -5207.032f, (85.7187f - 3.2f), 139.6356f, true, true);
-                            Function.Call(Hash.SET_PED_DEFAULT_COMPONENT_VARIATION, iLocal_659_0);
-                            Function.Call(Hash.SET_ENTITY_SHOULD_FREEZE_WAITING_ON_COLLISION, iLocal_659_0, true);
-                            Wait(50);
-                        }
-                        if (cam == null)
-                        {
-                            cam = fCam.CreateScriptedCam();
-                            fCam.SetupMovingCam(cam, new Vector3(5308.226f, -5208.727f, 83.959f), new Vector3(-1.000001f, -3.000001f, -92.49069f), 55f, CameraShake.Hand, 0.5f);
-                        }
-                        while (cam == null)
-                        {
-                            Wait(0);
-                        }
-                        if (cam != null)
-                        {
-                            fCam.SetupMovingCam(cam, new Vector3(5308.226f, -5208.727f, 83.959f), new Vector3(0f, 0f, -92.49069f), 44f, CameraShake.Hand, 1f);
-                            ScriptCameraDirector.StartRendering();
-                        }
-                        Wait(500);
-                        if (!Function.Call<bool>(Hash.DOES_ENTITY_EXIST, iLocal_1176))
-                        {
-                            iLocal_1176 = Function.Call<Prop>(Hash.CREATE_OBJECT_NO_OFFSET, fMisc.GetHashKey("v_ilev_cd_door2"), 5308.8574f, -5208.156f, ((86.9186f - 3.2f) - 0.05f), true, true, false, 0);
-                            Function.Call(Hash.FREEZE_ENTITY_POSITION, iLocal_1176, true);
-                        }
-                        else
-                            Debug2++;
+                        fStreaming.RequestAnimDict("anim@scripted@player@mission@tun_bomb_plant@male@"); // enter // enter_bag // enter_bomb
+                        // h4_prop_h4_ld_bomb_02a
+                        Debug2 = 3;
+                        // 5297.523f, -5188.047f, 83.51848f
+
                         break;
                     case 1:
-                        if (!Function.Call<bool>(Hash.IS_SYNCHRONIZED_SCENE_RUNNING, iLocal_589))
-                        {
-                            fPlayer.ped.Weapons.Select(WeaponHash.Unarmed);
-                            iLocal_589 = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, 5309.55f, -5210.1f, (86.9186f - 3.41f), 0f, 0f, 0f, 2);
-                            iLocal_588 = Function.Call<int>(Hash.CREATE_SYNCHRONIZED_SCENE, (5309.55f - 0.7f), (-5210.1f + 1.902f), ((86.9186f - 3.2f) - 0.05f), 0f, 0f, 0f, 2);
-                            Function.Call(Hash.TASK_SYNCHRONIZED_SCENE, fPlayer.ped, iLocal_589, fStreaming.RequestAnimDict(sLocal_563), "player_exit", 1000f, -8f, 0, 0, 1000f, 0);
-                            Function.Call(Hash.FORCE_PED_AI_AND_ANIMATION_UPDATE, fPlayer.ped, false, false);
-                            Function.Call(Hash.PLAY_SYNCHRONIZED_ENTITY_ANIM, iLocal_1176, iLocal_588, "door_exit", fStreaming.RequestAnimDict(sLocal_563), 8f, -8f, 0, 1000f);
-                            Function.Call(Hash.PLAY_SYNCHRONIZED_AUDIO_EVENT, iLocal_588);
-                        }
-                        if (Function.Call<bool>(Hash.IS_SYNCHRONIZED_SCENE_RUNNING, iLocal_589))
-                            Debug2++;
+                        Debug2++;
                         break;
                     case 2:
-                        if (Function.Call<bool>(Hash.IS_SYNCHRONIZED_SCENE_RUNNING, iLocal_589))
-                        {
-                            if (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, iLocal_589) >= 0.18f)
-                            {
-                                cam.Shake(CameraShake.Jolt, 2f);
-                                while (Function.Call<float>(Hash.GET_SYNCHRONIZED_SCENE_PHASE, iLocal_589) < 0.75f)
-                                {
-                                    Wait(0);
-                                }
-                                Debug2++;
-                            }
-                        }
-                            break;
+                        Debug2++;
+                        break;
                     case 3:
-                        fPlayer.ped.Weapons.Give(WeaponHash.PumpShotgun, 260, true, true);
-                        fPlayer.ped.Weapons.Select(WeaponHash.PumpShotgun);
-                        fPlayer.ped.Task.ClearAllImmediately();
-                        GameplayCamera.SetCamViewModeForContext(CamViewModeContext.OnFoot, CamViewMode.FirstPerson);
-                        fGraphics.AnimpostFXPlay("CamPushInNeutral", 1700, false);
-                        fAudio.PlaySoundFrontend("1st_Person_Transition", "PLAYER_SWITCH_CUSTOM_SOUNDSET");
-                        iLocal_659_0.Weapons.Give(WeaponHash.Pistol, 8, true, true);
-                        iLocal_659_0.Weapons.Select(WeaponHash.Pistol);
-                        iLocal_659_0.Task.RunTo(new Vector3(5314.563f, -5206.421f, 83.51863f), true);
-                        Wait(400);
-                        ScriptCameraDirector.StopRendering();
-                        Wait(500);
                         Debug2++;
                         break;
                     case 4:
-                        iLocal_659_0.Task.AimGunAtEntity(fPlayer.ped, 10000);
-                        Debug2++;
                         break;
                     case 8:
                         break;
                     case 9:
-                        if (!Function.Call<bool>(Hash.DOES_ENTITY_EXIST, iLocal_659_0))
-                        {
-                            iLocal_659_0 = fPed.CreatePed(new Model("IG_ProlSec_02"), new Vector3(5310.6543f, -5207.032f, (85.7187f - 3.2f)), 139.6356f);//  Function.Call<Ped>(Hash.CREATE_PED, 26, fMisc.GetHashKey("IG_ProlSec_02"), 5310.6543f, -5207.032f, (85.7187f - 3.2f), 139.6356f, true, true);
-                            Function.Call(Hash.SET_PED_DEFAULT_COMPONENT_VARIATION, iLocal_659_0);
-                            Function.Call(Hash.SET_ENTITY_SHOULD_FREEZE_WAITING_ON_COLLISION, iLocal_659_0, true);
-                            Wait(50);
-                        }
-                        else
-                            Debug2++;
                         break;
                 }
                 switch (Debug)
@@ -580,6 +505,7 @@ namespace Global
                     case 3:
                         break;
                 }
+                /*
                 switch (globalBlips)
                 {
                     case 0:
@@ -609,7 +535,7 @@ namespace Global
                         fInGameScripts.StartAllNeededToStartScripts();
                         globalScripts = 0;
                         break;
-                }
+                }*/
             }
         }
 

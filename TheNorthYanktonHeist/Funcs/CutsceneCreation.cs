@@ -49,7 +49,7 @@ namespace TheNorthYanktonHeist.Funcs
                 bool flag = this.theseEntities[i].Ent != null && this.theseEntities[i].Ent.EntityType == EntityType.Ped;
                 if (flag)
                 {
-                    this.theseEntities[i].SetPedOutfitCutscene((Ped)this.theseEntities[i].Ent);
+                    this.theseEntities[i].GetCutscenePedOutfit((Ped)this.theseEntities[i].Ent);
                 }
             }
             fCutscene.LoadCutscene(this.CutsceneName);
@@ -85,7 +85,7 @@ namespace TheNorthYanktonHeist.Funcs
                 bool flag4 = this.theseEntities[k].Ent != null && this.theseEntities[k].Ent.EntityType == EntityType.Ped;
                 if (flag4)
                 {
-                    this.theseEntities[k].GetPedOutfitCutscene((Ped)this.theseEntities[k].Ent);
+                    this.theseEntities[k].SetCutscenePedOutfit((Ped)this.theseEntities[k].Ent);
                 }
             }
             bool setPlayerModel2 = this.SetPlayerModel;

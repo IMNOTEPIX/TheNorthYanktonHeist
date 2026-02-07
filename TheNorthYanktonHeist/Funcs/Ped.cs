@@ -11,6 +11,98 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fPed
     {
+        public static Dictionary<int, Tuple<int, int>> GetPedVariationData(Ped _ped)
+        {
+            List<int> compIds = new List<int> { 0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11 };
+            Dictionary<int, Tuple<int, int>> pedData = new Dictionary<int, Tuple<int, int>>();
+            foreach (int id in compIds)
+            {
+                int drawID = Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, _ped, id);
+                int textureID = Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, _ped, id);
+                Tuple<int, int> data = new Tuple<int, int>(drawID, textureID);
+                pedData.Add(id, data);
+            }
+            if (pedData.Count > 0) return pedData;
+            else return null;
+        }
+        public static Dictionary<int, Tuple<int, int>> GetPedPropData(Ped _ped)
+        {
+            List<int> compIds = new List<int> { 0, 1, 2 };
+            Dictionary<int, Tuple<int, int>> pedData = new Dictionary<int, Tuple<int, int>>();
+            foreach (int id in compIds)
+            {
+                int drawID = Function.Call<int>(Hash.GET_PED_PROP_INDEX, _ped, id);
+                int textureID = Function.Call<int>(Hash.GET_PED_PROP_TEXTURE_INDEX, _ped, id);
+                Tuple<int, int> data = new Tuple<int, int>(drawID, textureID);
+                pedData.Add(id, data);
+            }
+            if (pedData.Count > 0) return pedData;
+            else return null;
+        }
+        public static void ApplyPedVariationData(Ped ped, Dictionary<int, Tuple<int, int>> data)
+        {
+            if (data == null) return;
+
+            foreach (var kvp in data)
+            {
+                int componentId = kvp.Key;
+                int drawable = kvp.Value.Item1;
+                int texture = kvp.Value.Item2;
+
+                Function.Call(
+                    Hash.SET_PED_COMPONENT_VARIATION,
+                    ped,
+                    componentId,
+                    drawable,
+                    texture,
+                    0
+                );
+            }
+        }
+        public static void ApplyPedPropData(Ped ped, Dictionary<int, Tuple<int, int>> data)
+        {
+            if (data == null) return;
+
+            foreach (var kvp in data)
+            {
+                int propId = kvp.Key;
+                int drawable = kvp.Value.Item1;
+                int texture = kvp.Value.Item2;
+
+                if (drawable < 0)
+                {
+                    // remove prop if none was equipped
+                    Function.Call(Hash.CLEAR_PED_PROP, ped, propId);
+                }
+                else
+                {
+                    Function.Call(
+                        Hash.SET_PED_PROP_INDEX,
+                        ped,
+                        propId,
+                        drawable,
+                        texture,
+                        true
+                    );
+                }
+            }
+        }
+        public static void SetPedPropIndex(Ped ped, int componentId, int drawableId, int TextureId, bool attach)
+        {
+            Function.Call(Hash.SET_​PED_​PROP_​INDEX, ped, componentId, drawableId, TextureId, attach);
+        }
+        public static void ClearAllPedProps(Ped ped, int p1 = 1)
+        {
+            Function.Call(Hash.CLEAR_​ALL_​PED_​PROPS, ped, p1);
+        }
+        public static void SetPedDefaultComponentVariation(Ped ped)
+        {
+            Function.Call(Hash.SET_​PED_​DEFAULT_​COMPONENT_​VARIATION, ped);
+        }
+        public static void SetPedComponentVariation(Ped ped, int componentId, int drawableId, int textureId, int paletteId)
+        {
+            Function.Call(Hash.SET_​PED_​COMPONENT_​VARIATION, ped, componentId, drawableId, textureId, paletteId);
+        }
         public static void ForcePedAiAndAnimationUpdate(Ped ped, bool p1, bool p2)
         {
             Function.Call(Hash.FORCE_PED_AI_AND_ANIMATION_UPDATE, ped, p1, p2);
@@ -23,6 +115,17 @@ namespace TheNorthYanktonHeist.Funcs
         {
             Function.Call(Hash.SET_PED_COMBAT_MOVEMENT, ped, combatMovement);
         }
+        public static void SetPedCombatMovement(Ped ped, CombatMovement combatMovement)
+        {
+            Function.Call(Hash.SET_PED_COMBAT_MOVEMENT, ped, (int)combatMovement);
+        }
+        public enum CombatMovement
+        {
+            CM_Stationary,
+            CM_Defensive,
+            CM_WillAdvance,
+            CM_WillRetreat
+        };
         public static void SetRelationshipBetweenGroups(fPed.RelationshipTypes relationship, int group1, int group2)
         {
             Function.Call(Hash.SET_RELATIONSHIP_BETWEEN_GROUPS, relationship, group1, group2);
@@ -455,6 +558,8 @@ namespace TheNorthYanktonHeist.Funcs
             {
                 for (int i = 0; i < pedList.Count; i++)
                 {
+                    if (pedList[i].AttachedBlip != null)
+                        pedList[i].AttachedBlip.Delete();
                     if (pedList[i] != null)
                         pedList[i].Delete();
                 }
@@ -467,6 +572,8 @@ namespace TheNorthYanktonHeist.Funcs
             {
                 for (int i = 0; i < pedArray.Length; i++)
                 {
+                    if (pedArray[i].AttachedBlip != null)
+                        pedArray[i].AttachedBlip.Delete();
                     if (pedArray[i] != null)
                         pedArray[i].Delete();
                 }

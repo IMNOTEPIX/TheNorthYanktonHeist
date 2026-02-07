@@ -38,7 +38,7 @@ namespace TheNorthYanktonHeist.Funcs
         {
             Function.Call(Hash.SET_​MINIMAP_​IN_​PROLOGUE, toggle);
         }
-        public static void ShowNotification(string message, bool isImportant, bool cacheMessage = true)
+        public static void ShowNotification(string message, bool isImportant = true, bool cacheMessage = true)
         {
             Notification.PostTicker(message, isImportant, cacheMessage);
         }

@@ -1,7 +1,9 @@
-﻿using GTA.Native;
+﻿using GTA;
+using GTA.Native;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +26,16 @@ namespace TheNorthYanktonHeist.Funcs
         public static void SetThisScriptCanBePaused(bool toggle)
         {
             Function.Call(Hash.SET_THIS_SCRIPT_CAN_BE_PAUSED, toggle);
+        }
+        public static void StartScript(string script, int stackSize)
+        {
+            Function.Call(Hash.REQUEST_SCRIPT, script);
+            Script.Wait(stackSize > 3000 ? 500 : 100);
+            if (Function.Call<bool>(Hash.HAS_SCRIPT_LOADED, script))
+            {
+                Function.Call(Hash.START_NEW_SCRIPT, script, stackSize);
+                Function.Call(Hash.SET_SCRIPT_AS_NO_LONGER_NEEDED, script);
+            }
         }
     }
 }

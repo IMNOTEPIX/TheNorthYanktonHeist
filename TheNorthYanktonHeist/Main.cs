@@ -2,7 +2,6 @@
 using BillsyLiamGTA.UI.Scaleform;
 using BillsyLiamGTA.UI.Timerbars;
 using Global;
-using static Globals;
 using GTA;
 using GTA.Math;
 using GTA.Native;
@@ -11,13 +10,15 @@ using GTA.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Timers;
 using System.Windows.Forms;
 using TheNorthYanktonHeist;
-using static BillsyLiamGTA.UI.Elements.VariableTimer;
+using TheNorthYanktonHeist.Funcs;
+using static Globals;
 using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using TheNorthYanktonHeist.Funcs;
 using Hash = GTA.Native.Hash;
 using Screen = GTA.UI.Screen;
 
@@ -153,6 +154,7 @@ namespace TheNorthYanktonHeist
                         case 1:
                             if (Game.Player.CanStartMission)
                             {
+                                fMisc.ClearArea(new Vector3(1735.602f, 3294.539f, 41.80106f), 10f, false, true, true);
                                 if (fPlayer.IsWanted)
                                 {
                                     fVehicle.SetVehicleIsConsideredByPlayer(Plane, false);
@@ -224,7 +226,7 @@ namespace TheNorthYanktonHeist
                             }
                             else
                             {
-                                if (fTimer.TimerA() > 20000)
+                                if (fTimer.TimerA() > 15000)
                                 {
                                     fPlayer.ped.SetIntoVehicle(Plane, VehicleSeat.Driver);
                                     if (PlaneBlip != null)
@@ -348,19 +350,9 @@ namespace TheNorthYanktonHeist
                 return true;
             }
         }
-        private static int FailVariation
-        {
-            get;
-            set;
-        }
-        public static void SetFailVariation(FailVariations failVariation)
-        {
-            FailVariation = (int)failVariation;
-        }
-        public static FailVariations GetFailVariation()
-        {
-            return (FailVariations)FailVariation;
-        }
+        private static int FailVariation { get; set; }
+        public static void SetFailVariation(FailVariations failVariation) => FailVariation = (int)failVariation;
+        public static FailVariations GetFailVariation() => (FailVariations)FailVariation;
         public enum FailVariations
         {
             None,
@@ -378,8 +370,10 @@ namespace TheNorthYanktonHeist
         public static bool justFailed = false;
         fWeather.WeatherTypes weatherTypeBeforeMission;
         bool weatherTypeSaved = false;
+        bool outfitSaved = false;
         bool timeAdvanced1 = false;
         Vector2 local;
+        bool scriptsKilled = false;
 
         private void onTick(object sender, EventArgs e)
         {
@@ -444,8 +438,8 @@ namespace TheNorthYanktonHeist
                     fStreaming.SetMapDataCullboxEnabled("prologue", false);
                     fStreaming.SetMapDataCullboxEnabled("Prologue_Main", false);
                     fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), false);
-                    Globals.globalBlips = 1;
-                    Globals.globalScripts = 2;
+                    //Globals.globalBlips = 1;
+                    //Globals.globalScripts = 2;
                     fHud.ClearAllPrints();
                     fHud.ClearBrief();
                     fHud.ClearAllHelpMessages();
@@ -454,16 +448,16 @@ namespace TheNorthYanktonHeist
                     Audio.SetAudioFlag(AudioFlags.DisableFlightMusic, true);
                     Audio.SetAudioFlag(AudioFlags.WantedMusicDisabled, true);
                     fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
-                    fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.IdleStart);
-                    fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
                     fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
                     Globals.missionSwitch = 2;
                     break;
                 case 1:
                     checkpoint = 1;
-                    Globals.globalBlips = 1;
-                    Globals.globalScripts = 2;
-                    fHud.ClearAllPrints();
+                    if (!scriptsKilled)
+                    {
+                        ScriptManager.ScriptManager.KillScripts();
+                        scriptsKilled = true;
+                    }
                     fHud.ClearBrief();
                     fHud.ClearAllHelpMessages();
                     fHud.ClearGPSMultiRoute();
@@ -472,13 +466,19 @@ namespace TheNorthYanktonHeist
                     missionShard.Shard_In("~s~North Yankton Heist", "~s~Break into the ~y~Bobcat Security Depot~s~ in North Yankton and clean out the ~g~vault.~s~", 2, 0.375f);
                     missionShard = null;
                     Wait(1000);
+                    if (!outfitSaved)
+                    {
+                        pedProps = fPed.GetPedPropData(fPlayer.ped);
+                        pedVariation = fPed.GetPedVariationData(fPlayer.ped);
+                        outfitSaved = true;
+                    }
                     if (!weatherTypeSaved)
                     {
                         weatherTypeBeforeMission = fWeather.GetCurrentWeatherEnum();
                         weatherTypeSaved = true;
                     }
-                    Globals.globalBlips = 1;
-                    Globals.globalScripts = 2;
+                    //Globals.globalBlips = 1;
+                    //Globals.globalScripts = 2;
                     fHud.ClearAllPrints();
                     fHud.ClearBrief();
                     fHud.ClearAllHelpMessages();
@@ -487,18 +487,16 @@ namespace TheNorthYanktonHeist
                     Audio.SetAudioFlag(AudioFlags.DisableFlightMusic, true);
                     Audio.SetAudioFlag(AudioFlags.WantedMusicDisabled, true);
                     fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
-                    fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.IdleStart);
-                    fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
                     fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
-                    if (weatherTypeSaved)
+                    if (weatherTypeSaved && outfitSaved)
                     {
                         Globals.missionSwitch = 2;
                     }
                     break;
                 case 2:
                     fAudio.StartAudioScene("MI_1_TREV_FLY_TO_LUDENDORFF");
-                    Globals.globalBlips = 2;
-                    Globals.globalScripts = 2;
+                    //Globals.globalBlips = 2;
+                    //Globals.globalScripts = 2;
                     if (fPlayer.IsWanted)
                     {
                         if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
@@ -579,6 +577,8 @@ namespace TheNorthYanktonHeist
                             {
                                 Wait(0);
                             }
+                            LoadingPrompt.Show("NorthYanktonHeist");
+                            SetOutfit();
                             Wait(1000);
                             Plane.IsPositionFrozen = true;
                             Wait(7500);
@@ -597,6 +597,8 @@ namespace TheNorthYanktonHeist
                             case3Switch = -1;
                             break;
                         case -1:
+                            SetOutfit();
+                            fPlayer.SetMaxWantedLevelTo0();
                             fAudio.StopAudioScene("MI_1_TREV_FLY_TO_LUDENDORFF");
                             fAudio.StartAudioScene("MI_1_MIC_DRIVE_TO_GRAVEYARD");
                             Vector3 camPos = new Vector3(3575.468f, -4871.25f, 117.1896f);
@@ -620,6 +622,10 @@ namespace TheNorthYanktonHeist
                                 fStreaming.SetMapDataCullboxEnabled("Prologue_Main", true);
                                 fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), true);
                                 Function.Call(Hash.CLEAR_PED_WETNESS, fPlayer.ped);
+                                fPlayer.ped.ClearBloodDamage();
+                                fPlayer.ped.ClearVisibleDamage();
+                                if (fPlayer.IsTrevor)
+                                    fPed.SetPedPropIndex(fPlayer.ped, 1, 4, 0, true);
                                 if (Screen.IsFadedOut)
                                 {
                                     fPlayer.ped.IsPositionFrozen = false;
@@ -662,6 +668,7 @@ namespace TheNorthYanktonHeist
                                         fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Suspense);
                                         fCam.SetCamActiveWithInterp(PrologueIntroCam2, PrologueIntroCam, 5000, fCam.CamGraphType.GRAPH_TYPE_SLOW_IN_OUT, fCam.CamGraphType.GRAPH_TYPE_SLOW_IN_OUT);
                                         fCam.RenderScriptCams(true, false, 3000, true, false, fCam.RenderingOptionFlag.RO_NO_OPTIONS);
+                                        LoadingPrompt.Hide();
                                         Screen.FadeIn(3000);
                                         fPlayer.ped.IsInvincible = false;
                                         if (fPlayer.ped.CurrentVehicle != PrologueVehicle)
@@ -816,9 +823,8 @@ namespace TheNorthYanktonHeist
                                 BoothGuard.AttachedBlip.Sprite = (BlipSprite)270;
                                 BoothGuard.AttachedBlip.Color = BlipColor.Red;
                                 BoothGuard.AttachedBlip.Name = "Guard";
-                                BoothGuard.AttachedBlip.Scale = 0.5f;
-                                BoothGuard.AttachedBlip.IsShortRange = true;
-                                BoothGuard.AttachedBlip.DisplayType = BlipDisplayType.Default;
+                                BoothGuard.AttachedBlip.Scale = 0.7f;
+                                BoothGuard.AttachedBlip.DisplayType = BlipDisplayType.MiniMapOnly;
                             }
                             fPed.SetPedCombatAttributes(BoothGuard, fPed.CombatAttributes.CA_IS_A_GUARD, true);
                             fPed.SetPedCombatAttributes(BoothGuard, fPed.CombatAttributes.CA_PLAY_REACTION_ANIMS, false);
@@ -828,8 +834,8 @@ namespace TheNorthYanktonHeist
                             fPed.SetPedCombatMovement(BoothGuard, fMisc.GetRandomIntInRange(1, 4));
                             BoothGuard.Weapons.Give(WeaponHash.Pistol, 10000, true, true);
                             BoothGuard.RelationshipGroup = AiTeam;
-                            fPed.SetRelationshipBetweenGroups(fPed.RelationshipTypes.ACQUAINTANCE_TYPE_PED_DISLIKE, AiTeam, playersTeam);
-                            fPed.SetRelationshipBetweenGroups(fPed.RelationshipTypes.ACQUAINTANCE_TYPE_PED_DISLIKE, playersTeam, AiTeam);
+                            fPed.SetRelationshipBetweenGroups(fPed.RelationshipTypes.ACQUAINTANCE_TYPE_PED_HATE, AiTeam, playersTeam);
+                            fPed.SetRelationshipBetweenGroups(fPed.RelationshipTypes.ACQUAINTANCE_TYPE_PED_HATE, playersTeam, AiTeam);
                         }
                     }
                     if (BoothGuard != null)
@@ -857,20 +863,153 @@ namespace TheNorthYanktonHeist
                         }
                         else
                         {
-                            fPlayer.SetMaxWantedLevelToNormal();
-                            if (DepotBlip.Alpha == 255)
+                            if (DepotBlip != null)
                             {
-                                if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
-                                    fHud.ShowGXTSubtitle("NTH_ENTRDEPOT");
-                                else
-                                    Screen.ShowSubtitle("~s~Enter the ~y~Depot.~s~");
-                                if (fPlayer.GetDistanceTo(new Vector2(DepotBlip.Position.X, DepotBlip.Position.Y)) < 1.3f)
+                                if (DepotBlip.Alpha == 255)
                                 {
-
+                                    if (case5switch == -1)
+                                    {
+                                        if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
+                                            fHud.ShowGXTSubtitle("NTH_ENTRDEPOT");
+                                        else
+                                            Screen.ShowSubtitle("~s~Enter the ~y~Depot.~s~");
+                                        if (fPlayer.GetDistanceTo(new Vector2(DepotBlip.Position.X, DepotBlip.Position.Y)) < 1.3f)
+                                        {
+                                            Screen.FadeOut(1000);
+                                            while (!Screen.IsFadedOut)
+                                                Wait(0);
+                                            LoadingPrompt.Show("NorthYanktonHeist");
+                                            fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Gunfight);
+                                            DepotBlip.Delete();
+                                            DepotBlip = null;
+                                            case5switch = 0;
+                                        }
+                                    }
                                 }
+                            }
+                            switch (case5switch)
+                            {
+                                case 0:
+                                    new Combats(-681004504, new Vector3(5300.397f, -5197.885f, 83.502f), 285.0927f, fPed.CombatMovement.CM_WillAdvance, fPed.CombatAbilityLevel.CAL_AVERAGE, WeaponHash.Pistol, DisableAttrbutes, EnableAttrbutes);
+                                    new Combats(-681004504, new Vector3(5296.698f, -5194.016f, 83.5018f), 188.9838f, fPed.CombatMovement.CM_Defensive, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.CarbineRifle, DisableAttrbutes, EnableAttrbutes);
+                                    new Combats(-681004504, new Vector3(5297.962f, -5181.915f, 83.51785f), 359.7572f, fPed.CombatMovement.CM_Defensive, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.CarbineRifle, DisableAttrbutes, EnableAttrbutes);
+                                    new Combats(-681004504, new Vector3(5303.865f, -5178.598f, 83.50168f), 258.0538f, fPed.CombatMovement.CM_WillAdvance, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.PumpShotgun, DisableAttrbutes, EnableAttrbutes);
+                                    new Combats(-681004504, new Vector3(5300.957f, -5175.863f, 83.50175f), 12.30173f, fPed.CombatMovement.CM_Defensive, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.SMG, DisableAttrbutes, EnableAttrbutes);
+                                    CombatsList.Combats_Create();
+                                    if (AnimGuard == null)
+                                    {
+                                        AnimGuard = fPed.CreatePed(new Model("IG_ProlSec_02"), new Vector3(5318.503f, -5206.221f, (85.7187f - 3.2f)), 139.6356f);//  Function.Call<Ped>(Hash.CREATE_PED, 26, fMisc.GetHashKey("IG_ProlSec_02"), 5310.6543f, -5207.032f, (85.7187f - 3.2f), 139.6356f, true, true);
+                                        Function.Call(Hash.SET_PED_DEFAULT_COMPONENT_VARIATION, AnimGuard);
+                                        Function.Call(Hash.SET_ENTITY_SHOULD_FREEZE_WAITING_ON_COLLISION, AnimGuard, true);
+                                        Wait(50);
+                                    }
+                                    while (AnimGuard == null)
+                                        Wait(0);
+                                    if (AnimCam == null)
+                                    {
+                                        AnimCam = fCam.CreateScriptedCam();
+                                        fCam.SetupMovingCam(AnimCam, new Vector3(5308.226f, -5208.727f, 83.959f), new Vector3(-1.000001f, -3.000001f, -92.49069f), 55f, CameraShake.Hand, 0.5f);
+                                    }
+                                    while (AnimCam == null)
+                                    {
+                                        Wait(0);
+                                    }
+                                    if (AnimCam != null)
+                                    {
+                                        fCam.SetupMovingCam(AnimCam, new Vector3(5308.226f, -5208.727f, 83.959f), new Vector3(0f, 0f, -92.49069f), 42f, CameraShake.Hand, 1f);
+                                        ScriptCameraDirector.StartRendering();
+                                    }
+                                    if (AnimDoor == null)
+                                    {
+                                        AnimDoor = Function.Call<Prop>(Hash.CREATE_OBJECT_NO_OFFSET, fMisc.GetHashKey("v_ilev_cd_door2"), 5308.8574f, -5208.156f, ((86.9186f - 3.2f) - 0.05f), true, true, false, 0);
+                                        Function.Call(Hash.FREEZE_ENTITY_POSITION, AnimDoor, true);
+                                    }
+                                    while (AnimDoor == null)
+                                        Wait(0);
+                                    case5switch = 1;
+                                    break;
+                                case 1:
+                                    Screen.FadeIn(1700);
+                                    LoadingPrompt.Hide();
+                                    if (!player.IsRunning)
+                                    {
+                                        fPlayer.ped.Weapons.Select(WeaponHash.Unarmed);
+                                        player.Create();
+                                        door.Create();
+                                        player.Rate = 0f;
+                                        door.Rate = 0f;
+                                        player.StartPed(fPlayer.ped, fStreaming.RequestAnimDict("anim@apt_trans@hinge_l_action"), "player_exit");
+                                        door.StartEntity(AnimDoor, fStreaming.RequestAnimDict("anim@apt_trans@hinge_l_action"), "door_exit");
+                                        door.PlayAudioEvent();
+                                    }
+                                    else
+                                    {
+                                        Wait(1000);
+                                        player.Rate = 1f;
+                                        door.Rate = 1f;
+                                        case5switch = 2;
+                                    }
+                                    break;
+                                case 2:
+                                    if (player.IsRunning)
+                                    {
+                                        if (player.Phase >= 0.18f)
+                                        {
+                                            AnimCam.Shake(CameraShake.Jolt, 2.5f);
+                                            while (player.Phase < 0.75f)
+                                            {
+                                                Wait(0);
+                                            }
+                                            case5switch = 3;
+                                        }
+                                    }
+                                    break;
+                                case 3:
+                                    fPlayer.ped.Weapons.Give(WeaponHash.PumpShotgun, 260, true, true);
+                                    fPlayer.ped.Weapons.Select(WeaponHash.PumpShotgun);
+                                    fPlayer.ped.Task.ClearAllImmediately();
+                                    player.Dispose();
+                                    door.Dispose();
+                                    GameplayCamera.SetCamViewModeForContext(CamViewModeContext.OnFoot, CamViewMode.FirstPerson);
+                                    fGraphics.AnimpostFXPlay("CamPushInNeutral", 1700, false);
+                                    fAudio.PlaySoundFrontend("1st_Person_Transition", "PLAYER_SWITCH_CUSTOM_SOUNDSET");
+                                    AnimGuard.Weapons.Give(WeaponHash.Pistol, 8, true, true);
+                                    AnimGuard.Weapons.Select(WeaponHash.Pistol);
+                                    AnimGuard.Task.RunTo(new Vector3(5314.563f, -5206.421f, 83.51863f), false, 20000);
+                                    Wait(700);
+                                    ScriptCameraDirector.StopRendering();
+                                    Wait(500);
+                                    AnimGuard.Task.AimGunAtEntity(fPlayer.ped, 10000);
+                                    case5switch = 4;
+                                    break;
+                                case 4:
+                                    CombatsList.Combats_Activate();
+                                    fPlayer.FakeWantedLevel = 3;
+                                    case5switch = 5;
+                                    break;
+                                case 5:
+                                    CombatsList.Combats_Check();
+                                    if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
+                                        fHud.ShowGXTSubtitle("NTH_PUSHTOVAULT");
+                                    else
+                                        Screen.ShowSubtitle("~s~Push through to the ~y~vault.~s~");
+                                    if (fPlayer.GetDistanceTo(new Vector3(5297.854f, -5188.762f, 83.51839f)) < 2.7f)
+                                    {
+                                        case5switch = 6;
+                                    }
+                                    break;
+                                case 6:
+                                    CombatsList.Combats_Check();
+                                    if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
+                                        fHud.ShowGXTSubtitle("NTH_PLANTBOMB");
+                                    else
+                                        Screen.ShowSubtitle("~s~Plant an ~g~explosive device~s~ on the ~y~vault door.~s~");
+                                    break;
                             }
                         }
                     }
+                    break;
+                case 6:
                     break;
             }
             if (Globals.missionSwitch != 0)
@@ -882,13 +1021,122 @@ namespace TheNorthYanktonHeist
                 Plane = Start.Plane;
             }
         }
+        SynchronizedScene player = new SynchronizedScene(new Vector3(5309.55f, -5210.1f, (86.9186f - 3.41f)));
+        SynchronizedScene door = new SynchronizedScene(new Vector3((5309.55f - 0.7f), (-5210.1f + 1.902f), ((86.9186f - 3.2f) - 0.05f)));
+        private Prop AnimDoor;
+        private Camera AnimCam;
+        private Ped AnimGuard;
+        private int case5switch = -1;
+        private static fPed.CombatAttributes[] EnableAttrbutes =
+            {
+            fPed.CombatAttributes.CA_BLIND_FIRE_IN_COVER,
+            fPed.CombatAttributes.CA_CAN_CHARGE,
+            fPed.CombatAttributes.CA_CAN_USE_PEEKING_VARIATIONS,
+            fPed.CombatAttributes.CA_DISABLE_BULLET_REACTIONS,
+            fPed.CombatAttributes.CA_DISABLE_FLEE_FROM_COMBAT,
+            fPed.CombatAttributes.CA_ENABLE_TACTICAL_POINTS_WHEN_DEFENSIVE,
+            fPed.CombatAttributes.CA_IS_A_GUARD,
+            fPed.CombatAttributes.CA_USE_COVER,
+            fPed.CombatAttributes.CA_USE_PROXIMITY_FIRING_RATE,
+            fPed.CombatAttributes.CA_DISABLE_ENTRY_REACTIONS,
+            };
+        private static fPed.CombatAttributes[] DisableAttrbutes =
+            {
+            fPed.CombatAttributes.CA_DISABLE_REACT_TO_BUDDY_SHOT,
+            fPed.CombatAttributes.CA_PLAY_REACTION_ANIMS,
+            };
+
         public int AiTeam = World.AddRelationshipGroup("aiteam").Hash;
         public int playersTeam = Function.Call<int>(Hash.GET_HASH_KEY, "PLAYER");
 
         static Prop Garagecolobject;
         static Ped BoothGuard;
         static List<Prop> boothProps = new List<Prop>();
-        
+        Dictionary<int, Tuple<int, int>> pedProps;
+        Dictionary<int, Tuple<int, int>> pedVariation;
+
+        public static void SetOutfit()
+        {
+            if (!fPlayer.IsMichael)
+            {
+                if (!fPlayer.IsFranklin)
+                {
+                    if (!fPlayer.IsTrevor)
+                    {
+                        if (!fPlayer.IsFreemodeMale)
+                        {
+                            if (!fPlayer.IsFreemodeFemale)
+                            {
+                                return;
+                            }
+                            else
+                            {
+                                fPed.SetPedDefaultComponentVariation(fPlayer.ped);
+                                fPed.ClearAllPedProps(fPlayer.ped, 1);
+                                fPed.SetPedComponentVariation(fPlayer.ped, 1, 58, 4, 0);
+                                fPed.SetPedComponentVariation(fPlayer.ped, 3, 40, 1, 0);
+                                fPed.SetPedComponentVariation(fPlayer.ped, 4, 32, 0, 0);
+                                fPed.SetPedComponentVariation(fPlayer.ped, 5, 82, 0, 0);
+                                fPed.SetPedComponentVariation(fPlayer.ped, 6, 25, 0, 0);
+                                fPed.SetPedComponentVariation(fPlayer.ped, 11, 215, 18, 0);
+                            }
+                        }
+                        else
+                        {
+                            fPed.SetPedDefaultComponentVariation(fPlayer.ped);
+                            fPed.ClearAllPedProps(fPlayer.ped, 1);
+                            fPed.SetPedComponentVariation(fPlayer.ped, 1, 37, 0, 0);
+                            fPed.SetPedComponentVariation(fPlayer.ped, 3, 32, 1, 0);
+                            fPed.SetPedComponentVariation(fPlayer.ped, 4, 175, 0, 0);
+                            fPed.SetPedComponentVariation(fPlayer.ped, 5, 82, 0, 0);
+                            fPed.SetPedComponentVariation(fPlayer.ped, 6, 154, 0, 0);
+                            fPed.SetPedComponentVariation(fPlayer.ped, 8, 74, 7, 0);
+                            fPed.SetPedComponentVariation(fPlayer.ped, 11, 545, 0, 0);
+                        }
+                    }
+                    else
+                    {
+                        fPed.SetPedDefaultComponentVariation(fPlayer.ped);
+                        fPed.ClearAllPedProps(fPlayer.ped, 1);
+                        fPed.SetPedComponentVariation(fPlayer.ped, 0, 0, 5, 0);
+                        fPed.SetPedComponentVariation(fPlayer.ped, 1, 0, 0, 0);
+                        fPed.SetPedComponentVariation(fPlayer.ped, 2, 1, 0, 0);
+                        fPed.SetPedComponentVariation(fPlayer.ped, 8, 13, 0, 0);
+                        fPed.SetPedComponentVariation(fPlayer.ped, 3, 9, 0, 0);
+                        fPed.SetPedComponentVariation(fPlayer.ped, 4, 9, 0, 0);
+                        fPed.SetPedComponentVariation(fPlayer.ped, 6, 12, 0, 0);
+                        fPed.SetPedComponentVariation(fPlayer.ped, 5, 4, 0, 0);
+                        fPed.SetPedComponentVariation(fPlayer.ped, 9, 1, 0, 0);
+                    }
+                }
+                else
+                {
+                    fPed.SetPedDefaultComponentVariation(fPlayer.ped);
+                    fPed.ClearAllPedProps(fPlayer.ped, 1);
+                    fPed.SetPedComponentVariation(fPlayer.ped, 3, 14, 4, 0);
+                    fPed.SetPedComponentVariation(fPlayer.ped, 4, 16, 0, 0);
+                    fPed.SetPedComponentVariation(fPlayer.ped, 5, 4, 0, 0);
+                    fPed.SetPedComponentVariation(fPlayer.ped, 6, 9, 0, 0);
+                    fPed.SetPedComponentVariation(fPlayer.ped, 8, 4, 0, 0);
+                    fPed.SetPedComponentVariation(fPlayer.ped, 9, 6, 0, 0);
+                    fPed.SetPedComponentVariation(fPlayer.ped, 1, 0, 0, 0);
+                }
+            }
+            else
+            {
+                fPed.SetPedDefaultComponentVariation(fPlayer.ped);
+                fPed.ClearAllPedProps(fPlayer.ped, 1);
+                fPed.SetPedComponentVariation(fPlayer.ped, 0, 0, 3, 0);
+                fPed.SetPedComponentVariation(fPlayer.ped, 2, 1, 0, 0);
+                fPed.SetPedComponentVariation(fPlayer.ped, 8, 7, 0, 0);
+                fPed.SetPedComponentVariation(fPlayer.ped, 5, 5, 0, 0);
+                fPed.SetPedComponentVariation(fPlayer.ped, 3, 31, 0, 0);
+                fPed.SetPedComponentVariation(fPlayer.ped, 4, 26, 0, 0);
+                fPed.SetPedComponentVariation(fPlayer.ped, 6, 14, 0, 0);
+                fPed.SetPedComponentVariation(fPlayer.ped, 9, 1, 0, 0);
+            }
+        }
+
         public static void SpawnBooth()
         {
             if (BoothGuard == null)
@@ -1073,6 +1321,22 @@ namespace TheNorthYanktonHeist
                         Start.Plane.MarkAsNoLongerNeeded();
                         Start.Plane = null;
                     }
+                    CombatsList.Combats_Dispose();
+                    if (AnimGuard != null)
+                    {
+                        AnimGuard.Delete();
+                        AnimGuard = null;
+                    }
+                    if (AnimDoor != null)
+                    {
+                        AnimDoor.Delete();
+                        AnimDoor = null;
+                    }
+                    if (AnimCam != null)
+                    {
+                        AnimCam.Delete();
+                        AnimCam = null;
+                    }
                     if (LudendorffNorthYankton != null)
                     {
                         LudendorffNorthYankton.Delete();
@@ -1111,7 +1375,7 @@ namespace TheNorthYanktonHeist
                     fHud.ClearHelp(true);
                     Audio.SetAudioFlag(AudioFlags.DisableFlightMusic, false);
                     Audio.SetAudioFlag(AudioFlags.WantedMusicDisabled, false);
-                    fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.MusicStop);
+                    fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Fail);
                     if (GetFailVariation() == FailVariations.PlaneDestroyed)
                     {
                         MissionShard failShard = new MissionShard();
@@ -1169,6 +1433,7 @@ namespace TheNorthYanktonHeist
                                 Screen.FadeOut(2500);
                             if (Screen.IsFadedOut)
                             {
+                                LoadingPrompt.Show("NorthYanktonHeist");
                                 restarting = true;
                                 fVehicle.DeleteVehiclesInList(depotVehicles);
                                 if (resetCam != null)
@@ -1261,11 +1526,14 @@ namespace TheNorthYanktonHeist
                                                 Start.Plane.LandingGearState = VehicleLandingGearState.Retracted;
                                                 Start.Plane.Velocity = Start.Plane.ForwardVector * 40f;
                                                 Function.Call(Hash.CLEAR_PED_WETNESS, fPlayer.ped);
+                                                fPlayer.ped.ClearBloodDamage();
+                                                fPlayer.ped.ClearVisibleDamage();
                                                 fPlayer.ped.IsVisible = true;
                                                 fPlayer.ped.IsPositionFrozen = false;
                                                 fPlayer.ped.IsInvincible = false;
                                                 fPlayer.SetMaxWantedLevelToNormal();
                                                 fHud.RadarAndHud(true, true);
+                                                LoadingPrompt.Hide();
                                                 Screen.FadeIn(1700);
                                             }
                                         }
@@ -1277,22 +1545,22 @@ namespace TheNorthYanktonHeist
                                         break;
                                     case 2:
                                         Wait(7500);
-                                        Globals.globalBlips = 2;
-                                        Globals.globalScripts = 2;
+                                        //Globals.globalBlips = 2;
+                                        //Globals.globalScripts = 2;
                                         fHud.ClearAllPrints();
                                         fHud.ClearBrief();
                                         fHud.ClearAllHelpMessages();
                                         fHud.ClearGPSMultiRoute();
                                         fHud.ClearHelp(true);
                                         Function.Call(Hash.CLEAR_PED_WETNESS, fPlayer.ped);
+                                        fPlayer.ped.ClearBloodDamage();
+                                        fPlayer.ped.ClearVisibleDamage();
                                         fPlayer.ped.IsVisible = true;
                                         fPlayer.ped.IsPositionFrozen = false;
                                         fPlayer.ped.IsInvincible = false;
                                         fPlayer.SetMaxWantedLevelToNormal();
                                         Audio.SetAudioFlag(AudioFlags.DisableFlightMusic, true);
                                         Audio.SetAudioFlag(AudioFlags.WantedMusicDisabled, true);
-                                        fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
-                                        fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.IdleStart);
                                         fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
                                         fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
                                         timeAdvanced1 = false;
@@ -1327,6 +1595,7 @@ namespace TheNorthYanktonHeist
                             resetButtons.Dispose();
                             if (Screen.IsFadedOut)
                             {
+                                LoadingPrompt.Show("NorthYanktonHeist");
                                 restarting = true;
                                 fVehicle.DeleteVehiclesInList(depotVehicles);
                                 if (resetCam != null)
@@ -1338,6 +1607,8 @@ namespace TheNorthYanktonHeist
                                 }
                                 fPlayer.PedPos(1746.312f, 3273.837f, 40.15277f, 30.6f);
                                 instructionalButtonsSetUp = false;
+                                fPed.ApplyPedPropData(fPlayer.ped, pedProps);
+                                fPed.ApplyPedVariationData(fPlayer.ped, pedVariation);
                                 fWeather.SetWeatherTypeNowPersist(weatherTypeBeforeMission);
                                 fClock.SetClockTime(12, 0, 0);
                                 fInterior.PrologueMap.EnableNorthYanktonTrainTracks(false);
@@ -1345,6 +1616,8 @@ namespace TheNorthYanktonHeist
                                 fStreaming.SetMapDataCullboxEnabled("Prologue_Main", false);
                                 fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), false);
                                 Function.Call(Hash.CLEAR_PED_WETNESS, fPlayer.ped);
+                                fPlayer.ped.ClearBloodDamage();
+                                fPlayer.ped.ClearVisibleDamage();
                                 fPlayer.ped.Weapons.Select(WeaponHash.Unarmed);
                                 fPlayer.ped.IsVisible = true;
                                 fPlayer.ped.IsPositionFrozen = false;
@@ -1354,9 +1627,11 @@ namespace TheNorthYanktonHeist
                                 Screen.FadeIn(5000);
                                 Wait(2500);
                                 fPlayer.SetMaxWantedLevelToNormal();
-                                Globals.globalBlips = 3;
-                                Globals.globalScripts = 3;
+                                ScriptManager.ScriptManager.RestartScripts();
+                                //Globals.globalBlips = 3;
+                                //Globals.globalScripts = 3;
                                 fHud.RadarAndHud(true, true);
+                                LoadingPrompt.Hide();
                                 fInterior.RemoveIpl("prologue06_int");
                                 fInterior.RemoveIpl("prologue01");
                                 fInterior.RemoveIpl("prologue02");
@@ -1398,6 +1673,9 @@ namespace TheNorthYanktonHeist
                                 fPathfind.SetRoadsInAngledArea(new Vector3(3510.004f, -4865.81f, 94.69557f), new Vector3(3204.424f, -4833.8147f, 126.8152f), 16.0f, false, false, true);
                                 fPathfind.SetRoadsInAngledArea(new Vector3(3186.534f, -4832.798f, 109.8148f), new Vector3(3204.187f, -4833.993f, 114.815f), 16.0f, false, false, true);
                                 fInterior.PrologueMap.YankTon = false;
+                                scriptsKilled = false;
+                                weatherTypeSaved = false;
+                                outfitSaved = false;
                                 restartPending = false;
                                 Globals.missionSwitch = 0;
                                 restartSwitch = 0;
@@ -1552,6 +1830,11 @@ namespace TheNorthYanktonHeist
             {
                 fAudio.StopAudioScene("MI_1_TREV_FLY_TO_LUDENDORFF");
                 fAudio.StopAudioScene("MI_1_MIC_DRIVE_TO_GRAVEYARD");
+                if (outfitSaved)
+                {
+                    fPed.ApplyPedPropData(fPlayer.ped, pedProps);
+                    fPed.ApplyPedVariationData(fPlayer.ped, pedVariation);
+                }
                 if (weatherTypeSaved)
                     fWeather.SetWeatherTypeNowPersist(weatherTypeBeforeMission);
                 fClock.PauseClock(false);
@@ -1559,9 +1842,10 @@ namespace TheNorthYanktonHeist
                 fStreaming.SetMapDataCullboxEnabled("prologue", false);
                 fStreaming.SetMapDataCullboxEnabled("Prologue_Main", false);
                 fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), false);
-                fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.MusicStop);
+                fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Fail);
                 fProp.DeletePropsInList(boothProps);
                 fVehicle.DeleteVehiclesInList(depotVehicles);
+                CombatsList.Combats_Dispose();
                 if (Garagecolobject != null)
                 {
                     Garagecolobject.Delete();
@@ -1610,6 +1894,22 @@ namespace TheNorthYanktonHeist
                     Plane.MarkAsNoLongerNeeded();
                     Plane = null;
                 }
+                if (AnimGuard != null)
+                {
+                    AnimGuard.Delete();
+                    AnimGuard = null;
+                }
+                if (AnimDoor != null)
+                {
+                    AnimDoor.Delete();
+                    AnimDoor = null;
+                }
+                if (AnimCam != null)
+                {
+                    AnimCam.Delete();
+                    AnimCam = null;
+                }
+
             }
         }
 

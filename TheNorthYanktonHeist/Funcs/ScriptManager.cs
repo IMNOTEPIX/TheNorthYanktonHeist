@@ -5,9 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.IO;
 
 namespace TheNorthYanktonHeist.Funcs
 {
+    [Obsolete("Use ScriptManager instead.")]
     public class fInGameScripts
     {
         public static void StartAllNeededToStartScripts()
@@ -30,7 +33,7 @@ namespace TheNorthYanktonHeist.Funcs
             StartScript("controller_trafficking", 1424);
         }
 
-        public static void TerminateScriptsExeptMissions()
+        public static void TerminateScriptsExceptMissions()
         {
             TerminateLaunchers();
             TerminateAllPropertyManagement();
@@ -44,7 +47,7 @@ namespace TheNorthYanktonHeist.Funcs
         }
         public static void TerminateScriptsWithMissions()
         {
-            TerminateScriptsExeptMissions();
+            TerminateScriptsExceptMissions();
             TerminateMissionTriggerers();
         }
 

@@ -1,5 +1,6 @@
 ﻿using GTA;
 using GTA.Math;
+using GTA.Native;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,44 @@ namespace TheNorthYanktonHeist.Funcs
             Thread thread = new Thread((ThreadStart)(() => Clipboard.SetText(text)));
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
+        }
+        [STAThread]
+        public static void CopyPedVariationToClipboard(Ped ped)
+        {
+            var data = fPed.GetPedVariationData(ped);
+            if (data == null) return;
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var kvp in data)
+            {
+                int compId = kvp.Key;
+                int drawable = kvp.Value.Item1;
+                int texture = kvp.Value.Item2;
+
+                sb.AppendLine($"{compId}:{drawable},{texture}");
+            }
+
+            CopyToClipboard(sb.ToString());
+        }
+        [STAThread]
+        public static void CopyPedPropDataToClipboard(Ped ped)
+        {
+            var data = fPed.GetPedPropData(ped);
+            if (data == null) return;
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var kvp in data)
+            {
+                int compId = kvp.Key;
+                int drawable = kvp.Value.Item1;
+                int texture = kvp.Value.Item2;
+
+                sb.AppendLine($"{compId}:{drawable},{texture}");
+            }
+
+            CopyToClipboard(sb.ToString());
         }
     }
 }

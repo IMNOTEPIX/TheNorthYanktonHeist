@@ -13,6 +13,10 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fGraphics
     {
+        public static void DrawMarkerSphere(Vector3 xyz, float radius, int red, int green, int blue, float alpha)
+        {
+            Function.Call(Hash.DRAW_​MARKER_​SPHERE, xyz.X, xyz.Y, xyz.Z, radius, red, green, blue, alpha);
+        }
         public static void DrawRect(float x, float y, float width, float height, int r, int g, int b, int a, bool stereo)
         {
             Function.Call(Hash.DRAW_RECT, x, y, width, height, r, g, b, a, stereo);

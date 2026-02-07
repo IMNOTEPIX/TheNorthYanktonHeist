@@ -70,7 +70,7 @@
     <Compile Include="Funcs\Entity.cs" />
     <Compile Include="Funcs\Graphics.cs" />
     <Compile Include="Funcs\Hud.cs" />
-    <Compile Include="Funcs\ScriptManager.cs" />
+    <Compile Include="Funcs\InGameScripts.cs" />
     <Compile Include="Funcs\Interior.cs" />
     <Compile Include="Funcs\Math.cs" />
     <Compile Include="Funcs\Misc.cs" />

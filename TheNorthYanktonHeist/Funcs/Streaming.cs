@@ -10,6 +10,33 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fStreaming
     {
+        public static void RemoveNamedPTFXAsset(string fxName)
+        {
+            Function.Call(Hash.REMOVE_NAMED_PTFX_ASSET, fxName);
+        }
+        public static void UseParticleFXAsset(string fxAsset)
+        {
+            Function.Call(Hash.USE_PARTICLE_FX_ASSET, fxAsset);
+        }
+        public static string RequestNamedPTFXAsset(string fxName)
+        {
+            while (!Function.Call<bool>(Hash.HAS_​NAMED_​PTFX_​ASSET_​LOADED, fxName))
+            {
+                Function.Call(Hash.REQUEST_NAMED_PTFX_ASSET, fxName);
+                Script.Yield();
+            }
+
+            return fxName;
+        }
+        public static string LoadNamedPTFXAsset(string fxName)
+        {
+            if (!Function.Call<bool>(Hash.HAS_​NAMED_​PTFX_​ASSET_​LOADED, fxName))
+            {
+                Function.Call(Hash.REQUEST_NAMED_PTFX_ASSET, fxName);
+            }
+
+            return fxName;
+        }
         /// <summary>
         /// Possible p0 values: "prologue", "Prologue_Main"
         /// </summary>

@@ -20,7 +20,7 @@ namespace TheNorthYanktonHeist.Funcs
         public static bool IsFreemodeMale => GetPlayerModelHash() == 1885233650U;
         public static bool IsFreemodeFemale => GetPlayerModelHash() == 2627665880U;
         public static PedHash PlayerPreviousModel;
-        public static bool IsMainCharacterPeds => IsMichael || IsFranklin || IsTrevor;
+        public static bool IsStoryPed => IsMichael || IsFranklin || IsTrevor;
         public static bool IsMichael => GetPlayerModelHash() == 225514697U;
         public static bool IsFranklin => GetPlayerModelHash() == 2602752943U;
         public static bool IsTrevor => GetPlayerModelHash() == 2608926626U;

@@ -41,7 +41,7 @@ namespace TheNorthYanktonHeist.Funcs
         public Vector3 Position { get; protected set; }
         public Vector3 Rotation { get; protected set; }
 
-        public Camera Camera { get; protected set; }
+        public Camera Camera { get; set; }
 
         public SynchronizedScene(Vector3 position, float heading = 0f)
         {

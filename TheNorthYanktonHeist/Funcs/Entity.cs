@@ -11,6 +11,10 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fEntity
     {
+        public static bool DoesEntityExist(Entity entity)
+        {
+            return Function.Call<bool>(Hash.DOES_​ENTITY_​EXIST, entity);
+        }
         public static bool IsEntityPlayingAnim(Entity entity, string animDict, string animName, int taskFlag = 3)
         {
             return Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, entity, animDict, animName, taskFlag);

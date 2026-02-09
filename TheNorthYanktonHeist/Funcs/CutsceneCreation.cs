@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace TheNorthYanktonHeist.Funcs
 {
-    public class fCutsceneCreation
+    public class CutsceneCreation
     {
         public void AddRegisterEntityToList(int ent, string cHandle, fCutscene.CutsceneUsage usage, int modelNames, fCutscene.CutsceneEntityOptionFlag entityOptionsFlag)
         {
             RegisterEntityChunk item = new RegisterEntityChunk(ent, cHandle, usage, modelNames, entityOptionsFlag);
-            this.theseEntities.Add(item);
+            theseEntities.Add(item);
         }
 
         public void AddRegisterEntityToList(Entity ent, string cHandle, fCutscene.CutsceneUsage usage, int modelNames, fCutscene.CutsceneEntityOptionFlag entityOptionsFlag)
         {
             RegisterEntityChunk item = new RegisterEntityChunk(ent, cHandle, usage, modelNames, entityOptionsFlag);
-            this.theseEntities.Add(item);
+            theseEntities.Add(item);
         }
 
-        public fCutsceneCreation(string cutsceneName, Vector3 pos, Vector3 rot, bool setPlayerModel)
+        public CutsceneCreation(string cutsceneName, Vector3 pos, Vector3 rot, bool setPlayerModel)
         {
             CutsceneName = cutsceneName;
             Pos = pos;
@@ -30,7 +30,7 @@ namespace TheNorthYanktonHeist.Funcs
             SetPlayerModel = setPlayerModel;
         }
 
-        public fCutsceneCreation(string cutsceneName, Vector3 pos, Vector3 rot, bool setPlayerModel, bool fadeOutAtStart = false, bool fadeInAtStart = false, bool fadeOutAtEnd = false, bool fadeInAtEnd = false)
+        public CutsceneCreation(string cutsceneName, Vector3 pos, Vector3 rot, bool setPlayerModel, bool fadeOutAtStart = false, bool fadeInAtStart = false, bool fadeOutAtEnd = false, bool fadeInAtEnd = false)
         {
             CutsceneName = cutsceneName;
             Pos = pos;
@@ -44,52 +44,46 @@ namespace TheNorthYanktonHeist.Funcs
 
         public void StartCutscene()
         {
-            for (int i = 0; i < this.theseEntities.Count; i++)
+            for (int i = 0; i < theseEntities.Count; i++)
             {
-                bool flag = this.theseEntities[i].Ent != null && this.theseEntities[i].Ent.EntityType == EntityType.Ped;
-                if (flag)
+                if (theseEntities[i].Ent != null && theseEntities[i].Ent.EntityType == EntityType.Ped)
                 {
-                    this.theseEntities[i].GetCutscenePedOutfit((Ped)this.theseEntities[i].Ent);
+                    theseEntities[i].GetCutscenePedOutfit((Ped)theseEntities[i].Ent);
                 }
             }
-            fCutscene.LoadCutscene(this.CutsceneName);
-            bool setPlayerModel = this.SetPlayerModel;
-            if (setPlayerModel)
+            fCutscene.LoadCutscene(CutsceneName);
+            if (SetPlayerModel)
             {
                 fPlayer.PlayerModelSet(Game.Player.Character);
             }
-            for (int j = 0; j < this.theseEntities.Count; j++)
+            for (int j = 0; j < theseEntities.Count; j++)
             {
-                bool flag2 = this.theseEntities[j].EntInt != -1;
-                if (flag2)
+                if (theseEntities[j].EntInt != -1)
                 {
-                    fCutscene.RegisterEntityForCutscene(0, this.theseEntities[j].CHandle, (int)this.theseEntities[j].Usage, this.theseEntities[j].ModelNames, (int)this.theseEntities[j].EntityOptionsFlag);
+                    fCutscene.RegisterEntityForCutscene(0, theseEntities[j].CHandle, (int)theseEntities[j].Usage, theseEntities[j].ModelNames, (int)theseEntities[j].EntityOptionsFlag);
                 }
                 else
                 {
-                    fCutscene.RegisterEntityForCutscene(this.theseEntities[j].Ent, this.theseEntities[j].CHandle, (int)this.theseEntities[j].Usage, this.theseEntities[j].ModelNames, (int)this.theseEntities[j].EntityOptionsFlag);
+                    fCutscene.RegisterEntityForCutscene(theseEntities[j].Ent, theseEntities[j].CHandle, (int)theseEntities[j].Usage, theseEntities[j].ModelNames, (int)theseEntities[j].EntityOptionsFlag);
                 }
             }
             fCutscene.StartCutscene(fCutscene.CutscenePlaybackFlags.CUTSCENE_REQUESTED_IN_MISSION);
-            bool flag3 = this.FadeOutAtStart || this.FadeInAtStart || this.FadeOutAtEnd || this.FadeInAtEnd;
-            if (flag3)
+            if (FadeOutAtStart || FadeInAtStart || FadeOutAtEnd || FadeInAtEnd)
             {
-                fCutscene.SetCutsceneFadeValues(this.FadeOutAtStart, this.FadeInAtStart, this.FadeOutAtEnd, this.FadeInAtEnd);
+                fCutscene.SetCutsceneFadeValues(FadeOutAtStart, FadeInAtStart, FadeOutAtEnd, FadeInAtEnd);
             }
             while (!fCutscene.IsCutscenePlaying())
             {
                 Script.Wait(0);
             }
-            for (int k = 0; k < this.theseEntities.Count; k++)
+            for (int k = 0; k < theseEntities.Count; k++)
             {
-                bool flag4 = this.theseEntities[k].Ent != null && this.theseEntities[k].Ent.EntityType == EntityType.Ped;
-                if (flag4)
+                if (theseEntities[k].Ent != null && theseEntities[k].Ent.EntityType == EntityType.Ped)
                 {
-                    this.theseEntities[k].SetCutscenePedOutfit((Ped)this.theseEntities[k].Ent);
+                    theseEntities[k].SetCutscenePedOutfit((Ped)theseEntities[k].Ent);
                 }
             }
-            bool setPlayerModel2 = this.SetPlayerModel;
-            if (setPlayerModel2)
+            if (SetPlayerModel)
             {
                 fPlayer.PlayerModelSetBack(Game.Player.Character);
             }
@@ -97,20 +91,18 @@ namespace TheNorthYanktonHeist.Funcs
 
         public void StartCutsceneTillEnd()
         {
-            fCutscene.LoadCutscene(this.CutsceneName);
-            bool setPlayerModel = this.SetPlayerModel;
-            if (setPlayerModel)
+            fCutscene.LoadCutscene(CutsceneName);
+            if (SetPlayerModel)
             {
                 fPlayer.PlayerModelSet(Game.Player.Character);
             }
-            for (int i = 0; i < this.theseEntities.Count; i++)
+            for (int i = 0; i < theseEntities.Count; i++)
             {
-                fCutscene.RegisterEntityForCutscene(this.theseEntities[i].Ent, this.theseEntities[i].CHandle, (int)this.theseEntities[i].Usage, this.theseEntities[i].ModelNames, (int)this.theseEntities[i].EntityOptionsFlag);
+                fCutscene.RegisterEntityForCutscene(theseEntities[i].Ent, theseEntities[i].CHandle, (int)theseEntities[i].Usage, theseEntities[i].ModelNames, (int)theseEntities[i].EntityOptionsFlag);
             }
             fCutscene.StartCutscene(fCutscene.CutscenePlaybackFlags.CUTSCENE_REQUESTED_IN_MISSION);
             Script.Wait(50);
-            bool setPlayerModel2 = this.SetPlayerModel;
-            if (setPlayerModel2)
+            if (SetPlayerModel)
             {
                 fPlayer.PlayerModelSetBack(Game.Player.Character);
             }
@@ -122,10 +114,9 @@ namespace TheNorthYanktonHeist.Funcs
 
         public void Cleanup()
         {
-            bool flag = this.theseEntities.Count > 0;
-            if (flag)
+            if (theseEntities.Count > 0)
             {
-                this.theseEntities.Clear();
+                theseEntities.Clear();
             }
             fCutscene.RemoveCutscene();
         }

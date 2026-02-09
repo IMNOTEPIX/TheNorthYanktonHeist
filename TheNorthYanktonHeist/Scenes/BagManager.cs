@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using GTA;
     using GTA.Native;
+    using TheNorthYanktonHeist.Funcs;
 
     public static class BagManager
     {
@@ -24,7 +25,9 @@
             CasinoAggressive1,
             CasinoAggressive2,
             CasinoAggressive3,
-            CasinoAggressive4
+            DrugWarsChemicals,
+            SlushFundBag,
+            ChopShopWeaponsBag,
         }
 
         public struct BagData
@@ -42,18 +45,20 @@
         private static readonly Dictionary<BagVariantTypes, BagData> BagLookup =
             new Dictionary<BagVariantTypes, BagData>
         {
-        { BagVariantTypes.OriginalHeists,  new BagData(45, 0) },
-        { BagVariantTypes.CasinoYungAncestor, new BagData(82, 9) },
-        { BagVariantTypes.CasinoRegular, new BagData(82, 0) },
-        { BagVariantTypes.CasinoMaintenance, new BagData(82, 1) },
-        { BagVariantTypes.CasinoBugstars, new BagData(82, 8) },
-        { BagVariantTypes.CasinoGeometric, new BagData(82, 13) },
-        { BagVariantTypes.CasinoPattern, new BagData(82, 12) },
-        { BagVariantTypes.CasinoGeometric2, new BagData(82, 15) },
-        { BagVariantTypes.CasinoAggressive1, new BagData(82, 10) },
-        { BagVariantTypes.CasinoAggressive2, new BagData(82, 11) },
-        { BagVariantTypes.CasinoAggressive3, new BagData(82, 14) },
-        { BagVariantTypes.CasinoAggressive4, new BagData(82, 2) } // example
+                { BagVariantTypes.OriginalHeists, fPlayer.IsStoryPed ? new BagData(1, 0) : new BagData(45, 0) },
+                { BagVariantTypes.CasinoYungAncestor, new BagData(82, 9) },
+                { BagVariantTypes.CasinoRegular, new BagData(82, 0) },
+                { BagVariantTypes.CasinoMaintenance, new BagData(82, 1) },
+                { BagVariantTypes.CasinoBugstars, new BagData(82, 8) },
+                { BagVariantTypes.CasinoGeometric, new BagData(82, 13) },
+                { BagVariantTypes.CasinoPattern, new BagData(82, 12) },
+                { BagVariantTypes.CasinoGeometric2, new BagData(82, 15) },
+                { BagVariantTypes.CasinoAggressive1, new BagData(82, 10) },
+                { BagVariantTypes.CasinoAggressive2, new BagData(82, 11) },
+                { BagVariantTypes.CasinoAggressive3, new BagData(82, 14) },
+                { BagVariantTypes.DrugWarsChemicals, new BagData(82, 2) },
+                { BagVariantTypes.SlushFundBag, new BagData(82, 3) },
+                { BagVariantTypes.ChopShopWeaponsBag, new BagData(82, 4) },
         };
 
         public static int GetComponentId(Ped ped)
@@ -90,7 +95,7 @@
             return BagVariantTypes.Invalid;
         }
 
-        public static void SetBag(Ped ped, BagVariantTypes type)
+        public static void ApplyBag(Ped ped, BagVariantTypes type)
         {
             var data = GetBagData(type);
             int componentId = GetComponentId(ped);
@@ -145,7 +150,9 @@
                 case BagVariantTypes.CasinoAggressive1: return "ch_p_m_bag_var08_arm_s";
                 case BagVariantTypes.CasinoAggressive2: return "ch_p_m_bag_var09_arm_s";
                 case BagVariantTypes.CasinoAggressive3: return "ch_p_m_bag_var10_arm_s";
-                case BagVariantTypes.CasinoAggressive4: return "ch_p_m_bag_var11_arm_s";
+                case BagVariantTypes.DrugWarsChemicals: return "xm3_p_xm3_m_bag_var22_arm_s";
+                case BagVariantTypes.SlushFundBag: return "ch_p_m_bag_var03_arm_s";
+                case BagVariantTypes.ChopShopWeaponsBag: return "m23_2_p_m32_m_bag_var22_arm_s_g";
                 default: return null;
             }
         }

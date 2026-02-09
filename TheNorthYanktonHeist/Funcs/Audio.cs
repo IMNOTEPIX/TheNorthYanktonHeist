@@ -10,6 +10,30 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fAudio
     {
+        public static void StartAlarm(string alarmName, bool p2)
+        {
+            Function.Call(Hash.START_ALARM, alarmName, p2);
+        }
+        public static void PlayStreamFrontend()
+        {
+            Function.Call(Hash.PLAY_​STREAM_​FRONTEND);
+        }
+        public static bool PrepareAlarm(string alarmName)
+        {
+            return Function.Call<bool>(Hash.PREPARE_​ALARM, alarmName);
+        }
+        public static bool LoadStream(string streamName, string soundSet)
+        {
+            return Function.Call<bool>(Hash.LOAD_​STREAM, streamName, soundSet);
+        }
+        public static bool LoadStream(string streamName, int soundSet)
+        {
+            return Function.Call<bool>(Hash.LOAD_​STREAM, streamName, soundSet);
+        }
+        public static void ActivateAudioSlowmoMode(string mode)
+        {
+            Function.Call(Hash.ACTIVATE_​AUDIO_​SLOWMO_​MODE, mode);
+        }
         public static void PlaySoundFrontend(int soundId, string audioName, string audioRef, bool p3 = true)
         {
             Function.Call(Hash.PLAY_​SOUND_​FRONTEND, soundId, audioName, audioRef, p3);

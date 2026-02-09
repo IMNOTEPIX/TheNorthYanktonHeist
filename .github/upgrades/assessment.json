@@ -1,0 +1,1202 @@
+{
+  "settings": {
+    "components": {
+      "code": false,
+      "binaries": false
+    },
+    "targetId": "net8.0",
+    "targetDisplayName": ".NETCoreApp,Version=v8.0"
+  },
+  "analysisStartTime": "2026-02-08T19:26:53.8907729Z",
+  "analysisEndTime": "2026-02-08T19:26:54.7895644Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 1,
+      "issues": 4,
+      "incidents": 51,
+      "effort": 51
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 51,
+        "Optional": 0,
+        "Potential": 0,
+        "Information": 0
+      },
+      "category": {
+        "Project": 2,
+        "Api": 49
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+      "startingProject": true,
+      "issues": 3,
+      "storyPoints": 51,
+      "properties": {
+        "appName": "TheNorthYanktonHeist",
+        "projectKind": "ClassicWinForms",
+        "frameworks": [
+          "net481"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": false,
+        "numberOfFiles": 44,
+        "numberOfCodeFiles": 44,
+        "linesTotal": 11581,
+        "linesOfCode": 11581,
+        "totalApiScanned": 12486,
+        "minLinesOfCodeToChange": 49,
+        "maxLinesOfCodeToChange": 49
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "2524fdd9-5a91-441e-a0d7-63a06a695c46",
+          "ruleId": "Project.0001",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj"
+          }
+        },
+        {
+          "incidentId": "f21b8444-af92-472c-9f01-cec43059ff25",
+          "ruleId": "Project.0002",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: .NETFramework,Version=v4.8.1\nRecommended target framework: net8.0-windows",
+              "protected": "Current target framework: .NETFramework,Version=v4.8.1\nRecommended target framework: net8.0-windows"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+            "snippet": "Current target framework: .NETFramework,Version=v4.8.1\nRecommended target framework: net8.0-windows",
+            "protectedSnippet": "Current target framework: .NETFramework,Version=v4.8.1\nRecommended target framework: net8.0-windows",
+            "properties": {
+              "CurrentTargetFramework": ".NETFramework,Version=v4.8.1",
+              "RecommendedTargetFramework": "net8.0-windows"
+            }
+          }
+        },
+        {
+          "incidentId": "b1129a7e-633a-4562-bc80-9de947dc14da",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "private void onKeyDown(object sender, KeyEventArgs e)",
+              "protected": "T:System.Windows.Forms.KeyEventArgs"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "private void onKeyDown(object sender, KeyEventArgs e)",
+            "protectedSnippet": "T:System.Windows.Forms.KeyEventArgs",
+            "label": "T:System.Windows.Forms.KeyEventArgs",
+            "line": 178,
+            "column": 8
+          }
+        },
+        {
+          "incidentId": "40fe7e6c-e4ac-4ef1-90a4-844c587499c9",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.I)\r\n                    {\r\n                        Vector3 rotation = entity.Rotation;\r\n                        string rotationX = rotation.X.ToString();\r\n                        string rotationY = rotation.Y.ToString();\r\n                        string rotationZ = rotation.Z.ToString();\r\n                        string XYZ = rotation.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(rotationX, rotationX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(rotationY, rotationY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(rotationZ, rotationZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.I)\r\n                    {\r\n                        Vector3 rotation = entity.Rotation;\r\n                        string rotationX = rotation.X.ToString();\r\n                        string rotationY = rotation.Y.ToString();\r\n                        string rotationZ = rotation.Z.ToString();\r\n                        string XYZ = rotation.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(rotationX, rotationX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(rotationY, rotationY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(rotationZ, rotationZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 264,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "34935086-ed9b-4b25-a809-bd5f7672cd63",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.I)\r\n                    {\r\n                        Vector3 rotation = entity.Rotation;\r\n                        string rotationX = rotation.X.ToString();\r\n                        string rotationY = rotation.Y.ToString();\r\n                        string rotationZ = rotation.Z.ToString();\r\n                        string XYZ = rotation.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(rotationX, rotationX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(rotationY, rotationY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(rotationZ, rotationZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.I)\r\n                    {\r\n                        Vector3 rotation = entity.Rotation;\r\n                        string rotationX = rotation.X.ToString();\r\n                        string rotationY = rotation.Y.ToString();\r\n                        string rotationZ = rotation.Z.ToString();\r\n                        string XYZ = rotation.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(rotationX, rotationX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(rotationY, rotationY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(rotationZ, rotationZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 264,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "5954f898-519d-4887-b771-8be607f60aac",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.I)\r\n                    {\r\n                        Vector3 rotation = entity.Rotation;\r\n                        string rotationX = rotation.X.ToString();\r\n                        string rotationY = rotation.Y.ToString();\r\n                        string rotationZ = rotation.Z.ToString();\r\n                        string XYZ = rotation.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(rotationX, rotationX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(rotationY, rotationY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(rotationZ, rotationZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "F:System.Windows.Forms.Keys.I"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.I)\r\n                    {\r\n                        Vector3 rotation = entity.Rotation;\r\n                        string rotationX = rotation.X.ToString();\r\n                        string rotationY = rotation.Y.ToString();\r\n                        string rotationZ = rotation.Z.ToString();\r\n                        string XYZ = rotation.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(rotationX, rotationX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(rotationY, rotationY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(rotationZ, rotationZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "F:System.Windows.Forms.Keys.I",
+            "label": "F:System.Windows.Forms.Keys.I",
+            "line": 264,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "82f4260a-6469-4d54-baa3-3092c4b911d1",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.I)\r\n                    {\r\n                        Vector3 rotation = entity.Rotation;\r\n                        string rotationX = rotation.X.ToString();\r\n                        string rotationY = rotation.Y.ToString();\r\n                        string rotationZ = rotation.Z.ToString();\r\n                        string XYZ = rotation.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(rotationX, rotationX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(rotationY, rotationY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(rotationZ, rotationZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.I)\r\n                    {\r\n                        Vector3 rotation = entity.Rotation;\r\n                        string rotationX = rotation.X.ToString();\r\n                        string rotationY = rotation.Y.ToString();\r\n                        string rotationZ = rotation.Z.ToString();\r\n                        string XYZ = rotation.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(rotationX, rotationX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(rotationY, rotationY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(rotationZ, rotationZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 264,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "a5a1da95-8412-4908-8dc1-c468b2cd24d5",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.I)\r\n                    {\r\n                        Vector3 rotation = entity.Rotation;\r\n                        string rotationX = rotation.X.ToString();\r\n                        string rotationY = rotation.Y.ToString();\r\n                        string rotationZ = rotation.Z.ToString();\r\n                        string XYZ = rotation.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(rotationX, rotationX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(rotationY, rotationY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(rotationZ, rotationZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "P:System.Windows.Forms.KeyEventArgs.KeyCode"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.I)\r\n                    {\r\n                        Vector3 rotation = entity.Rotation;\r\n                        string rotationX = rotation.X.ToString();\r\n                        string rotationY = rotation.Y.ToString();\r\n                        string rotationZ = rotation.Z.ToString();\r\n                        string XYZ = rotation.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(rotationX, rotationX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(rotationY, rotationY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(rotationZ, rotationZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "label": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "line": 264,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "081cf7dc-5a1f-4719-b7ce-44a278839d6a",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.K)\r\n                    {\r\n                        if (entity.Model.IsInCdImage)\r\n                        {\r\n                            int modelHash = entity.Model.Hash;\r\n                            fDebug.CopyToClipboard(modelHash.ToString());\r\n                        }\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.K)\r\n                    {\r\n                        if (entity.Model.IsInCdImage)\r\n                        {\r\n                            int modelHash = entity.Model.Hash;\r\n                            fDebug.CopyToClipboard(modelHash.ToString());\r\n                        }\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 255,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "1559b032-0cd7-4723-936d-0a319803a4e9",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.K)\r\n                    {\r\n                        if (entity.Model.IsInCdImage)\r\n                        {\r\n                            int modelHash = entity.Model.Hash;\r\n                            fDebug.CopyToClipboard(modelHash.ToString());\r\n                        }\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.K)\r\n                    {\r\n                        if (entity.Model.IsInCdImage)\r\n                        {\r\n                            int modelHash = entity.Model.Hash;\r\n                            fDebug.CopyToClipboard(modelHash.ToString());\r\n                        }\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 255,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "e83f2dc0-788e-4970-b42b-ca2cecdb484c",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.K)\r\n                    {\r\n                        if (entity.Model.IsInCdImage)\r\n                        {\r\n                            int modelHash = entity.Model.Hash;\r\n                            fDebug.CopyToClipboard(modelHash.ToString());\r\n                        }\r\n                    }",
+              "protected": "F:System.Windows.Forms.Keys.K"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.K)\r\n                    {\r\n                        if (entity.Model.IsInCdImage)\r\n                        {\r\n                            int modelHash = entity.Model.Hash;\r\n                            fDebug.CopyToClipboard(modelHash.ToString());\r\n                        }\r\n                    }",
+            "protectedSnippet": "F:System.Windows.Forms.Keys.K",
+            "label": "F:System.Windows.Forms.Keys.K",
+            "line": 255,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "4f055b00-d0ed-4481-bf2b-27de068df908",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.K)\r\n                    {\r\n                        if (entity.Model.IsInCdImage)\r\n                        {\r\n                            int modelHash = entity.Model.Hash;\r\n                            fDebug.CopyToClipboard(modelHash.ToString());\r\n                        }\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.K)\r\n                    {\r\n                        if (entity.Model.IsInCdImage)\r\n                        {\r\n                            int modelHash = entity.Model.Hash;\r\n                            fDebug.CopyToClipboard(modelHash.ToString());\r\n                        }\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 255,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "46f0abde-b6c2-497c-a391-4e92becdc6f6",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.K)\r\n                    {\r\n                        if (entity.Model.IsInCdImage)\r\n                        {\r\n                            int modelHash = entity.Model.Hash;\r\n                            fDebug.CopyToClipboard(modelHash.ToString());\r\n                        }\r\n                    }",
+              "protected": "P:System.Windows.Forms.KeyEventArgs.KeyCode"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.K)\r\n                    {\r\n                        if (entity.Model.IsInCdImage)\r\n                        {\r\n                            int modelHash = entity.Model.Hash;\r\n                            fDebug.CopyToClipboard(modelHash.ToString());\r\n                        }\r\n                    }",
+            "protectedSnippet": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "label": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "line": 255,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "d1086a05-b388-4e07-be39-ba0f4d6f8e64",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.L)\r\n                    {\r\n                        float heading = entity.Heading;\r\n                        string heading2 = heading \u002B \u0022f\u0022;\r\n                        string Final = heading2;\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.L)\r\n                    {\r\n                        float heading = entity.Heading;\r\n                        string heading2 = heading \u002B \u0022f\u0022;\r\n                        string Final = heading2;\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 247,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "9f19aefd-e344-4091-8cd1-46d07e47f30f",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.L)\r\n                    {\r\n                        float heading = entity.Heading;\r\n                        string heading2 = heading \u002B \u0022f\u0022;\r\n                        string Final = heading2;\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.L)\r\n                    {\r\n                        float heading = entity.Heading;\r\n                        string heading2 = heading \u002B \u0022f\u0022;\r\n                        string Final = heading2;\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 247,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "99f12566-9379-4acc-b3ea-6575c8e0002b",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.L)\r\n                    {\r\n                        float heading = entity.Heading;\r\n                        string heading2 = heading \u002B \u0022f\u0022;\r\n                        string Final = heading2;\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "F:System.Windows.Forms.Keys.L"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.L)\r\n                    {\r\n                        float heading = entity.Heading;\r\n                        string heading2 = heading \u002B \u0022f\u0022;\r\n                        string Final = heading2;\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "F:System.Windows.Forms.Keys.L",
+            "label": "F:System.Windows.Forms.Keys.L",
+            "line": 247,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "696c15da-757c-46e7-868b-03825ac9eeab",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.L)\r\n                    {\r\n                        float heading = entity.Heading;\r\n                        string heading2 = heading \u002B \u0022f\u0022;\r\n                        string Final = heading2;\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.L)\r\n                    {\r\n                        float heading = entity.Heading;\r\n                        string heading2 = heading \u002B \u0022f\u0022;\r\n                        string Final = heading2;\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 247,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "c4a34e6e-d194-4060-bcaf-aabbf7b8f138",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.L)\r\n                    {\r\n                        float heading = entity.Heading;\r\n                        string heading2 = heading \u002B \u0022f\u0022;\r\n                        string Final = heading2;\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "P:System.Windows.Forms.KeyEventArgs.KeyCode"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.L)\r\n                    {\r\n                        float heading = entity.Heading;\r\n                        string heading2 = heading \u002B \u0022f\u0022;\r\n                        string Final = heading2;\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "label": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "line": 247,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "bd7a8916-940a-40c3-9dbb-ad264f81df52",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.O)\r\n                    {\r\n                        entity.AddBlip();\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.O)\r\n                    {\r\n                        entity.AddBlip();\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 242,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "7ca4097f-e466-4aab-b018-532fbbf25f3b",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.O)\r\n                    {\r\n                        entity.AddBlip();\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.O)\r\n                    {\r\n                        entity.AddBlip();\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 242,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "e5770286-cba5-4165-932d-6cdfd2cb7f83",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.O)\r\n                    {\r\n                        entity.AddBlip();\r\n                    }",
+              "protected": "F:System.Windows.Forms.Keys.O"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.O)\r\n                    {\r\n                        entity.AddBlip();\r\n                    }",
+            "protectedSnippet": "F:System.Windows.Forms.Keys.O",
+            "label": "F:System.Windows.Forms.Keys.O",
+            "line": 242,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "69f1a43f-f4a2-4a04-be71-0dc42f3d96e1",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.O)\r\n                    {\r\n                        entity.AddBlip();\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.O)\r\n                    {\r\n                        entity.AddBlip();\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 242,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "507b144e-ef48-467c-aa14-43403c75350f",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.O)\r\n                    {\r\n                        entity.AddBlip();\r\n                    }",
+              "protected": "P:System.Windows.Forms.KeyEventArgs.KeyCode"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.O)\r\n                    {\r\n                        entity.AddBlip();\r\n                    }",
+            "protectedSnippet": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "label": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "line": 242,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "4eecd24d-da3b-4424-aa08-18600d540f8d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.B)\r\n                    {\r\n                        Vector3 vector = entity.Position;\r\n                        string vectorX = vector.X.ToString();\r\n                        string vectorY = vector.Y.ToString();\r\n                        string vectorZ = vector.Z.ToString();\r\n                        string XYZ = vector.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(vectorX, vectorX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(vectorY, vectorY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(vectorZ, vectorZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.B)\r\n                    {\r\n                        Vector3 vector = entity.Position;\r\n                        string vectorX = vector.X.ToString();\r\n                        string vectorY = vector.Y.ToString();\r\n                        string vectorZ = vector.Z.ToString();\r\n                        string XYZ = vector.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(vectorX, vectorX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(vectorY, vectorY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(vectorZ, vectorZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 229,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "e6244e2c-3438-42a1-91b8-3767e01add84",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.B)\r\n                    {\r\n                        Vector3 vector = entity.Position;\r\n                        string vectorX = vector.X.ToString();\r\n                        string vectorY = vector.Y.ToString();\r\n                        string vectorZ = vector.Z.ToString();\r\n                        string XYZ = vector.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(vectorX, vectorX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(vectorY, vectorY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(vectorZ, vectorZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.B)\r\n                    {\r\n                        Vector3 vector = entity.Position;\r\n                        string vectorX = vector.X.ToString();\r\n                        string vectorY = vector.Y.ToString();\r\n                        string vectorZ = vector.Z.ToString();\r\n                        string XYZ = vector.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(vectorX, vectorX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(vectorY, vectorY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(vectorZ, vectorZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 229,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "c4d1a0c0-dc98-4bf0-abae-afc6b3be6965",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.B)\r\n                    {\r\n                        Vector3 vector = entity.Position;\r\n                        string vectorX = vector.X.ToString();\r\n                        string vectorY = vector.Y.ToString();\r\n                        string vectorZ = vector.Z.ToString();\r\n                        string XYZ = vector.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(vectorX, vectorX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(vectorY, vectorY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(vectorZ, vectorZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "F:System.Windows.Forms.Keys.B"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.B)\r\n                    {\r\n                        Vector3 vector = entity.Position;\r\n                        string vectorX = vector.X.ToString();\r\n                        string vectorY = vector.Y.ToString();\r\n                        string vectorZ = vector.Z.ToString();\r\n                        string XYZ = vector.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(vectorX, vectorX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(vectorY, vectorY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(vectorZ, vectorZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "F:System.Windows.Forms.Keys.B",
+            "label": "F:System.Windows.Forms.Keys.B",
+            "line": 229,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "a502ac3c-3289-4208-9d3d-6ee61252efba",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.B)\r\n                    {\r\n                        Vector3 vector = entity.Position;\r\n                        string vectorX = vector.X.ToString();\r\n                        string vectorY = vector.Y.ToString();\r\n                        string vectorZ = vector.Z.ToString();\r\n                        string XYZ = vector.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(vectorX, vectorX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(vectorY, vectorY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(vectorZ, vectorZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.B)\r\n                    {\r\n                        Vector3 vector = entity.Position;\r\n                        string vectorX = vector.X.ToString();\r\n                        string vectorY = vector.Y.ToString();\r\n                        string vectorZ = vector.Z.ToString();\r\n                        string XYZ = vector.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(vectorX, vectorX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(vectorY, vectorY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(vectorZ, vectorZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 229,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "30d1cfb9-17f3-4820-a525-d7d7a2601339",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.B)\r\n                    {\r\n                        Vector3 vector = entity.Position;\r\n                        string vectorX = vector.X.ToString();\r\n                        string vectorY = vector.Y.ToString();\r\n                        string vectorZ = vector.Z.ToString();\r\n                        string XYZ = vector.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(vectorX, vectorX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(vectorY, vectorY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(vectorZ, vectorZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+              "protected": "P:System.Windows.Forms.KeyEventArgs.KeyCode"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (Function.Call\u003Cbool\u003E(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) \u0026\u0026 e.KeyCode == Keys.B)\r\n                    {\r\n                        Vector3 vector = entity.Position;\r\n                        string vectorX = vector.X.ToString();\r\n                        string vectorY = vector.Y.ToString();\r\n                        string vectorZ = vector.Z.ToString();\r\n                        string XYZ = vector.ToString().Replace(\u0022X:\u0022, string.Empty).Replace(\u0022Y:\u0022, string.Empty).Replace(\u0022Z:\u0022, string.Empty);\r\n                        string Text2 = XYZ.Replace(vectorX, vectorX \u002B \u0022f,\u0022);\r\n                        string Text3 = Text2.Replace(vectorY, vectorY \u002B \u0022f,\u0022);\r\n                        string Final = Text3.Replace(vectorZ, vectorZ \u002B \u0022f\u0022);\r\n                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);\r\n                    }",
+            "protectedSnippet": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "label": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "line": 229,
+            "column": 20
+          }
+        },
+        {
+          "incidentId": "8c544d9b-35e2-4888-9997-713d92bf47e4",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.NumPad9)\r\n                {\r\n                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() \u002B \u0022f\u0022);\r\n                }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.NumPad9)\r\n                {\r\n                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() \u002B \u0022f\u0022);\r\n                }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 221,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "2fb71076-f091-4d93-8868-491f7f6725ca",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.NumPad9)\r\n                {\r\n                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() \u002B \u0022f\u0022);\r\n                }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.NumPad9)\r\n                {\r\n                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() \u002B \u0022f\u0022);\r\n                }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 221,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "d1e26616-d60b-4257-adc9-ed4a7b8de2c8",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.NumPad9)\r\n                {\r\n                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() \u002B \u0022f\u0022);\r\n                }",
+              "protected": "F:System.Windows.Forms.Keys.NumPad9"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.NumPad9)\r\n                {\r\n                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() \u002B \u0022f\u0022);\r\n                }",
+            "protectedSnippet": "F:System.Windows.Forms.Keys.NumPad9",
+            "label": "F:System.Windows.Forms.Keys.NumPad9",
+            "line": 221,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "1615f436-66c6-48ff-a697-073d4eee1f15",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.NumPad9)\r\n                {\r\n                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() \u002B \u0022f\u0022);\r\n                }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.NumPad9)\r\n                {\r\n                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() \u002B \u0022f\u0022);\r\n                }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 221,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "26ee7b73-8bc7-46a4-bf12-cbf5aed8f81f",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.NumPad9)\r\n                {\r\n                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() \u002B \u0022f\u0022);\r\n                }",
+              "protected": "P:System.Windows.Forms.KeyEventArgs.KeyCode"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.NumPad9)\r\n                {\r\n                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() \u002B \u0022f\u0022);\r\n                }",
+            "protectedSnippet": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "label": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "line": 221,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "cc222e3e-0fe6-4250-a163-ffb2be1d68fb",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.NumPad7)\r\n                {\r\n                    //fHud.DisplayHeistHelpText(\u0022NTH_GOTODEPOT\u0022, true);\r\n                    //Screen.FadeIn(0);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();\r\n                    //1777.488f, 3326.681f, 41.43328f\r\n                }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.NumPad7)\r\n                {\r\n                    //fHud.DisplayHeistHelpText(\u0022NTH_GOTODEPOT\u0022, true);\r\n                    //Screen.FadeIn(0);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();\r\n                    //1777.488f, 3326.681f, 41.43328f\r\n                }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 214,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "108b4beb-02c5-439f-a848-12c1e9e4199d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.NumPad7)\r\n                {\r\n                    //fHud.DisplayHeistHelpText(\u0022NTH_GOTODEPOT\u0022, true);\r\n                    //Screen.FadeIn(0);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();\r\n                    //1777.488f, 3326.681f, 41.43328f\r\n                }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.NumPad7)\r\n                {\r\n                    //fHud.DisplayHeistHelpText(\u0022NTH_GOTODEPOT\u0022, true);\r\n                    //Screen.FadeIn(0);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();\r\n                    //1777.488f, 3326.681f, 41.43328f\r\n                }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 214,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "3a724686-5529-4eec-8b30-6bc5eecfe706",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.NumPad7)\r\n                {\r\n                    //fHud.DisplayHeistHelpText(\u0022NTH_GOTODEPOT\u0022, true);\r\n                    //Screen.FadeIn(0);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();\r\n                    //1777.488f, 3326.681f, 41.43328f\r\n                }",
+              "protected": "F:System.Windows.Forms.Keys.NumPad7"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.NumPad7)\r\n                {\r\n                    //fHud.DisplayHeistHelpText(\u0022NTH_GOTODEPOT\u0022, true);\r\n                    //Screen.FadeIn(0);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();\r\n                    //1777.488f, 3326.681f, 41.43328f\r\n                }",
+            "protectedSnippet": "F:System.Windows.Forms.Keys.NumPad7",
+            "label": "F:System.Windows.Forms.Keys.NumPad7",
+            "line": 214,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "0bb26a5b-5789-4cfa-89aa-aaa883aadb06",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.NumPad7)\r\n                {\r\n                    //fHud.DisplayHeistHelpText(\u0022NTH_GOTODEPOT\u0022, true);\r\n                    //Screen.FadeIn(0);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();\r\n                    //1777.488f, 3326.681f, 41.43328f\r\n                }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.NumPad7)\r\n                {\r\n                    //fHud.DisplayHeistHelpText(\u0022NTH_GOTODEPOT\u0022, true);\r\n                    //Screen.FadeIn(0);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();\r\n                    //1777.488f, 3326.681f, 41.43328f\r\n                }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 214,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "556bc4fc-f45b-489a-8472-c8f5615a6537",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.NumPad7)\r\n                {\r\n                    //fHud.DisplayHeistHelpText(\u0022NTH_GOTODEPOT\u0022, true);\r\n                    //Screen.FadeIn(0);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();\r\n                    //1777.488f, 3326.681f, 41.43328f\r\n                }",
+              "protected": "P:System.Windows.Forms.KeyEventArgs.KeyCode"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.NumPad7)\r\n                {\r\n                    //fHud.DisplayHeistHelpText(\u0022NTH_GOTODEPOT\u0022, true);\r\n                    //Screen.FadeIn(0);\r\n                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();\r\n                    //1777.488f, 3326.681f, 41.43328f\r\n                }",
+            "protectedSnippet": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "label": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "line": 214,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "e433e70a-cf96-4fb7-9b11-7a636ed3387d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.N)\r\n                {\r\n                    //Function.Call(Hash.LOAD_STREAM, \u0022PROLOGUE_BLOW_THE_VAULT_MASTER\u0022, 0);\r\n                    //fAudio.PlayStreamFrontend();\r\n                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());\r\n                    //Debug2 = 0;\r\n                    //SpawnBooth();\r\n                    \r\n                    ScriptManager.ScriptManager.KillScripts();\r\n                    TheNorthYanktonHeist.Heist.checkpoint = 3;\r\n                    Globals.missionSwitch = 1000;\r\n                    TheNorthYanktonHeist.Heist.justFailed = true;\r\n                    SetFailVariation(FailVariations.PlaneDestroyed);\r\n                    TheNorthYanktonHeist.Heist.MissionFailCleanUpRequired = true;\r\n                    //fPlayer.PedPos(3263.05f, -4704.67f, 104.67f, 0f);\r\n                    //fInterior.PrologueMap.LoadYankton();\r\n                    //fInterior.PrologueMap.EnableYanktonTraffic = true;\r\n                    //missionSwitch = 3;\r\n                    //Debug2 = 0;\r\n                    /*\r\n                    Blip[] allBlips = World.GetAllBlips();\r\n                    if (allBlips.Length \u003E 0)\r\n                    {\r\n                        foreach (Blip blip in allBlips)\r\n                        {\r\n                            if (blip != null \u0026\u0026 blip.Sprite == BlipSprite.Standard)\r\n                            {\r\n                                blip.Delete();\r\n                            }\r\n                        }\r\n                    }*/\r\n                }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.N)\r\n                {\r\n                    //Function.Call(Hash.LOAD_STREAM, \u0022PROLOGUE_BLOW_THE_VAULT_MASTER\u0022, 0);\r\n                    //fAudio.PlayStreamFrontend();\r\n                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());\r\n                    //Debug2 = 0;\r\n                    //SpawnBooth();\r\n                    \r\n                    ScriptManager.ScriptManager.KillScripts();\r\n                    TheNorthYanktonHeist.Heist.checkpoint = 3;\r\n                    Globals.missionSwitch = 1000;\r\n                    TheNorthYanktonHeist.Heist.justFailed = true;\r\n                    SetFailVariation(FailVariations.PlaneDestroyed);\r\n                    TheNorthYanktonHeist.Heist.MissionFailCleanUpRequired = true;\r\n                    //fPlayer.PedPos(3263.05f, -4704.67f, 104.67f, 0f);\r\n                    //fInterior.PrologueMap.LoadYankton();\r\n                    //fInterior.PrologueMap.EnableYanktonTraffic = true;\r\n                    //missionSwitch = 3;\r\n                    //Debug2 = 0;\r\n                    /*\r\n                    Blip[] allBlips = World.GetAllBlips();\r\n                    if (allBlips.Length \u003E 0)\r\n                    {\r\n                        foreach (Blip blip in allBlips)\r\n                        {\r\n                            if (blip != null \u0026\u0026 blip.Sprite == BlipSprite.Standard)\r\n                            {\r\n                                blip.Delete();\r\n                            }\r\n                        }\r\n                    }*/\r\n                }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 182,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "d2cc49a8-5e68-4bf0-b892-e7bcb3ea0a57",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.N)\r\n                {\r\n                    //Function.Call(Hash.LOAD_STREAM, \u0022PROLOGUE_BLOW_THE_VAULT_MASTER\u0022, 0);\r\n                    //fAudio.PlayStreamFrontend();\r\n                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());\r\n                    //Debug2 = 0;\r\n                    //SpawnBooth();\r\n                    \r\n                    ScriptManager.ScriptManager.KillScripts();\r\n                    TheNorthYanktonHeist.Heist.checkpoint = 3;\r\n                    Globals.missionSwitch = 1000;\r\n                    TheNorthYanktonHeist.Heist.justFailed = true;\r\n                    SetFailVariation(FailVariations.PlaneDestroyed);\r\n                    TheNorthYanktonHeist.Heist.MissionFailCleanUpRequired = true;\r\n                    //fPlayer.PedPos(3263.05f, -4704.67f, 104.67f, 0f);\r\n                    //fInterior.PrologueMap.LoadYankton();\r\n                    //fInterior.PrologueMap.EnableYanktonTraffic = true;\r\n                    //missionSwitch = 3;\r\n                    //Debug2 = 0;\r\n                    /*\r\n                    Blip[] allBlips = World.GetAllBlips();\r\n                    if (allBlips.Length \u003E 0)\r\n                    {\r\n                        foreach (Blip blip in allBlips)\r\n                        {\r\n                            if (blip != null \u0026\u0026 blip.Sprite == BlipSprite.Standard)\r\n                            {\r\n                                blip.Delete();\r\n                            }\r\n                        }\r\n                    }*/\r\n                }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.N)\r\n                {\r\n                    //Function.Call(Hash.LOAD_STREAM, \u0022PROLOGUE_BLOW_THE_VAULT_MASTER\u0022, 0);\r\n                    //fAudio.PlayStreamFrontend();\r\n                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());\r\n                    //Debug2 = 0;\r\n                    //SpawnBooth();\r\n                    \r\n                    ScriptManager.ScriptManager.KillScripts();\r\n                    TheNorthYanktonHeist.Heist.checkpoint = 3;\r\n                    Globals.missionSwitch = 1000;\r\n                    TheNorthYanktonHeist.Heist.justFailed = true;\r\n                    SetFailVariation(FailVariations.PlaneDestroyed);\r\n                    TheNorthYanktonHeist.Heist.MissionFailCleanUpRequired = true;\r\n                    //fPlayer.PedPos(3263.05f, -4704.67f, 104.67f, 0f);\r\n                    //fInterior.PrologueMap.LoadYankton();\r\n                    //fInterior.PrologueMap.EnableYanktonTraffic = true;\r\n                    //missionSwitch = 3;\r\n                    //Debug2 = 0;\r\n                    /*\r\n                    Blip[] allBlips = World.GetAllBlips();\r\n                    if (allBlips.Length \u003E 0)\r\n                    {\r\n                        foreach (Blip blip in allBlips)\r\n                        {\r\n                            if (blip != null \u0026\u0026 blip.Sprite == BlipSprite.Standard)\r\n                            {\r\n                                blip.Delete();\r\n                            }\r\n                        }\r\n                    }*/\r\n                }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 182,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "fcb8a2c3-6c82-4e8a-bb05-7d9c1421864e",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.N)\r\n                {\r\n                    //Function.Call(Hash.LOAD_STREAM, \u0022PROLOGUE_BLOW_THE_VAULT_MASTER\u0022, 0);\r\n                    //fAudio.PlayStreamFrontend();\r\n                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());\r\n                    //Debug2 = 0;\r\n                    //SpawnBooth();\r\n                    \r\n                    ScriptManager.ScriptManager.KillScripts();\r\n                    TheNorthYanktonHeist.Heist.checkpoint = 3;\r\n                    Globals.missionSwitch = 1000;\r\n                    TheNorthYanktonHeist.Heist.justFailed = true;\r\n                    SetFailVariation(FailVariations.PlaneDestroyed);\r\n                    TheNorthYanktonHeist.Heist.MissionFailCleanUpRequired = true;\r\n                    //fPlayer.PedPos(3263.05f, -4704.67f, 104.67f, 0f);\r\n                    //fInterior.PrologueMap.LoadYankton();\r\n                    //fInterior.PrologueMap.EnableYanktonTraffic = true;\r\n                    //missionSwitch = 3;\r\n                    //Debug2 = 0;\r\n                    /*\r\n                    Blip[] allBlips = World.GetAllBlips();\r\n                    if (allBlips.Length \u003E 0)\r\n                    {\r\n                        foreach (Blip blip in allBlips)\r\n                        {\r\n                            if (blip != null \u0026\u0026 blip.Sprite == BlipSprite.Standard)\r\n                            {\r\n                                blip.Delete();\r\n                            }\r\n                        }\r\n                    }*/\r\n                }",
+              "protected": "F:System.Windows.Forms.Keys.N"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.N)\r\n                {\r\n                    //Function.Call(Hash.LOAD_STREAM, \u0022PROLOGUE_BLOW_THE_VAULT_MASTER\u0022, 0);\r\n                    //fAudio.PlayStreamFrontend();\r\n                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());\r\n                    //Debug2 = 0;\r\n                    //SpawnBooth();\r\n                    \r\n                    ScriptManager.ScriptManager.KillScripts();\r\n                    TheNorthYanktonHeist.Heist.checkpoint = 3;\r\n                    Globals.missionSwitch = 1000;\r\n                    TheNorthYanktonHeist.Heist.justFailed = true;\r\n                    SetFailVariation(FailVariations.PlaneDestroyed);\r\n                    TheNorthYanktonHeist.Heist.MissionFailCleanUpRequired = true;\r\n                    //fPlayer.PedPos(3263.05f, -4704.67f, 104.67f, 0f);\r\n                    //fInterior.PrologueMap.LoadYankton();\r\n                    //fInterior.PrologueMap.EnableYanktonTraffic = true;\r\n                    //missionSwitch = 3;\r\n                    //Debug2 = 0;\r\n                    /*\r\n                    Blip[] allBlips = World.GetAllBlips();\r\n                    if (allBlips.Length \u003E 0)\r\n                    {\r\n                        foreach (Blip blip in allBlips)\r\n                        {\r\n                            if (blip != null \u0026\u0026 blip.Sprite == BlipSprite.Standard)\r\n                            {\r\n                                blip.Delete();\r\n                            }\r\n                        }\r\n                    }*/\r\n                }",
+            "protectedSnippet": "F:System.Windows.Forms.Keys.N",
+            "label": "F:System.Windows.Forms.Keys.N",
+            "line": 182,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "029e13d0-2db3-4d3e-bb4d-25418aebbb50",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.N)\r\n                {\r\n                    //Function.Call(Hash.LOAD_STREAM, \u0022PROLOGUE_BLOW_THE_VAULT_MASTER\u0022, 0);\r\n                    //fAudio.PlayStreamFrontend();\r\n                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());\r\n                    //Debug2 = 0;\r\n                    //SpawnBooth();\r\n                    \r\n                    ScriptManager.ScriptManager.KillScripts();\r\n                    TheNorthYanktonHeist.Heist.checkpoint = 3;\r\n                    Globals.missionSwitch = 1000;\r\n                    TheNorthYanktonHeist.Heist.justFailed = true;\r\n                    SetFailVariation(FailVariations.PlaneDestroyed);\r\n                    TheNorthYanktonHeist.Heist.MissionFailCleanUpRequired = true;\r\n                    //fPlayer.PedPos(3263.05f, -4704.67f, 104.67f, 0f);\r\n                    //fInterior.PrologueMap.LoadYankton();\r\n                    //fInterior.PrologueMap.EnableYanktonTraffic = true;\r\n                    //missionSwitch = 3;\r\n                    //Debug2 = 0;\r\n                    /*\r\n                    Blip[] allBlips = World.GetAllBlips();\r\n                    if (allBlips.Length \u003E 0)\r\n                    {\r\n                        foreach (Blip blip in allBlips)\r\n                        {\r\n                            if (blip != null \u0026\u0026 blip.Sprite == BlipSprite.Standard)\r\n                            {\r\n                                blip.Delete();\r\n                            }\r\n                        }\r\n                    }*/\r\n                }",
+              "protected": "T:System.Windows.Forms.Keys"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.N)\r\n                {\r\n                    //Function.Call(Hash.LOAD_STREAM, \u0022PROLOGUE_BLOW_THE_VAULT_MASTER\u0022, 0);\r\n                    //fAudio.PlayStreamFrontend();\r\n                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());\r\n                    //Debug2 = 0;\r\n                    //SpawnBooth();\r\n                    \r\n                    ScriptManager.ScriptManager.KillScripts();\r\n                    TheNorthYanktonHeist.Heist.checkpoint = 3;\r\n                    Globals.missionSwitch = 1000;\r\n                    TheNorthYanktonHeist.Heist.justFailed = true;\r\n                    SetFailVariation(FailVariations.PlaneDestroyed);\r\n                    TheNorthYanktonHeist.Heist.MissionFailCleanUpRequired = true;\r\n                    //fPlayer.PedPos(3263.05f, -4704.67f, 104.67f, 0f);\r\n                    //fInterior.PrologueMap.LoadYankton();\r\n                    //fInterior.PrologueMap.EnableYanktonTraffic = true;\r\n                    //missionSwitch = 3;\r\n                    //Debug2 = 0;\r\n                    /*\r\n                    Blip[] allBlips = World.GetAllBlips();\r\n                    if (allBlips.Length \u003E 0)\r\n                    {\r\n                        foreach (Blip blip in allBlips)\r\n                        {\r\n                            if (blip != null \u0026\u0026 blip.Sprite == BlipSprite.Standard)\r\n                            {\r\n                                blip.Delete();\r\n                            }\r\n                        }\r\n                    }*/\r\n                }",
+            "protectedSnippet": "T:System.Windows.Forms.Keys",
+            "label": "T:System.Windows.Forms.Keys",
+            "line": 182,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "a0dff191-687a-4efc-9774-1e54403420b7",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "if (e.KeyCode == Keys.N)\r\n                {\r\n                    //Function.Call(Hash.LOAD_STREAM, \u0022PROLOGUE_BLOW_THE_VAULT_MASTER\u0022, 0);\r\n                    //fAudio.PlayStreamFrontend();\r\n                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());\r\n                    //Debug2 = 0;\r\n                    //SpawnBooth();\r\n                    \r\n                    ScriptManager.ScriptManager.KillScripts();\r\n                    TheNorthYanktonHeist.Heist.checkpoint = 3;\r\n                    Globals.missionSwitch = 1000;\r\n                    TheNorthYanktonHeist.Heist.justFailed = true;\r\n                    SetFailVariation(FailVariations.PlaneDestroyed);\r\n                    TheNorthYanktonHeist.Heist.MissionFailCleanUpRequired = true;\r\n                    //fPlayer.PedPos(3263.05f, -4704.67f, 104.67f, 0f);\r\n                    //fInterior.PrologueMap.LoadYankton();\r\n                    //fInterior.PrologueMap.EnableYanktonTraffic = true;\r\n                    //missionSwitch = 3;\r\n                    //Debug2 = 0;\r\n                    /*\r\n                    Blip[] allBlips = World.GetAllBlips();\r\n                    if (allBlips.Length \u003E 0)\r\n                    {\r\n                        foreach (Blip blip in allBlips)\r\n                        {\r\n                            if (blip != null \u0026\u0026 blip.Sprite == BlipSprite.Standard)\r\n                            {\r\n                                blip.Delete();\r\n                            }\r\n                        }\r\n                    }*/\r\n                }",
+              "protected": "P:System.Windows.Forms.KeyEventArgs.KeyCode"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "if (e.KeyCode == Keys.N)\r\n                {\r\n                    //Function.Call(Hash.LOAD_STREAM, \u0022PROLOGUE_BLOW_THE_VAULT_MASTER\u0022, 0);\r\n                    //fAudio.PlayStreamFrontend();\r\n                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());\r\n                    //Debug2 = 0;\r\n                    //SpawnBooth();\r\n                    \r\n                    ScriptManager.ScriptManager.KillScripts();\r\n                    TheNorthYanktonHeist.Heist.checkpoint = 3;\r\n                    Globals.missionSwitch = 1000;\r\n                    TheNorthYanktonHeist.Heist.justFailed = true;\r\n                    SetFailVariation(FailVariations.PlaneDestroyed);\r\n                    TheNorthYanktonHeist.Heist.MissionFailCleanUpRequired = true;\r\n                    //fPlayer.PedPos(3263.05f, -4704.67f, 104.67f, 0f);\r\n                    //fInterior.PrologueMap.LoadYankton();\r\n                    //fInterior.PrologueMap.EnableYanktonTraffic = true;\r\n                    //missionSwitch = 3;\r\n                    //Debug2 = 0;\r\n                    /*\r\n                    Blip[] allBlips = World.GetAllBlips();\r\n                    if (allBlips.Length \u003E 0)\r\n                    {\r\n                        foreach (Blip blip in allBlips)\r\n                        {\r\n                            if (blip != null \u0026\u0026 blip.Sprite == BlipSprite.Standard)\r\n                            {\r\n                                blip.Delete();\r\n                            }\r\n                        }\r\n                    }*/\r\n                }",
+            "protectedSnippet": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "label": "P:System.Windows.Forms.KeyEventArgs.KeyCode",
+            "line": 182,
+            "column": 16
+          }
+        },
+        {
+          "incidentId": "2bdaf32c-0af5-4e2c-858c-e3557dd6452e",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "KeyDown \u002B= onKeyDown;",
+              "protected": "T:System.Windows.Forms.KeyEventHandler"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "KeyDown \u002B= onKeyDown;",
+            "protectedSnippet": "T:System.Windows.Forms.KeyEventHandler",
+            "label": "T:System.Windows.Forms.KeyEventHandler",
+            "line": 66,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "4d78d923-b208-4ab1-b118-0676491acdf7",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "KeyDown \u002B= onKeyDown;",
+              "protected": "T:System.Windows.Forms.KeyEventHandler"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "KeyDown \u002B= onKeyDown;",
+            "protectedSnippet": "T:System.Windows.Forms.KeyEventHandler",
+            "label": "T:System.Windows.Forms.KeyEventHandler",
+            "line": 66,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "5f5b214b-8c9d-4026-9264-75dd6888006d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "KeyDown \u002B= onKeyDown;",
+              "protected": "T:System.Windows.Forms.KeyEventHandler"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "KeyDown \u002B= onKeyDown;",
+            "protectedSnippet": "T:System.Windows.Forms.KeyEventHandler",
+            "label": "T:System.Windows.Forms.KeyEventHandler",
+            "line": 66,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "40317803-ac9c-476f-9725-123259b8409f",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "KeyDown \u002B= onKeyDown;",
+              "protected": "T:System.Windows.Forms.KeyEventHandler"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Global.cs",
+            "snippet": "KeyDown \u002B= onKeyDown;",
+            "protectedSnippet": "T:System.Windows.Forms.KeyEventHandler",
+            "label": "T:System.Windows.Forms.KeyEventHandler",
+            "line": 66,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "e799a020-6f2c-45ed-ba36-303cfe77836d",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Thread thread = new Thread((ThreadStart)(() =\u003E Clipboard.SetText(text)));",
+              "protected": "T:System.Windows.Forms.Clipboard"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Funcs\\Debug.cs",
+            "snippet": "Thread thread = new Thread((ThreadStart)(() =\u003E Clipboard.SetText(text)));",
+            "protectedSnippet": "T:System.Windows.Forms.Clipboard",
+            "label": "T:System.Windows.Forms.Clipboard",
+            "line": 46,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "71033a6f-fb42-4414-a665-b848acf686bd",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Thread thread = new Thread((ThreadStart)(() =\u003E Clipboard.SetText(text)));",
+              "protected": "M:System.Windows.Forms.Clipboard.SetText(System.String)"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Funcs\\Debug.cs",
+            "snippet": "Thread thread = new Thread((ThreadStart)(() =\u003E Clipboard.SetText(text)));",
+            "protectedSnippet": "M:System.Windows.Forms.Clipboard.SetText(System.String)",
+            "label": "M:System.Windows.Forms.Clipboard.SetText(System.String)",
+            "line": 46,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "024e231e-2d98-415e-bba4-b3b287febc18",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Thread thread = new Thread((ThreadStart)(() =\u003E Clipboard.SetText(Final)));",
+              "protected": "T:System.Windows.Forms.Clipboard"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Funcs\\Debug.cs",
+            "snippet": "Thread thread = new Thread((ThreadStart)(() =\u003E Clipboard.SetText(Final)));",
+            "protectedSnippet": "T:System.Windows.Forms.Clipboard",
+            "label": "T:System.Windows.Forms.Clipboard",
+            "line": 38,
+            "column": 12
+          }
+        },
+        {
+          "incidentId": "d28229ef-dd91-4768-b397-8b5f9c5e66fd",
+          "ruleId": "Api.0001",
+          "description": "API is unavailable in net8.0 ",
+          "projectPath": "TheNorthYanktonHeist\\TheNorthYanktonHeist.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Thread thread = new Thread((ThreadStart)(() =\u003E Clipboard.SetText(Final)));",
+              "protected": "M:System.Windows.Forms.Clipboard.SetText(System.String)"
+            },
+            "kind": "File",
+            "path": "TheNorthYanktonHeist\\Funcs\\Debug.cs",
+            "snippet": "Thread thread = new Thread((ThreadStart)(() =\u003E Clipboard.SetText(Final)));",
+            "protectedSnippet": "M:System.Windows.Forms.Clipboard.SetText(System.String)",
+            "label": "M:System.Windows.Forms.Clipboard.SetText(System.String)",
+            "line": 38,
+            "column": 12
+          }
+        }
+      ],
+      "features": [
+        {
+          "featureId": "WinForms",
+          "incidents": [
+            "d28229ef-dd91-4768-b397-8b5f9c5e66fd",
+            "024e231e-2d98-415e-bba4-b3b287febc18",
+            "71033a6f-fb42-4414-a665-b848acf686bd",
+            "e799a020-6f2c-45ed-ba36-303cfe77836d",
+            "40317803-ac9c-476f-9725-123259b8409f",
+            "5f5b214b-8c9d-4026-9264-75dd6888006d",
+            "4d78d923-b208-4ab1-b118-0676491acdf7",
+            "2bdaf32c-0af5-4e2c-858c-e3557dd6452e",
+            "a0dff191-687a-4efc-9774-1e54403420b7",
+            "029e13d0-2db3-4d3e-bb4d-25418aebbb50",
+            "fcb8a2c3-6c82-4e8a-bb05-7d9c1421864e",
+            "d2cc49a8-5e68-4bf0-b892-e7bcb3ea0a57",
+            "e433e70a-cf96-4fb7-9b11-7a636ed3387d",
+            "556bc4fc-f45b-489a-8472-c8f5615a6537",
+            "0bb26a5b-5789-4cfa-89aa-aaa883aadb06",
+            "3a724686-5529-4eec-8b30-6bc5eecfe706",
+            "108b4beb-02c5-439f-a848-12c1e9e4199d",
+            "cc222e3e-0fe6-4250-a163-ffb2be1d68fb",
+            "26ee7b73-8bc7-46a4-bf12-cbf5aed8f81f",
+            "1615f436-66c6-48ff-a697-073d4eee1f15",
+            "d1e26616-d60b-4257-adc9-ed4a7b8de2c8",
+            "2fb71076-f091-4d93-8868-491f7f6725ca",
+            "8c544d9b-35e2-4888-9997-713d92bf47e4",
+            "30d1cfb9-17f3-4820-a525-d7d7a2601339",
+            "a502ac3c-3289-4208-9d3d-6ee61252efba",
+            "c4d1a0c0-dc98-4bf0-abae-afc6b3be6965",
+            "e6244e2c-3438-42a1-91b8-3767e01add84",
+            "4eecd24d-da3b-4424-aa08-18600d540f8d",
+            "507b144e-ef48-467c-aa14-43403c75350f",
+            "69f1a43f-f4a2-4a04-be71-0dc42f3d96e1",
+            "e5770286-cba5-4165-932d-6cdfd2cb7f83",
+            "7ca4097f-e466-4aab-b018-532fbbf25f3b",
+            "bd7a8916-940a-40c3-9dbb-ad264f81df52",
+            "c4a34e6e-d194-4060-bcaf-aabbf7b8f138",
+            "696c15da-757c-46e7-868b-03825ac9eeab",
+            "99f12566-9379-4acc-b3ea-6575c8e0002b",
+            "9f19aefd-e344-4091-8cd1-46d07e47f30f",
+            "d1086a05-b388-4e07-be39-ba0f4d6f8e64",
+            "46f0abde-b6c2-497c-a391-4e92becdc6f6",
+            "4f055b00-d0ed-4481-bf2b-27de068df908",
+            "e83f2dc0-788e-4970-b42b-ca2cecdb484c",
+            "1559b032-0cd7-4723-936d-0a319803a4e9",
+            "081cf7dc-5a1f-4719-b7ce-44a278839d6a",
+            "a5a1da95-8412-4908-8dc1-c468b2cd24d5",
+            "82f4260a-6469-4d54-baa3-3092c4b911d1",
+            "5954f898-519d-4887-b771-8be607f60aac",
+            "34935086-ed9b-4b25-a809-bd5f7672cd63",
+            "40fe7e6c-e4ac-4ef1-90a4-844c587499c9",
+            "b1129a7e-633a-4562-bc80-9de947dc14da"
+          ]
+        }
+      ]
+    }
+  ],
+  "rules": {
+    "Project.0001": {
+      "id": "Project.0001",
+      "isFeature": false,
+      "description": "Project file needs to be converted to SDK-style. Modern .NET framework projects require a change in the project file format and use SDK corresponding to project flavor and functionality.",
+      "label": "Project file needs to be converted to SDK-style",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "Project.0002": {
+      "id": "Project.0002",
+      "isFeature": false,
+      "description": "Project\u0027s target framework(s) needs to be changed to the new target framework that you selected for this upgrade.\n\nDuring upgrade target framework will be adjusted to corresponding platform when applicable. In some cases project would result in multiple target frameworks after the upgrade if it was using features that now have their own platforms in modern .NET frameworks (windows, iOS, Android etc).",
+      "label": "Project\u0027s target framework(s) needs to be changed",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "Api.0001": {
+      "id": "Api.0001",
+      "isFeature": false,
+      "description": "API is binary incompatible for selected .NET version: affects existing binaries, often requiring recompilation, because the API has changed in a way that prevents older binaries from loading or executing.",
+      "label": "Binary incompatible for selected .NET version",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Breaking changes in .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262679",
+          "isCustom": false
+        }
+      ]
+    },
+    "WinForms": {
+      "id": "WinForms",
+      "isFeature": false,
+      "description": "Windows Forms APIs for building Windows desktop applications with traditional Forms-based UI that are available in .NET on Windows. Enable Windows Desktop support: Option 1 (Recommended): Target net9.0-windows; Option 2: Add \u003CUseWindowsDesktop\u003Etrue\u003C/UseWindowsDesktop\u003E; Option 3 (Legacy): Use Microsoft.NET.Sdk.WindowsDesktop SDK.",
+      "label": "Windows Forms",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Windows Forms on .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2341906",
+          "isCustom": false
+        }
+      ]
+    }
+  }
+}

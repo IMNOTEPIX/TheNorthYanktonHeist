@@ -358,6 +358,7 @@ namespace TheNorthYanktonHeist.Funcs
                 fPed.SetPedCombatMovement(handle, Movement);
                 handle.Weapons.Give(Weapon, 10000, true, true);
                 handle.Weapons.Select(Weapon);
+                handle.Armor = 200;
                 foreach (fPed.CombatAttributes attribute in EnableAttributes)
                 {
                     fPed.SetPedCombatAttributes(handle, attribute, true);

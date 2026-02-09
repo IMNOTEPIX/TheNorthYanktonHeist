@@ -16,9 +16,11 @@ using System.Timers;
 using System.Windows.Forms;
 using TheNorthYanktonHeist;
 using TheNorthYanktonHeist.Funcs;
+using TheNorthYanktonHeist.Scenes;
 using static Globals;
 using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using Hash = GTA.Native.Hash;
 using Screen = GTA.UI.Screen;
 
@@ -320,7 +322,7 @@ namespace TheNorthYanktonHeist
     {
         public Heist()
         {
-            Tick += onTick; ;
+            Tick += onTick;
             Aborted += onShutdown;
         }
 
@@ -445,13 +447,17 @@ namespace TheNorthYanktonHeist
                     fHud.ClearAllHelpMessages();
                     fHud.ClearGPSMultiRoute();
                     fHud.ClearHelp(true);
+                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);
                     Audio.SetAudioFlag(AudioFlags.DisableFlightMusic, true);
                     Audio.SetAudioFlag(AudioFlags.WantedMusicDisabled, true);
+                    fAudio.PrepareMusicEvent("MP_MC_START_VACUUM_8");
                     fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
                     fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
                     Globals.missionSwitch = 2;
                     break;
                 case 1:
+                    fAudio.PrepareMusicEvent("MP_MC_START_VACUUM_8");
+                    fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
                     checkpoint = 1;
                     if (!scriptsKilled)
                     {
@@ -484,8 +490,10 @@ namespace TheNorthYanktonHeist
                     fHud.ClearAllHelpMessages();
                     fHud.ClearGPSMultiRoute();
                     fHud.ClearHelp(true);
+                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);
                     Audio.SetAudioFlag(AudioFlags.DisableFlightMusic, true);
                     Audio.SetAudioFlag(AudioFlags.WantedMusicDisabled, true);
+                    fAudio.PrepareMusicEvent("MP_MC_START_VACUUM_8");
                     fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
                     fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
                     if (weatherTypeSaved && outfitSaved)
@@ -565,6 +573,7 @@ namespace TheNorthYanktonHeist
                     switch (case3Switch)
                     {
                         case 1:
+                            fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.Suspense);
                             checkpoint = 2;
                             if (LudendorffNorthYankton != null)
                             {
@@ -705,6 +714,7 @@ namespace TheNorthYanktonHeist
                     }
                     break;
                 case 4:
+                    fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.Gunfight);
                     fPathfind.GetClosestVehicleNode(fPlayer.ped.Position, out local);
                     enableFailCheckingForNY = true;
                     if (!fInterior.PrologueMap.YankTon)
@@ -814,7 +824,7 @@ namespace TheNorthYanktonHeist
                                 for (; ; )
                                 {
                                     Blip attachedBlip = BoothGuard.AttachedBlip;
-                                    if (attachedBlip == null || attachedBlip.Exists())
+                                    if (attachedBlip != null && attachedBlip.Exists())
                                     {
                                         break;
                                     }
@@ -887,129 +897,401 @@ namespace TheNorthYanktonHeist
                                     }
                                 }
                             }
-                            switch (case5switch)
-                            {
-                                case 0:
-                                    new Combats(-681004504, new Vector3(5300.397f, -5197.885f, 83.502f), 285.0927f, fPed.CombatMovement.CM_WillAdvance, fPed.CombatAbilityLevel.CAL_AVERAGE, WeaponHash.Pistol, DisableAttrbutes, EnableAttrbutes);
-                                    new Combats(-681004504, new Vector3(5296.698f, -5194.016f, 83.5018f), 188.9838f, fPed.CombatMovement.CM_Defensive, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.CarbineRifle, DisableAttrbutes, EnableAttrbutes);
-                                    new Combats(-681004504, new Vector3(5297.962f, -5181.915f, 83.51785f), 359.7572f, fPed.CombatMovement.CM_Defensive, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.CarbineRifle, DisableAttrbutes, EnableAttrbutes);
-                                    new Combats(-681004504, new Vector3(5303.865f, -5178.598f, 83.50168f), 258.0538f, fPed.CombatMovement.CM_WillAdvance, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.PumpShotgun, DisableAttrbutes, EnableAttrbutes);
-                                    new Combats(-681004504, new Vector3(5300.957f, -5175.863f, 83.50175f), 12.30173f, fPed.CombatMovement.CM_Defensive, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.SMG, DisableAttrbutes, EnableAttrbutes);
-                                    CombatsList.Combats_Create();
-                                    if (AnimGuard == null)
-                                    {
-                                        AnimGuard = fPed.CreatePed(new Model("IG_ProlSec_02"), new Vector3(5318.503f, -5206.221f, (85.7187f - 3.2f)), 139.6356f);//  Function.Call<Ped>(Hash.CREATE_PED, 26, fMisc.GetHashKey("IG_ProlSec_02"), 5310.6543f, -5207.032f, (85.7187f - 3.2f), 139.6356f, true, true);
-                                        Function.Call(Hash.SET_PED_DEFAULT_COMPONENT_VARIATION, AnimGuard);
-                                        Function.Call(Hash.SET_ENTITY_SHOULD_FREEZE_WAITING_ON_COLLISION, AnimGuard, true);
-                                        Wait(50);
-                                    }
-                                    while (AnimGuard == null)
-                                        Wait(0);
-                                    if (AnimCam == null)
-                                    {
-                                        AnimCam = fCam.CreateScriptedCam();
-                                        fCam.SetupMovingCam(AnimCam, new Vector3(5308.226f, -5208.727f, 83.959f), new Vector3(-1.000001f, -3.000001f, -92.49069f), 55f, CameraShake.Hand, 0.5f);
-                                    }
-                                    while (AnimCam == null)
-                                    {
-                                        Wait(0);
-                                    }
-                                    if (AnimCam != null)
-                                    {
-                                        fCam.SetupMovingCam(AnimCam, new Vector3(5308.226f, -5208.727f, 83.959f), new Vector3(0f, 0f, -92.49069f), 42f, CameraShake.Hand, 1f);
-                                        ScriptCameraDirector.StartRendering();
-                                    }
-                                    if (AnimDoor == null)
-                                    {
-                                        AnimDoor = Function.Call<Prop>(Hash.CREATE_OBJECT_NO_OFFSET, fMisc.GetHashKey("v_ilev_cd_door2"), 5308.8574f, -5208.156f, ((86.9186f - 3.2f) - 0.05f), true, true, false, 0);
-                                        Function.Call(Hash.FREEZE_ENTITY_POSITION, AnimDoor, true);
-                                    }
-                                    while (AnimDoor == null)
-                                        Wait(0);
-                                    case5switch = 1;
-                                    break;
-                                case 1:
-                                    Screen.FadeIn(1700);
-                                    LoadingPrompt.Hide();
-                                    if (!player.IsRunning)
-                                    {
-                                        fPlayer.ped.Weapons.Select(WeaponHash.Unarmed);
-                                        player.Create();
-                                        door.Create();
-                                        player.Rate = 0f;
-                                        door.Rate = 0f;
-                                        player.StartPed(fPlayer.ped, fStreaming.RequestAnimDict("anim@apt_trans@hinge_l_action"), "player_exit");
-                                        door.StartEntity(AnimDoor, fStreaming.RequestAnimDict("anim@apt_trans@hinge_l_action"), "door_exit");
-                                        door.PlayAudioEvent();
-                                    }
-                                    else
-                                    {
-                                        Wait(1000);
-                                        player.Rate = 1f;
-                                        door.Rate = 1f;
-                                        case5switch = 2;
-                                    }
-                                    break;
-                                case 2:
-                                    if (player.IsRunning)
-                                    {
-                                        if (player.Phase >= 0.18f)
-                                        {
-                                            AnimCam.Shake(CameraShake.Jolt, 2.5f);
-                                            while (player.Phase < 0.75f)
-                                            {
-                                                Wait(0);
-                                            }
-                                            case5switch = 3;
-                                        }
-                                    }
-                                    break;
-                                case 3:
-                                    fPlayer.ped.Weapons.Give(WeaponHash.PumpShotgun, 260, true, true);
-                                    fPlayer.ped.Weapons.Select(WeaponHash.PumpShotgun);
-                                    fPlayer.ped.Task.ClearAllImmediately();
-                                    player.Dispose();
-                                    door.Dispose();
-                                    GameplayCamera.SetCamViewModeForContext(CamViewModeContext.OnFoot, CamViewMode.FirstPerson);
-                                    fGraphics.AnimpostFXPlay("CamPushInNeutral", 1700, false);
-                                    fAudio.PlaySoundFrontend("1st_Person_Transition", "PLAYER_SWITCH_CUSTOM_SOUNDSET");
-                                    AnimGuard.Weapons.Give(WeaponHash.Pistol, 8, true, true);
-                                    AnimGuard.Weapons.Select(WeaponHash.Pistol);
-                                    AnimGuard.Task.RunTo(new Vector3(5314.563f, -5206.421f, 83.51863f), false, 20000);
-                                    Wait(700);
-                                    ScriptCameraDirector.StopRendering();
-                                    Wait(500);
-                                    AnimGuard.Task.AimGunAtEntity(fPlayer.ped, 10000);
-                                    case5switch = 4;
-                                    break;
-                                case 4:
-                                    CombatsList.Combats_Activate();
-                                    fPlayer.FakeWantedLevel = 3;
-                                    case5switch = 5;
-                                    break;
-                                case 5:
-                                    CombatsList.Combats_Check();
-                                    if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
-                                        fHud.ShowGXTSubtitle("NTH_PUSHTOVAULT");
-                                    else
-                                        Screen.ShowSubtitle("~s~Push through to the ~y~vault.~s~");
-                                    if (fPlayer.GetDistanceTo(new Vector3(5297.854f, -5188.762f, 83.51839f)) < 2.7f)
-                                    {
-                                        case5switch = 6;
-                                    }
-                                    break;
-                                case 6:
-                                    CombatsList.Combats_Check();
-                                    if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
-                                        fHud.ShowGXTSubtitle("NTH_PLANTBOMB");
-                                    else
-                                        Screen.ShowSubtitle("~s~Plant an ~g~explosive device~s~ on the ~y~vault door.~s~");
-                                    break;
-                            }
                         }
+                       
+                    }
+                    switch (case5switch)
+                    {
+                        case 0:
+                            if (World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 929864185) != null &&
+                                World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 929864185) != null)
+                            {
+                                Function.Call(Hash.CREATE_​MODEL_​SWAP, 5308.04f, -5191.028f, 82.99158f, 0.3f, 929864185, 269934519, true);
+                                Function.Call(Hash.CREATE_​MODEL_​SWAP, 5302.142f, -5191.521f, 82.99158f, 0.3f, 929864185, 269934519, true);
+
+                            }
+                            if (World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519) != null &&
+                                World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519) != null)
+                            {
+                                trolly1 = World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519);
+                                trolly2 = World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519);
+                            }
+                            fHud.ClearPrints();
+                            fPlayer.SetMaxWantedLevelTo0();
+                            fPlayer.ped.IsPositionFrozen = false;
+                            PlayerTeleportedToPrologue = true;
+                            fHud.RadarAndHud(false, false);
+                            fClock.SetClockTime(5, 0, 0);
+                            fWeather.SetWeatherTypeNowPersist(fWeather.WeatherTypes.Snow);
+                            fClock.PauseClock(true);
+                            fInterior.PrologueMap.EnableNorthYanktonTrainTracks(true);
+                            fStreaming.SetMapDataCullboxEnabled("prologue", true);
+                            fStreaming.SetMapDataCullboxEnabled("Prologue_Main", true);
+                            fZone.SetZoneEnabled(fZone.GetZoneFromNameID("Prol"), true);
+                            Function.Call(Hash.CLEAR_PED_WETNESS, fPlayer.ped);
+                            fPlayer.ped.ClearBloodDamage();
+                            fPlayer.ped.ClearVisibleDamage();
+                            if (fPlayer.IsTrevor)
+                                fPed.SetPedPropIndex(fPlayer.ped, 1, 4, 0, true);
+                            fAudio.StopAudioScene("MI_1_MIC_DRIVE_TO_GRAVEYARD");
+                            new Combats(-681004504, new Vector3(5300.397f, -5197.885f, 83.502f), 285.0927f, fPed.CombatMovement.CM_WillAdvance, fPed.CombatAbilityLevel.CAL_AVERAGE, WeaponHash.Pistol, DisableAttrbutes, EnableAttrbutes);
+                            new Combats(-681004504, new Vector3(5296.698f, -5194.016f, 83.5018f), 188.9838f, fPed.CombatMovement.CM_Defensive, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.CarbineRifle, DisableAttrbutes, EnableAttrbutes);
+                            new Combats(-681004504, new Vector3(5297.962f, -5181.915f, 83.51785f), 359.7572f, fPed.CombatMovement.CM_Defensive, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.CarbineRifle, DisableAttrbutes, EnableAttrbutes);
+                            new Combats(-681004504, new Vector3(5303.865f, -5178.598f, 83.50168f), 258.0538f, fPed.CombatMovement.CM_WillAdvance, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.PumpShotgun, DisableAttrbutes, EnableAttrbutes);
+                            new Combats(-681004504, new Vector3(5300.957f, -5175.863f, 83.50175f), 12.30173f, fPed.CombatMovement.CM_Defensive, fPed.CombatAbilityLevel.CAL_PROFESSIONAL, WeaponHash.SMG, DisableAttrbutes, EnableAttrbutes);
+                            CombatsList.Combats_Create();
+                            Function.Call(Hash.ADD_NAVMESH_REQUIRED_REGION, 5297.568f, -5188.236f, 100f);
+                            while (!Function.Call<bool>(Hash.IS_NAVMESH_LOADED_IN_AREA, 5297.568f - 50f, -5188.236f - 50f, 5297.568f + 50f, -5188.236f + 50f))
+                                Wait(0);
+                            if (AnimGuard == null)
+                            {
+                                AnimGuard = fPed.CreatePed(new Model("IG_ProlSec_02"), new Vector3(5318.503f, -5206.221f, (85.7187f - 3.2f)), 139.6356f);//  Function.Call<Ped>(Hash.CREATE_PED, 26, fMisc.GetHashKey("IG_ProlSec_02"), 5310.6543f, -5207.032f, (85.7187f - 3.2f), 139.6356f, true, true);
+                                Function.Call(Hash.SET_PED_DEFAULT_COMPONENT_VARIATION, AnimGuard);
+                                Function.Call(Hash.SET_ENTITY_SHOULD_FREEZE_WAITING_ON_COLLISION, AnimGuard, true);
+                                Wait(50);
+                            }
+                            while (AnimGuard == null)
+                                Wait(0);
+                            if (AnimCam == null)
+                            {
+                                AnimCam = fCam.CreateScriptedCam();
+                                fCam.SetupMovingCam(AnimCam, new Vector3(5308.226f, -5208.727f, 83.959f), new Vector3(-1.000001f, -3.000001f, -92.49069f), 55f, CameraShake.Hand, 0.5f);
+                            }
+                            while (AnimCam == null)
+                            {
+                                Wait(0);
+                            }
+                            if (AnimCam != null)
+                            {
+                                fCam.SetupMovingCam(AnimCam, new Vector3(5308.226f, -5208.727f, 83.959f), new Vector3(0f, 0f, -92.49069f), 42f, CameraShake.Hand, 1f);
+                                ScriptCameraDirector.StartRendering();
+                            }
+                            if (AnimDoor == null)
+                            {
+                                AnimDoor = Function.Call<Prop>(Hash.CREATE_OBJECT_NO_OFFSET, fMisc.GetHashKey("v_ilev_cd_door2"), 5308.8574f, -5208.156f, ((86.9186f - 3.2f) - 0.05f), true, true, false, 0);
+                                Function.Call(Hash.FREEZE_ENTITY_POSITION, AnimDoor, true);
+                            }
+                            while (AnimDoor == null)
+                                Wait(0);
+                            case5switch = 1;
+                            break;
+                        case 1:
+                            Screen.FadeIn(1700);
+                            LoadingPrompt.Hide();
+                            if (!player.IsRunning)
+                            {
+                                fPlayer.ped.Weapons.Select(WeaponHash.Unarmed);
+                                player.Create();
+                                door.Create();
+                                player.Rate = 0f;
+                                door.Rate = 0f;
+                                player.StartPed(fPlayer.ped, fStreaming.RequestAnimDict("anim@apt_trans@hinge_l_action"), "player_exit");
+                                door.StartEntity(AnimDoor, fStreaming.RequestAnimDict("anim@apt_trans@hinge_l_action"), "door_exit");
+                                door.PlayAudioEvent();
+                            }
+                            else
+                            {
+                                Wait(1000);
+                                player.Rate = 1f;
+                                door.Rate = 1f;
+                                case5switch = 2;
+                            }
+                            break;
+                        case 2:
+                            if (player.IsRunning)
+                            {
+                                if (player.Phase >= 0.18f)
+                                {
+                                    AnimCam.Shake(CameraShake.Jolt, 2.5f);
+                                    while (player.Phase < 0.75f)
+                                    {
+                                        Wait(0);
+                                    }
+                                    case5switch = 3;
+                                }
+                            }
+                            break;
+                        case 3:
+                            fPlayer.ped.Weapons.Give(WeaponHash.PumpShotgun, 260, true, true);
+                            fPlayer.ped.Weapons.Select(WeaponHash.PumpShotgun);
+                            fPlayer.ped.Task.ClearAllImmediately();
+                            player.Dispose();
+                            door.Dispose();
+                            GameplayCamera.SetCamViewModeForContext(CamViewModeContext.OnFoot, CamViewMode.FirstPerson);
+                            fGraphics.AnimpostFXPlay("CamPushInNeutral", 1700, false);
+                            fAudio.PlaySoundFrontend("1st_Person_Transition", "PLAYER_SWITCH_CUSTOM_SOUNDSET");
+                            AnimGuard.Weapons.Give(WeaponHash.Pistol, 8, true, true);
+                            AnimGuard.Weapons.Select(WeaponHash.Pistol);
+                            AnimGuard.Task.RunTo(new Vector3(5314.563f, -5206.421f, 83.51863f), false, 20000);
+                            Wait(700);
+                            ScriptCameraDirector.StopRendering();
+                            fHud.RadarAndHud(true, true);
+                            Wait(500);
+                            AnimGuard.Task.AimGunAtEntity(fPlayer.ped, 10000);
+                            case5switch = 4;
+                            break;
+                        case 4:
+                            CombatsList.Combats_Activate();
+                            if (AnimCam != null)
+                            {
+                                AnimCam.Delete();
+                                AnimCam = null;
+                            }
+                            fPlayer.FakeWantedLevel = 3;
+                            case5switch = 5;
+                            break;
+                        case 5:
+                            CombatsList.Combats_Check();
+                            if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
+                                fHud.ShowGXTSubtitle("NTH_PUSHTOVAULT");
+                            else
+                                Screen.ShowSubtitle("~s~Push through to the ~y~vault.~s~");
+                            if (fPlayer.GetDistanceTo(new Vector3(5297.854f, -5188.762f, 83.51839f)) < 3.7f)
+                            {
+                                case5switch = 6;
+                            }
+                            break;
+                        case 6:
+                            if (InsideBlip == null)
+                            {
+                                InsideBlip = fBlip.CreateBlipForCoordWithParams(new Vector3(5298.512f, -5188.697f, 81.51868f), (BlipSprite)814, BlipColor.Yellow, 1f, "Vault");
+                            }
+                            CombatsList.Combats_Check();
+                            if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
+                                fHud.ShowGXTSubtitle("NTH_PLANTBOMB");
+                            else
+                                Screen.ShowSubtitle("~s~Plant an ~g~explosive device~s~ on the ~y~vault door.~s~");
+                            if (fPlayer.GetDistanceTo(new Vector3(5298.2f, -5187.9f, 84.21848f)) < 2.5f)
+                            {
+                                if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
+                                    fHud.DisplayGXTHelpText("NTH_TOPLANTBOMB");
+                                else
+                                    fHud.DisplayHelpText("~s~Press ~INPUT_CONTEXT~ to plant the ~g~explosive device.~s~");
+                                Vector3 vector = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_POSITION, fStreaming.RequestAnimDict("anim@scripted@player@mission@tun_bomb_plant@male@"), "enter", 5298.2f, -5187.9f, 83.21848f, 0f, 0f, -85f, 0f, 2);
+                                float z = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_POSITION, fStreaming.RequestAnimDict("anim@scripted@player@mission@tun_bomb_plant@male@"), "enter", 5298.2f, -5187.9f, 83.21848f, 0f, 0f, -85f, 0f, 2).Z;
+                                if (Game.IsControlJustPressed(GTA.Control.Context))
+                                {
+                                    Function.Call(Hash.SET_MOVEMENT_MODE_OVERRIDE, Game.Player.Character, "DEFAULT_ACTION");
+                                    Function.Call(Hash.TASK_GO_STRAIGHT_TO_COORD, Game.Player.Character, vector.X, vector.Y, vector.Z, 1f, 10000, -85f, 1f);
+                                    Function.Call(Hash.SET_PED_KEEP_TASK, Game.Player.Character, true);
+                                    fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Idle);
+                                    case5switch = 7;
+                                }
+                            }
+                            break;
+                        case 7:
+                            if (InsideBlip != null)
+                            {
+                                InsideBlip.Delete();
+                                InsideBlip = null;
+                            }
+                            if (World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 929864185) != null &&
+                                World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 929864185) != null)
+                            {
+                                Function.Call(Hash.CREATE_​MODEL_​SWAP, 5308.04f, -5191.028f, 82.99158f, 0.3f, 929864185, 269934519, true);
+                                Function.Call(Hash.CREATE_​MODEL_​SWAP, 5302.142f, -5191.521f, 82.99158f, 0.3f, 929864185, 269934519, true);
+
+                            }
+                            if (World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519) != null &&
+                                World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519) != null)
+                            {
+                                trolly1 = World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519);
+                                trolly2 = World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519);
+                            }
+                            if (trolly3 == null)
+                            {
+                                trolly3 = fProp.CreatePropNoOffset(269934519, new Vector3(5306.773f, -5187.983f, 82.99162f), new Vector3(0f, 0f, 155f), false);
+                            }
+                            else
+                            {
+                                trolly3.IsPositionFrozen = false;
+                            }
+                            if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, Function.Call<int>(Hash.GET_HASH_KEY, "SCRIPT_TASK_GO_STRAIGHT_TO_COORD")) == 7)
+                            {
+                                GameplayCamera.SetCamViewModeForContext(CamViewModeContext.InVehicle, CamViewMode.ThirdPersonFar);
+                                SceneManager.StartScene("BombPlant");
+                                case5switch = 8;
+                            }
+                            break;
+                        case 8:
+                            SceneManager.Update();
+                            if (BombPlantScene._permBomb != null)
+                            {
+                                BombPlantScene._permBomb.IsPositionFrozen = true;
+                                fEntity.SetEntityCanBeDamaged(BombPlantScene._permBomb, false);
+                            }
+                            if (!SceneManager.IsSceneRunning)
+                            {
+                                if (InsideBlip == null)
+                                {
+                                    InsideBlip = fBlip.CreateBlipForCoordWithParams(new Vector3(5308.768f, -5204.557f, 83.51859f), BlipSprite.Standard, BlipColor.Yellow, 1f, "Lobby");
+                                }
+                                GameplayCamera.SetCamViewModeForContext(CamViewModeContext.OnFoot, CamViewMode.ThirdPersonMedium);
+                                if (fInterior.GetRoomKeyFromEntity(fPlayer.ped) != 592960010)
+                                {
+                                    InsideBlip.Alpha = 255;
+                                    if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
+                                        fHud.ShowGXTSubtitle("NTH_BACKTOLOBBY");
+                                    else
+                                        Screen.ShowSubtitle("~s~Return to the ~y~lobby.~s~");
+                                }
+                                else
+                                {
+                                    fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Delivering);
+                                    InsideBlip.Alpha = 0;
+                                    if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
+                                        fHud.ShowGXTSubtitle("NTH_DETONATE");
+                                    else
+                                        Screen.ShowSubtitle("~r~Detonate the explosives.~s~");
+                                    if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
+                                        fHud.DisplayGXTHelpText("NTH_TODETONATE");
+                                    else
+                                        fHud.DisplayHelpText("~s~Press ~INPUT_DETONATE~ to ~r~detonate~s~ the explosives.");
+                                    if (Game.IsControlJustPressed(GTA.Control.Detonate))
+                                    {
+                                        Audio.SetAudioFlag(AudioFlags.LoadMPData, false);
+                                        Wait(700);
+                                        case5switch = 9;
+                                    }
+                                }
+                            }
+                            break;
+                        case 9:
+                            RayfireScenes.PrologueVaultRayfire.Scene();
+                            if (RayfireScenes.PrologueVaultRayfire.vaultScene > 8)
+                            {
+                                fStreaming.RequestNamedPTFXAsset("scr_prologue");
+                                fStreaming.UseParticleFXAsset("scr_prologue");
+                                if (Function.Call<bool>(Hash.HAS_NAMED_PTFX_ASSET_LOADED, "scr_prologue"))
+                                {
+                                    if (!Function.Call<bool>(Hash.DOES_PARTICLE_FX_LOOPED_EXIST, RayfireScenes.PrologueVaultRayfire.PTFX1))
+                                    {
+                                        RayfireScenes.PrologueVaultRayfire.PTFX1 = Function.Call<int>(Hash.START_PARTICLE_FX_LOOPED_AT_COORD, "scr_prologue_vault_haze", 5299f, -5189f, 82.6f, 0f, 0f, 0f, 1f, false, false, false, false);
+                                    }
+                                    if (!Function.Call<bool>(Hash.DOES_PARTICLE_FX_LOOPED_EXIST, RayfireScenes.PrologueVaultRayfire.PTFX2))
+                                    {
+                                        RayfireScenes.PrologueVaultRayfire.PTFX2 = Function.Call<int>(Hash.START_PARTICLE_FX_LOOPED_AT_COORD, "scr_prologue_vault_fog", 5299f, -5189f, 82.6f, 0f, 0f, 0f, 1f, false, false, false, false);
+                                    }
+                                }
+                            }
+                            if (RayfireScenes.PrologueVaultRayfire.vaultScene >= 10)
+                            {
+                                Audio.SetAudioFlag(AudioFlags.LoadMPData, true);
+                            }
+                            if (RayfireScenes.PrologueVaultRayfire.vaultScene >= 12)
+                            {
+                                fAudio.PrepareMusicEvent("MP_MC_START_VACUUM_8");
+                                fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                                Globals.missionSwitch = 6;
+                            }
+                            break;
                     }
                     break;
                 case 6:
+                    if (World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 929864185) != null ||
+                                World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 929864185) != null)
+                    {
+                        Function.Call(Hash.CREATE_​MODEL_​SWAP, 5308.04f, -5191.028f, 82.99158f, 0.3f, 929864185, 269934519, true);
+                        Function.Call(Hash.CREATE_​MODEL_​SWAP, 5302.142f, -5191.521f, 82.99158f, 0.3f, 929864185, 269934519, true);
+
+                    }
+                    if ((trolly1 != null || trolly2 != null) && (World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519) != null ||
+                        World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519) != null))
+                    {
+                        trolly1 = World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519);
+                        trolly2 = World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519);
+                    }
+                    if (trolly3 == null)
+                    {
+                        trolly3 = fProp.CreatePropNoOffset(269934519, new Vector3(5306.773f, -5187.983f, 82.99162f), new Vector3(0f, 0f, 155f), false);
+                    }
+                    else
+                    {
+                        trolly3.IsPositionFrozen = false;
+                    }
+                    if (trolly1 != null)
+                    {
+                        if (trolly1.AttachedBlip == null)
+                            trolly1.AddBlip();
+                        else
+                        {
+                            trolly1.AttachedBlip.Color = BlipColor.Green;
+                            trolly1.AttachedBlip.Sprite = BlipSprite.Standard;
+                            trolly1.AttachedBlip.Name = "Cash";
+                            trolly1.AttachedBlip.Scale = 0.75f;
+                        }
+                    }
+                    if (trolly2 != null)
+                    {
+                        if (trolly2.AttachedBlip == null)
+                            trolly2.AddBlip();
+                        else
+                        {
+                            trolly2.AttachedBlip.Color = BlipColor.Green;
+                            trolly2.AttachedBlip.Sprite = BlipSprite.Standard;
+                            trolly2.AttachedBlip.Name = "Cash";
+                            trolly2.AttachedBlip.Scale = 0.75f;
+                        }
+                    }
+                    if (trolly2 != null)
+                    {
+                        if (trolly2.AttachedBlip == null)
+                            trolly2.AddBlip();
+                        else
+                        {
+                            trolly2.AttachedBlip.Color = BlipColor.Green;
+                            trolly2.AttachedBlip.Sprite = BlipSprite.Standard;
+                            trolly2.AttachedBlip.Name = "Cash";
+                            trolly2.AttachedBlip.Scale = 0.75f;
+                        }
+                    }
+                    if (VaultBlip == null)
+                    {
+                        VaultBlip = fBlip.CreateBlipForCoordWithParams(new Vector3(5303.874f, -5189.139f, 82.54237f), BlipSprite.Standard, BlipColor.Yellow, 1f, "Vault");
+                    }
+                    if (fInterior.GetRoomKeyFromEntity(fPlayer.ped) == 2308199534)
+                    {
+                        if (trolly1.AttachedBlip != null)
+                        {
+                            trolly1.AttachedBlip.Alpha = 255;
+                        }
+                        if (trolly2.AttachedBlip != null)
+                        {
+                            trolly2.AttachedBlip.Alpha = 255;
+                        }
+                        if (trolly3.AttachedBlip != null)
+                        {
+                            trolly3.AttachedBlip.Alpha = 255;
+                        }
+                        if (VaultBlip != null)
+                        {
+                            VaultBlip.Alpha = 0;
+                        }
+                    }
+                    else
+                    {
+                        if (trolly1.AttachedBlip != null)
+                        {
+                            trolly1.AttachedBlip.Alpha = 0;
+                        }
+                        if (trolly2.AttachedBlip != null)
+                        {
+                            trolly2.AttachedBlip.Alpha = 0;
+                        }
+                        if (trolly3.AttachedBlip != null)
+                        {
+                            trolly3.AttachedBlip.Alpha = 0;
+                        }
+                        if (VaultBlip != null)
+                        {
+                            VaultBlip.Alpha = 255;
+                        }
+                    }
+                    fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.MedIntensity);
+                    if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
+                        fHud.ShowGXTSubtitle("NTH_LOOTVAULT");
+                    else
+                        Screen.ShowSubtitle("~s~Loot the ~y~vault.~s~");
                     break;
             }
             if (Globals.missionSwitch != 0)
@@ -1021,6 +1303,11 @@ namespace TheNorthYanktonHeist
                 Plane = Start.Plane;
             }
         }
+        Prop trolly1;
+        Prop trolly2;
+        Prop trolly3;
+        Blip VaultBlip;
+        Blip InsideBlip;
         SynchronizedScene player = new SynchronizedScene(new Vector3(5309.55f, -5210.1f, (86.9186f - 3.41f)));
         SynchronizedScene door = new SynchronizedScene(new Vector3((5309.55f - 0.7f), (-5210.1f + 1.902f), ((86.9186f - 3.2f) - 0.05f)));
         private Prop AnimDoor;
@@ -1086,7 +1373,7 @@ namespace TheNorthYanktonHeist
                             fPed.SetPedDefaultComponentVariation(fPlayer.ped);
                             fPed.ClearAllPedProps(fPlayer.ped, 1);
                             fPed.SetPedComponentVariation(fPlayer.ped, 1, 37, 0, 0);
-                            fPed.SetPedComponentVariation(fPlayer.ped, 3, 32, 1, 0);
+                            fPed.SetPedComponentVariation(fPlayer.ped, 3, 33, 1, 0);
                             fPed.SetPedComponentVariation(fPlayer.ped, 4, 175, 0, 0);
                             fPed.SetPedComponentVariation(fPlayer.ped, 5, 82, 0, 0);
                             fPed.SetPedComponentVariation(fPlayer.ped, 6, 154, 0, 0);
@@ -1322,6 +1609,11 @@ namespace TheNorthYanktonHeist
                         Start.Plane = null;
                     }
                     CombatsList.Combats_Dispose();
+                    if (InsideBlip != null)
+                    {
+                        InsideBlip.Delete();
+                        InsideBlip = null;
+                    }
                     if (AnimGuard != null)
                     {
                         AnimGuard.Delete();
@@ -1436,10 +1728,9 @@ namespace TheNorthYanktonHeist
                                 LoadingPrompt.Show("NorthYanktonHeist");
                                 restarting = true;
                                 fVehicle.DeleteVehiclesInList(depotVehicles);
+                                fCam.RenderScriptCams(false, false, 0);
                                 if (resetCam != null)
                                 {
-                                    fCam.RenderScriptCams(false, false, 0);
-                                    resetCam.IsActive = false;
                                     resetCam.Delete();
                                     resetCam = null;
                                 }
@@ -1573,7 +1864,35 @@ namespace TheNorthYanktonHeist
                                         Globals.missionSwitch = 3;
                                         case3Switch = -1;
                                         break;
-                                    case 3: break;
+                                    case 3:
+                                        Wait(7500);
+                                        fHud.ClearAllPrints();
+                                        fHud.ClearBrief();
+                                        fHud.ClearAllHelpMessages();
+                                        fHud.ClearGPSMultiRoute();
+                                        fHud.ClearHelp(true);
+                                        Function.Call(Hash.CLEAR_PED_WETNESS, fPlayer.ped);
+                                        fPlayer.ped.ClearBloodDamage();
+                                        fPlayer.ped.ClearVisibleDamage();
+                                        fPlayer.ped.IsVisible = true;
+                                        fPlayer.ped.IsPositionFrozen = false;
+                                        fPlayer.ped.IsInvincible = false;
+                                        fPlayer.SetMaxWantedLevelToNormal();
+                                        Audio.SetAudioFlag(AudioFlags.DisableFlightMusic, true);
+                                        Audio.SetAudioFlag(AudioFlags.WantedMusicDisabled, true);
+                                        fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
+                                        fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Suspense);
+                                        timeAdvanced1 = false;
+                                        restartPending = false;
+                                        restartSwitch = 0;
+                                        instructionalButtonsSetUp = false;
+                                        failShardJustShown = false;
+                                        PlayerTeleportedToPrologue = false;
+                                        MissionFailCleanUpRequired = false;
+                                        Globals.missionSwitch = 5;
+                                        case5switch = 0;
+                                        case3Switch = -1;
+                                        break;
                                     case 4: break;
                                 }
                             }
@@ -1598,10 +1917,9 @@ namespace TheNorthYanktonHeist
                                 LoadingPrompt.Show("NorthYanktonHeist");
                                 restarting = true;
                                 fVehicle.DeleteVehiclesInList(depotVehicles);
+                                fCam.RenderScriptCams(false, false, 0);
                                 if (resetCam != null)
                                 {
-                                    fCam.RenderScriptCams(false, false, 0);
-                                    resetCam.IsActive = false;
                                     resetCam.Delete();
                                     resetCam = null;
                                 }
@@ -1846,6 +2164,26 @@ namespace TheNorthYanktonHeist
                 fProp.DeletePropsInList(boothProps);
                 fVehicle.DeleteVehiclesInList(depotVehicles);
                 CombatsList.Combats_Dispose();
+                if (trolly1 != null)
+                {
+                    trolly1.Delete();
+                    trolly1 = null;
+                }
+                if (trolly2 != null)
+                {
+                    trolly2.Delete();
+                    trolly2 = null;
+                }
+                if (trolly3 != null)
+                {
+                    trolly3.Delete();
+                    trolly3 = null;
+                }
+                if (InsideBlip != null)
+                {
+                    InsideBlip.Delete();
+                    InsideBlip = null;
+                }
                 if (Garagecolobject != null)
                 {
                     Garagecolobject.Delete();

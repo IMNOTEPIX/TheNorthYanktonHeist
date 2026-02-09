@@ -13,6 +13,10 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fHud
     {
+        public static void DisplayAmmoThisFrame(bool display)
+        {
+            Function.Call(Hash.DISPLAY_AMMO_THIS_FRAME, display);
+        }
         public static void ShowGXTSubtitle(string GxtEntry, int duration = 10)
         {
             Function.Call(Hash.BEGIN_TEXT_COMMAND_PRINT, GxtEntry);

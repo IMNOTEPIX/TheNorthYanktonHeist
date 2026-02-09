@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static TheNorthYanktonHeist.Funcs.RegisterEntityChunk;
 
 namespace TheNorthYanktonHeist.Funcs
 {
@@ -58,9 +59,8 @@ namespace TheNorthYanktonHeist.Funcs
         public static int GetNumOfConcats(string cutsceneName)
         {
             Function.Call(Hash.REQUEST_CUT_FILE, cutsceneName);
-            bool flag = Function.Call<bool>(Hash.HAS_CUT_FILE_LOADED, cutsceneName);
             int result;
-            if (flag)
+            if (Function.Call<bool>(Hash.HAS_CUT_FILE_LOADED, cutsceneName))
             {
                 int num = Function.Call<int>(Hash.GET_CUT_FILE_CONCAT_COUNT, cutsceneName);
                 Function.Call(Hash.REMOVE_CUT_FILE, cutsceneName);
@@ -154,629 +154,324 @@ namespace TheNorthYanktonHeist.Funcs
         }
 
         #region PedOutfitCutscene
-        public static void SetPedOutfitCutscene(string MP, Ped NonCutscene)
+        public static void GetCutscenePedOutfitCutscene(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_1");
-            if (flag)
+            if (MP.Equals("MP_1"))
             {
-                CutscenePed1Comp[0] = "0_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0).ToString();
-                CutscenePed1Comp[1] = "1_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1).ToString();
-                CutscenePed1Comp[2] = "2_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2).ToString();
-                CutscenePed1Comp[3] = "3_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3).ToString();
-                CutscenePed1Comp[4] = "4_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4).ToString();
-                CutscenePed1Comp[5] = "5_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5).ToString();
-                CutscenePed1Comp[6] = "6_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6).ToString();
-                CutscenePed1Comp[7] = "7_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7).ToString();
-                CutscenePed1Comp[8] = "8_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8).ToString();
-                CutscenePed1Comp[9] = "9_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9).ToString();
-                CutscenePed1Comp[10] = "10_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10).ToString();
-                CutscenePed1Comp[11] = "11_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11).ToString();
+                CutscenePed1VariationData = new Dictionary<int, PedVariationData>
+            {
+                { 0, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0)) },
+                { 1, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1)) },
+                { 2, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2)) },
+                { 3, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3)) },
+                { 4, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4)) },
+                { 5, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5)) },
+                { 6, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6)) },
+                { 7, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7)) },
+                { 8, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8)) },
+                { 9, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9)) },
+                { 10, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10)) },
+                { 11, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11)) },
+            };
             }
         }
 
-        public static void GetPedOutfitCutscene(string MP, Ped NonCutscene)
+        public static void SetCutscenePedOutfit(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_1");
-            if (flag)
+            if (MP.Equals("MP_1"))
             {
-                string[] array = CutscenePed1Comp[0].Split(new char[]
+                foreach (var data in CutscenePed1VariationData)
                 {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 0, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed1Comp[1].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 1, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed1Comp[2].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 2, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed1Comp[3].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 3, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed1Comp[4].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 4, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed1Comp[5].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 5, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed1Comp[6].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 6, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed1Comp[7].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 7, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed1Comp[8].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 8, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed1Comp[9].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 9, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed1Comp[10].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 10, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed1Comp[11].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 11, int.Parse(array[1]), int.Parse(array[2]), 1);
+                    int componentId = data.Key;
+                    int drawable = data.Value.Drawable;
+                    int texture = data.Value.Texture;
+
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, componentId, drawable, texture, 1);
+                }
             }
         }
 
-        public static void SetPedOutfitCutscene_MP2(string MP, Ped NonCutscene)
+        public static void GetCutscenePedOutfitCutscene_MP2(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_2");
-            if (flag)
+            if (MP.Equals("MP_2"))
             {
-                CutscenePed2Comp[0] = "0_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0).ToString();
-                CutscenePed2Comp[1] = "1_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1).ToString();
-                CutscenePed2Comp[2] = "2_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2).ToString();
-                CutscenePed2Comp[3] = "3_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3).ToString();
-                CutscenePed2Comp[4] = "4_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4).ToString();
-                CutscenePed2Comp[5] = "5_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5).ToString();
-                CutscenePed2Comp[6] = "6_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6).ToString();
-                CutscenePed2Comp[7] = "7_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7).ToString();
-                CutscenePed2Comp[8] = "8_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8).ToString();
-                CutscenePed2Comp[9] = "9_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9).ToString();
-                CutscenePed2Comp[10] = "10_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10).ToString();
-                CutscenePed2Comp[11] = "11_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11).ToString();
+                CutscenePed2VariationData = new Dictionary<int, PedVariationData>
+            {
+                { 0, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0)) },
+                { 1, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1)) },
+                { 2, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2)) },
+                { 3, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3)) },
+                { 4, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4)) },
+                { 5, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5)) },
+                { 6, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6)) },
+                { 7, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7)) },
+                { 8, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8)) },
+                { 9, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9)) },
+                { 10, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10)) },
+                { 11, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11)) },
+            };
             }
         }
 
-        public static void GetPedOutfitCutscene_MP2(string MP, Ped NonCutscene)
+        public static void SetCutscenePedOutfit_MP2(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_2");
-            if (flag)
+            if (MP.Equals("MP_2"))
             {
-                string[] array = CutscenePed2Comp[0].Split(new char[]
+                foreach (var data in CutscenePed2VariationData)
                 {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 0, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed2Comp[1].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 1, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed2Comp[2].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 2, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed2Comp[3].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 3, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed2Comp[4].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 4, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed2Comp[5].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 5, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed2Comp[6].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 6, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed2Comp[7].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 7, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed2Comp[8].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 8, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed2Comp[9].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 9, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed2Comp[10].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 10, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed2Comp[11].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 11, int.Parse(array[1]), int.Parse(array[2]), 1);
+                    int componentId = data.Key;
+                    int drawable = data.Value.Drawable;
+                    int texture = data.Value.Texture;
+
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, componentId, drawable, texture, 1);
+                }
             }
         }
 
-        public static void SetPedOutfitCutscene_MP3(string MP, Ped NonCutscene)
+        public static void GetCutscenePedOutfitCutscene_MP3(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_3");
-            if (flag)
+            if (MP.Equals("MP_3"))
             {
-                CutscenePed3Comp[0] = "0_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0).ToString();
-                CutscenePed3Comp[1] = "1_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1).ToString();
-                CutscenePed3Comp[2] = "2_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2).ToString();
-                CutscenePed3Comp[3] = "3_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3).ToString();
-                CutscenePed3Comp[4] = "4_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4).ToString();
-                CutscenePed3Comp[5] = "5_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5).ToString();
-                CutscenePed3Comp[6] = "6_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6).ToString();
-                CutscenePed3Comp[7] = "7_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7).ToString();
-                CutscenePed3Comp[8] = "8_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8).ToString();
-                CutscenePed3Comp[9] = "9_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9).ToString();
-                CutscenePed3Comp[10] = "10_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10).ToString();
-                CutscenePed3Comp[11] = "11_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11).ToString();
+                CutscenePed3VariationData = new Dictionary<int, PedVariationData>
+            {
+                { 0, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0)) },
+                { 1, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1)) },
+                { 2, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2)) },
+                { 3, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3)) },
+                { 4, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4)) },
+                { 5, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5)) },
+                { 6, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6)) },
+                { 7, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7)) },
+                { 8, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8)) },
+                { 9, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9)) },
+                { 10, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10)) },
+                { 11, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11)) },
+            };
             }
         }
 
-        public static void GetPedOutfitCutscene_MP3(string MP, Ped NonCutscene)
+        public static void SetCutscenePedOutfit_MP3(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_3");
-            if (flag)
+            if (MP.Equals("MP_3"))
             {
-                string[] array = CutscenePed3Comp[0].Split(new char[]
+                foreach (var data in CutscenePed3VariationData)
                 {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 0, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed3Comp[1].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 1, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed3Comp[2].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 2, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed3Comp[3].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 3, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed3Comp[4].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 4, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed3Comp[5].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 5, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed3Comp[6].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 6, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed3Comp[7].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 7, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed3Comp[8].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 8, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed3Comp[9].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 9, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed3Comp[10].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 10, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed3Comp[11].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 11, int.Parse(array[1]), int.Parse(array[2]), 1);
+                    int componentId = data.Key;
+                    int drawable = data.Value.Drawable;
+                    int texture = data.Value.Texture;
+
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, componentId, drawable, texture, 1);
+                }
             }
         }
 
-        public static void SetPedOutfitCutscene_MP4(string MP, Ped NonCutscene)
+        public static void GetCutscenePedOutfitCutscene_MP4(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_4");
-            if (flag)
+            if (MP.Equals("MP_4"))
             {
-                CutscenePed4Comp[0] = "0_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0).ToString();
-                CutscenePed4Comp[1] = "1_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1).ToString();
-                CutscenePed4Comp[2] = "2_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2).ToString();
-                CutscenePed4Comp[3] = "3_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3).ToString();
-                CutscenePed4Comp[4] = "4_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4).ToString();
-                CutscenePed4Comp[5] = "5_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5).ToString();
-                CutscenePed4Comp[6] = "6_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6).ToString();
-                CutscenePed4Comp[7] = "7_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7).ToString();
-                CutscenePed4Comp[8] = "8_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8).ToString();
-                CutscenePed4Comp[9] = "9_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9).ToString();
-                CutscenePed4Comp[10] = "10_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10).ToString();
-                CutscenePed4Comp[11] = "11_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11).ToString();
+                CutscenePed4VariationData = new Dictionary<int, PedVariationData>
+            {
+                { 0, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0)) },
+                { 1, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1)) },
+                { 2, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2)) },
+                { 3, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3)) },
+                { 4, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4)) },
+                { 5, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5)) },
+                { 6, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6)) },
+                { 7, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7)) },
+                { 8, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8)) },
+                { 9, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9)) },
+                { 10, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10)) },
+                { 11, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11)) },
+            };
             }
         }
 
-        public static void GetPedOutfitCutscene_MP4(string MP, Ped NonCutscene)
+        public static void SetCutscenePedOutfit_MP4(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_4");
-            if (flag)
+            if (MP.Equals("MP_4"))
             {
-                string[] array = CutscenePed4Comp[0].Split(new char[]
+                foreach (var data in CutscenePed4VariationData)
                 {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 0, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed4Comp[1].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 1, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed4Comp[2].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 2, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed4Comp[3].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 3, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed4Comp[4].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 4, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed4Comp[5].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 5, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed4Comp[6].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 6, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed4Comp[7].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 7, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed4Comp[8].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 8, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed4Comp[9].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 9, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed4Comp[10].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 10, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed4Comp[11].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 11, int.Parse(array[1]), int.Parse(array[2]), 1);
+                    int componentId = data.Key;
+                    int drawable = data.Value.Drawable;
+                    int texture = data.Value.Texture;
+
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, componentId, drawable, texture, 1);
+                }
             }
         }
 
-        public static void SetPedOutfitCutscene_MP5(string MP, Ped NonCutscene)
+        public static void GetCutscenePedOutfitCutscene_MP5(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_5");
-            if (flag)
+            if (MP.Equals("MP_5"))
             {
-                CutscenePed5Comp[0] = "0_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0).ToString();
-                CutscenePed5Comp[1] = "1_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1).ToString();
-                CutscenePed5Comp[2] = "2_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2).ToString();
-                CutscenePed5Comp[3] = "3_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3).ToString();
-                CutscenePed5Comp[4] = "4_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4).ToString();
-                CutscenePed5Comp[5] = "5_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5).ToString();
-                CutscenePed5Comp[6] = "6_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6).ToString();
-                CutscenePed5Comp[7] = "7_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7).ToString();
-                CutscenePed5Comp[8] = "8_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8).ToString();
-                CutscenePed5Comp[9] = "9_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9).ToString();
-                CutscenePed5Comp[10] = "10_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10).ToString();
-                CutscenePed5Comp[11] = "11_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11).ToString();
+                CutscenePed5VariationData = new Dictionary<int, PedVariationData>
+            {
+                { 0, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0)) },
+                { 1, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1)) },
+                { 2, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2)) },
+                { 3, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3)) },
+                { 4, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4)) },
+                { 5, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5)) },
+                { 6, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6)) },
+                { 7, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7)) },
+                { 8, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8)) },
+                { 9, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9)) },
+                { 10, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10)) },
+                { 11, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11)) },
+            };
             }
         }
 
-        public static void GetPedOutfitCutscene_MP5(string MP, Ped NonCutscene)
+        public static void SetCutscenePedOutfit_MP5(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_5");
-            if (flag)
+            if (MP.Equals("MP_5"))
             {
-                string[] array = CutscenePed5Comp[0].Split(new char[]
+                foreach (var data in CutscenePed5VariationData)
                 {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 0, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed5Comp[1].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 1, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed5Comp[2].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 2, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed5Comp[3].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 3, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed5Comp[4].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 4, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed5Comp[5].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 5, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed5Comp[6].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 6, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed5Comp[7].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 7, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed5Comp[8].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 8, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed5Comp[9].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 9, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed5Comp[10].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 10, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed5Comp[11].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 11, int.Parse(array[1]), int.Parse(array[2]), 1);
+                    int componentId = data.Key;
+                    int drawable = data.Value.Drawable;
+                    int texture = data.Value.Texture;
+
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, componentId, drawable, texture, 1);
+                }
             }
         }
 
-        public static void SetPedOutfitCutscene_MP6(string MP, Ped NonCutscene)
+        public static void GetCutscenePedOutfitCutscene_MP6(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_6");
-            if (flag)
+            if (MP.Equals("MP_6"))
             {
-                CutscenePed6Comp[0] = "0_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0).ToString();
-                CutscenePed6Comp[1] = "1_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1).ToString();
-                CutscenePed6Comp[2] = "2_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2).ToString();
-                CutscenePed6Comp[3] = "3_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3).ToString();
-                CutscenePed6Comp[4] = "4_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4).ToString();
-                CutscenePed6Comp[5] = "5_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5).ToString();
-                CutscenePed6Comp[6] = "6_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6).ToString();
-                CutscenePed6Comp[7] = "7_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7).ToString();
-                CutscenePed6Comp[8] = "8_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8).ToString();
-                CutscenePed6Comp[9] = "9_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9).ToString();
-                CutscenePed6Comp[10] = "10_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10).ToString();
-                CutscenePed6Comp[11] = "11_" + Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11).ToString() + "_" + Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11).ToString();
+                CutscenePed6VariationData = new Dictionary<int, PedVariationData>
+            {
+                { 0, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 0), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 0)) },
+                { 1, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 1), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 1)) },
+                { 2, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 2), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 2)) },
+                { 3, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 3), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 3)) },
+                { 4, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 4), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 4)) },
+                { 5, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 5), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 5)) },
+                { 6, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 6), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 6)) },
+                { 7, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 7), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 7)) },
+                { 8, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 8), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 8)) },
+                { 9, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 9), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 9)) },
+                { 10, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 10), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 10)) },
+                { 11, new PedVariationData(Function.Call<int>(Hash.GET_PED_DRAWABLE_VARIATION, NonCutscene, 11), Function.Call<int>(Hash.GET_PED_TEXTURE_VARIATION, NonCutscene, 11)) },
+            };
             }
         }
 
-        public static void GetPedOutfitCutscene_MP6(string MP, Ped NonCutscene)
+        public static void SetCutscenePedOutfit_MP6(string MP, Ped NonCutscene)
         {
-            bool flag = MP.Equals("MP_6");
-            if (flag)
+            if (MP.Equals("MP_6"))
             {
-                string[] array = CutscenePed6Comp[0].Split(new char[]
+                foreach (var data in CutscenePed6VariationData)
                 {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 0, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed6Comp[1].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 1, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed6Comp[2].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 2, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed6Comp[3].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 3, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed6Comp[4].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 4, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed6Comp[5].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 5, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed6Comp[6].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 6, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed6Comp[7].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 7, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed6Comp[8].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 8, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed6Comp[9].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 9, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed6Comp[10].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 10, int.Parse(array[1]), int.Parse(array[2]), 1);
-                array = CutscenePed6Comp[11].Split(new char[]
-                {
-                    '_'
-                });
-                Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, 11, int.Parse(array[1]), int.Parse(array[2]), 1);
+                    int componentId = data.Key;
+                    int drawable = data.Value.Drawable;
+                    int texture = data.Value.Texture;
+
+                    Function.Call(Hash.SET_PED_COMPONENT_VARIATION, NonCutscene, componentId, drawable, texture, 1);
+                }
             }
         }
 
-        public static List<string> CutscenePed1Comp = new List<string>
-        {
-            "0_0_0",
-            "1_0_0",
-            "2_0_0",
-            "3_0_0",
-            "4_0_0",
-            "5_0_0",
-            "6_0_0",
-            "7_0_0",
-            "8_0_0",
-            "9_0_0",
-            "10_0_0",
-            "11_0_0"
-        };
-
-        public static List<string> CutscenePed2Comp = new List<string>
-        {
-            "0_0_0",
-            "1_0_0",
-            "2_0_0",
-            "3_0_0",
-            "4_0_0",
-            "5_0_0",
-            "6_0_0",
-            "7_0_0",
-            "8_0_0",
-            "9_0_0",
-            "10_0_0",
-            "11_0_0"
-        };
-
-        public static List<string> CutscenePed3Comp = new List<string>
-        {
-            "0_0_0",
-            "1_0_0",
-            "2_0_0",
-            "3_0_0",
-            "4_0_0",
-            "5_0_0",
-            "6_0_0",
-            "7_0_0",
-            "8_0_0",
-            "9_0_0",
-            "10_0_0",
-            "11_0_0"
-        };
-
-        public static List<string> CutscenePed4Comp = new List<string>
-        {
-            "0_0_0",
-            "1_0_0",
-            "2_0_0",
-            "3_0_0",
-            "4_0_0",
-            "5_0_0",
-            "6_0_0",
-            "7_0_0",
-            "8_0_0",
-            "9_0_0",
-            "10_0_0",
-            "11_0_0"
-        };
-
-        public static List<string> CutscenePed5Comp = new List<string>
-        {
-            "0_0_0",
-            "1_0_0",
-            "2_0_0",
-            "3_0_0",
-            "4_0_0",
-            "5_0_0",
-            "6_0_0",
-            "7_0_0",
-            "8_0_0",
-            "9_0_0",
-            "10_0_0",
-            "11_0_0"
-        };
-
-        public static List<string> CutscenePed6Comp = new List<string>
-        {
-            "0_0_0",
-            "1_0_0",
-            "2_0_0",
-            "3_0_0",
-            "4_0_0",
-            "5_0_0",
-            "6_0_0",
-            "7_0_0",
-            "8_0_0",
-            "9_0_0",
-            "10_0_0",
-            "11_0_0"
-        };
+        private static Dictionary<int, PedVariationData> CutscenePed1VariationData =
+new Dictionary<int, PedVariationData>
+{
+                { 0, new PedVariationData(0, 0) },
+                { 1, new PedVariationData(0, 0) },
+                { 2, new PedVariationData(0, 0) },
+                { 3, new PedVariationData(0, 0) },
+                { 4, new PedVariationData(0, 0) },
+                { 5, new PedVariationData(0, 0) },
+                { 6, new PedVariationData(0, 0) },
+                { 7, new PedVariationData(0, 0) },
+                { 8, new PedVariationData(0, 0) },
+                { 9, new PedVariationData(0, 0) },
+                { 10, new PedVariationData(0, 0) },
+                { 11, new PedVariationData(0, 0) },
+};
+        private static Dictionary<int, PedVariationData> CutscenePed2VariationData =
+new Dictionary<int, PedVariationData>
+{
+                { 0, new PedVariationData(0, 0) },
+                { 1, new PedVariationData(0, 0) },
+                { 2, new PedVariationData(0, 0) },
+                { 3, new PedVariationData(0, 0) },
+                { 4, new PedVariationData(0, 0) },
+                { 5, new PedVariationData(0, 0) },
+                { 6, new PedVariationData(0, 0) },
+                { 7, new PedVariationData(0, 0) },
+                { 8, new PedVariationData(0, 0) },
+                { 9, new PedVariationData(0, 0) },
+                { 10, new PedVariationData(0, 0) },
+                { 11, new PedVariationData(0, 0) },
+};
+        private static Dictionary<int, PedVariationData> CutscenePed3VariationData =
+new Dictionary<int, PedVariationData>
+{
+                { 0, new PedVariationData(0, 0) },
+                { 1, new PedVariationData(0, 0) },
+                { 2, new PedVariationData(0, 0) },
+                { 3, new PedVariationData(0, 0) },
+                { 4, new PedVariationData(0, 0) },
+                { 5, new PedVariationData(0, 0) },
+                { 6, new PedVariationData(0, 0) },
+                { 7, new PedVariationData(0, 0) },
+                { 8, new PedVariationData(0, 0) },
+                { 9, new PedVariationData(0, 0) },
+                { 10, new PedVariationData(0, 0) },
+                { 11, new PedVariationData(0, 0) },
+};
+        private static Dictionary<int, PedVariationData> CutscenePed4VariationData =
+new Dictionary<int, PedVariationData>
+{
+                { 0, new PedVariationData(0, 0) },
+                { 1, new PedVariationData(0, 0) },
+                { 2, new PedVariationData(0, 0) },
+                { 3, new PedVariationData(0, 0) },
+                { 4, new PedVariationData(0, 0) },
+                { 5, new PedVariationData(0, 0) },
+                { 6, new PedVariationData(0, 0) },
+                { 7, new PedVariationData(0, 0) },
+                { 8, new PedVariationData(0, 0) },
+                { 9, new PedVariationData(0, 0) },
+                { 10, new PedVariationData(0, 0) },
+                { 11, new PedVariationData(0, 0) },
+};
+        private static Dictionary<int, PedVariationData> CutscenePed5VariationData =
+new Dictionary<int, PedVariationData>
+{
+                { 0, new PedVariationData(0, 0) },
+                { 1, new PedVariationData(0, 0) },
+                { 2, new PedVariationData(0, 0) },
+                { 3, new PedVariationData(0, 0) },
+                { 4, new PedVariationData(0, 0) },
+                { 5, new PedVariationData(0, 0) },
+                { 6, new PedVariationData(0, 0) },
+                { 7, new PedVariationData(0, 0) },
+                { 8, new PedVariationData(0, 0) },
+                { 9, new PedVariationData(0, 0) },
+                { 10, new PedVariationData(0, 0) },
+                { 11, new PedVariationData(0, 0) },
+};
+        private static Dictionary<int, PedVariationData> CutscenePed6VariationData =
+new Dictionary<int, PedVariationData>
+{
+                { 0, new PedVariationData(0, 0) },
+                { 1, new PedVariationData(0, 0) },
+                { 2, new PedVariationData(0, 0) },
+                { 3, new PedVariationData(0, 0) },
+                { 4, new PedVariationData(0, 0) },
+                { 5, new PedVariationData(0, 0) },
+                { 6, new PedVariationData(0, 0) },
+                { 7, new PedVariationData(0, 0) },
+                { 8, new PedVariationData(0, 0) },
+                { 9, new PedVariationData(0, 0) },
+                { 10, new PedVariationData(0, 0) },
+                { 11, new PedVariationData(0, 0) },
+};
         #endregion
 
         public enum CutsceneUsage

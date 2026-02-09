@@ -12,6 +12,14 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fInterior
     {
+        public static void ForceRoomForEntity(Entity entity, int interior, Hash roomHashKey)
+        {
+            Function.Call(Hash.FORCE_ROOM_FOR_ENTITY, entity, interior, roomHashKey);
+        }
+        public static void SetRoomForGameViewportByName(string roomName)
+        {
+            Function.Call(Hash.SET_​ROOM_​FOR_​GAME_​VIEWPORT_​BY_​NAME, roomName);
+        }
         public static uint GetInteriorFromEntity(Entity entity)
         {
             return Function.Call<uint>(Hash.GET_INTERIOR_FROM_ENTITY, entity);

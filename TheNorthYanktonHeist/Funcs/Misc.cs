@@ -11,6 +11,10 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fMisc
     {
+        public static void SetTimeScale(float timeScale)
+        {
+            Function.Call(Hash.SET_​TIME_​SCALE, timeScale);
+        }
         public static object pushArgs(params object[] args)
         {
             foreach (object obj in args)
@@ -53,6 +57,10 @@ namespace TheNorthYanktonHeist.Funcs
         public static void DisablePoliceRestart(int policeID, bool disable)
         {
             Function.Call(Hash.DISABLE_POLICE_RESTART, policeID, disable);
+        }
+        public static void ClearArea(float X, float Y, float Z, float radius, bool p4, bool ignoreCopCars, bool ignoreObjects, bool p7)
+        {
+            Function.Call(Hash.CLEAR_AREA, X, Y, Z, radius, p4, ignoreCopCars, ignoreObjects, p7);
         }
         public static void ClearArea(Vector3 xyz, float radius, bool ignoreVehicles, bool ignorePeds, bool ignoreProps)
         {

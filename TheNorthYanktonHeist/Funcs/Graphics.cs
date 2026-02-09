@@ -13,6 +13,10 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fGraphics
     {
+        public static void SetTimeCycleModifier(string modifierName)
+        {
+            Function.Call(Hash.SET_​TIMECYCLE_​MODIFIER, modifierName);
+        }
         public static void DrawMarkerSphere(Vector3 xyz, float radius, int red, int green, int blue, float alpha)
         {
             Function.Call(Hash.DRAW_​MARKER_​SPHERE, xyz.X, xyz.Y, xyz.Z, radius, red, green, blue, alpha);

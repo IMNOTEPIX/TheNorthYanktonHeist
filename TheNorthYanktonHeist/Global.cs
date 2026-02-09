@@ -10,7 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TheNorthYanktonHeist;
 using TheNorthYanktonHeist.Funcs;
+using TheNorthYanktonHeist.Scenes;
 using Screen = GTA.UI.Screen;
 
 public static class Globals
@@ -76,24 +78,102 @@ namespace Global
 
         List<Blip> excludeBlips = new List<Blip>();
 
-        static fCutsceneCreation debugCutscene = null;
+        static CutsceneCreation debugCutscene = null;
         static Vehicle debugHeli;
         static Ped cutscenePed1;
         static Ped cutscenePed2;
         static Ped cutscenePed3;
         static Blip debugBlip;
         static Camera debugCam;
+        static Prop debugProp;
         int scaleID = 0;
 
-        unsafe void test()
+
+        private void onTick(object sender, EventArgs e)
         {
-            int iVar32 = 0;
-            Function.Call(Hash.CLEAR_SEQUENCE_TASK, &iVar32);
-            Function.Call(Hash.OPEN_SEQUENCE_TASK, &iVar32);
-            Function.Call(Hash.TASK_FOLLOW_NAV_MESH_TO_COORD, fPlayer.ped, 5297.9f, -5188.12f, 83.51837f, 1f, -1, 0.5f, 0, -68f);
-            Function.Call(Hash.CLOSE_SEQUENCE_TASK, iVar32);
-            Function.Call(Hash.TASK_PERFORM_SEQUENCE, fPlayer.ped, iVar32);
-            Function.Call(Hash.CLEAR_SEQUENCE_TASK, &iVar32);
+            // Driveway to the depot: 
+            // Function.Call<bool>(Hash.IS_ENTITY_IN_ANGLED_AREA, fPlayer.ped, 5356.7324f, -5201.1553f, 80.83122f, 5356.5454f, -5179.6f, 96.83691f, 20f, false, true, 0) || Function.Call<bool>(Hash.IS_ENTITY_IN_ANGLED_AREA, fPlayer.ped, 5417.894f, -5108.7925f, 75.56319f, 5412.488f, -5240.66f, 95.59789f, 100f, false, true, 0)
+            // Depot:
+            // fEntity.IsEntityInArea(fPlayer.ped, new Vector3(5364.804f, -5158.941f, 79f), new Vector3(5283.942f, -5229.462f, 89f))
+            if (!ScriptSetup)
+            {
+                if (!Function.Call<bool>(Hash.GET_IS_LOADING_SCREEN_ACTIVE) && !Screen.IsFadingIn)
+                {
+                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);
+                    ScriptSetup = true;
+                }
+                if (Screen.IsFadingIn)
+                {
+                    if (!Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString) && !dlcPackWarningShown)
+                    {
+                        if (!instructionalButtonsSetUp)
+                        {
+                            warningButtons.Load();
+                            warningButtons.AddContainer(Continue);
+                            instructionalButtonsSetUp = true;
+                        }
+                        else
+                        {
+                            warning.Render2D();
+                            warningButtons.UpdateScaleform();
+                            Game.DisableAllControlsThisFrame();
+                            warning.CallFunction("SHOW_POPUP_WARNING", -1, "WARNING", "North Yankton Heist Dlcpack Is Not Installed.", "Objective Subtitles Will Not Work Correctly.", true);
+                            warningButtons.Draw();
+                            if (warningButtons.IsLoaded)
+                            {
+                                if (Game.IsControlJustPressed(GTA.Control.FrontendAccept))
+                                {
+                                    warning.Dispose();
+                                    warningButtons.RemoveContainer(Continue);
+                                    warningButtons.Dispose();
+                                    dlcPackWarningShown = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                switch (Debug2)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        break;
+                }
+                /*
+                switch (globalBlips)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        fBlip.SetMostBlipsInvisible(excludeBlips);
+                        break;
+                    case 2:
+                        fBlip.SetAllBlipsInvisible(excludeBlips);
+                        break;
+                    case 3:
+                        fBlip.SetAllBlipsVisible(excludeBlips);
+                        globalBlips = 0;
+                        break;
+                }
+                switch (globalScripts)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        fInGameScripts.TerminateScriptsExeptMissions();
+                        break;
+                    case 2:
+                        fInGameScripts.TerminateScriptsWithMissions();
+                        break;
+                    case 3:
+                        fInGameScripts.StartAllNeededToStartScripts();
+                        globalScripts = 0;
+                        break;
+                }*/
+            }
         }
         private void onKeyDown(object sender, KeyEventArgs e)
         {
@@ -101,11 +181,14 @@ namespace Global
             {
                 if (e.KeyCode == Keys.N)
                 {
-                    Debug2 = 0;
+                    //Function.Call(Hash.LOAD_STREAM, "PROLOGUE_BLOW_THE_VAULT_MASTER", 0);
+                    //fAudio.PlayStreamFrontend();
+                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());
+                    //Debug2 = 0;
                     //SpawnBooth();
                     /*
                     ScriptManager.ScriptManager.KillScripts();
-                    TheNorthYanktonHeist.Heist.checkpoint = 2;
+                    TheNorthYanktonHeist.Heist.checkpoint = 3;
                     Globals.missionSwitch = 1000;
                     TheNorthYanktonHeist.Heist.justFailed = true;
                     SetFailVariation(FailVariations.PlaneDestroyed);
@@ -198,6 +281,12 @@ namespace Global
             bool flag = true;
             if (true == flag)
             {
+                SceneManager.StopCurrentScene();
+                if (debugProp != null)
+                {
+                    debugProp.Delete();
+                    debugProp = null;
+                }
                 if (iLocal_1176 != null)
                 {
                     iLocal_1176.Delete();
@@ -347,197 +436,8 @@ namespace Global
         Scaleform warning = Scaleform.RequestMovie("POPUP_WARNING");
         bool instructionalButtonsSetUp = false;
         Ped[] allPeds = World.GetAllPeds();
-        Prop iLocal_1176;
+        public static Prop iLocal_1176;
         //SynchronizedScene test = new SynchronizedScene(new Vector3(5297.9f, -5188.12f, 83.51837f), -68f);
-        private void onTick(object sender, EventArgs e)
-        {
-            // Driveway to the depot: 
-            // Function.Call<bool>(Hash.IS_ENTITY_IN_ANGLED_AREA, fPlayer.ped, 5356.7324f, -5201.1553f, 80.83122f, 5356.5454f, -5179.6f, 96.83691f, 20f, false, true, 0) || Function.Call<bool>(Hash.IS_ENTITY_IN_ANGLED_AREA, fPlayer.ped, 5417.894f, -5108.7925f, 75.56319f, 5412.488f, -5240.66f, 95.59789f, 100f, false, true, 0)
-            // Depot:
-            // fEntity.IsEntityInArea(fPlayer.ped, new Vector3(5364.804f, -5158.941f, 79f), new Vector3(5283.942f, -5229.462f, 89f))
-            if (!ScriptSetup)
-            {
-                if (!Function.Call<bool>(Hash.GET_IS_LOADING_SCREEN_ACTIVE) && !Screen.IsFadingIn)
-                {
-                    Audio.SetAudioFlag(AudioFlags.LoadMPData, true);
-                    ScriptSetup = true;
-                }
-                if (Screen.IsFadingIn)
-                {
-                    if (!Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString) && !dlcPackWarningShown)
-                    {
-                        if (!instructionalButtonsSetUp)
-                        {
-                            warningButtons.Load();
-                            warningButtons.AddContainer(Continue);
-                            instructionalButtonsSetUp = true;
-                        }
-                        else
-                        {
-                            warning.Render2D();
-                            warningButtons.UpdateScaleform();
-                            Game.DisableAllControlsThisFrame();
-                            warning.CallFunction("SHOW_POPUP_WARNING", -1, "WARNING", "North Yankton Heist Dlcpack Is Not Installed.", "Objective Subtitles Will Not Work Correctly.", true);
-                            warningButtons.Draw();
-                            if (warningButtons.IsLoaded)
-                            {
-                                if (Game.IsControlJustPressed(GTA.Control.FrontendAccept))
-                                {
-                                    warning.Dispose();
-                                    warningButtons.RemoveContainer(Continue);
-                                    warningButtons.Dispose();
-                                    dlcPackWarningShown = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                switch (Debug2)
-                {
-                    case 0:
-                        fStreaming.RequestAnimDict("anim@scripted@player@mission@tun_bomb_plant@male@"); // enter // enter_bag // enter_bomb
-                        // h4_prop_h4_ld_bomb_02a
-                        Debug2 = 3;
-                        // 5297.523f, -5188.047f, 83.51848f
-
-                        break;
-                    case 1:
-                        Debug2++;
-                        break;
-                    case 2:
-                        Debug2++;
-                        break;
-                    case 3:
-                        Debug2++;
-                        break;
-                    case 4:
-                        break;
-                    case 8:
-                        break;
-                    case 9:
-                        break;
-                }
-                switch (Debug)
-                {
-                    case 0:
-                        if (cutscenePed1 == null)
-                        {
-                            cutscenePed1 = fPed.CreatePed("mp_m_freemode_01", new Vector3(1706.324f, 7991.369f, 360.9091f), 5.3f);
-                        }
-                        else
-                        {
-                            cutscenePed1.IsPositionFrozen = true;
-                            cutscenePed1.IsVisible = false;
-                        }
-                        if (cutscenePed2 == null)
-                        {
-                            cutscenePed2 = fPed.CreatePed("mp_m_freemode_01", new Vector3(1706.324f, 7991.369f, 360.9091f), 5.3f);
-                        }
-                        else
-                        {
-                            cutscenePed2.IsPositionFrozen = true;
-                            cutscenePed2.IsVisible = false;
-                        }
-                        if (cutscenePed3 == null)
-                        {
-                            cutscenePed3 = fPed.CreatePed("mp_m_freemode_01", new Vector3(1706.324f, 7991.369f, 360.9091f), 5.3f);
-                        }
-                        else
-                        {
-                            cutscenePed3.IsPositionFrozen = true;
-                            cutscenePed3.IsVisible = false;
-                        }
-                        if (debugHeli == null)
-                        {
-                            debugHeli = fVehicle.CreateVehicle("buzzard", new Vector3(1706.324f, 7991.369f, 360.9091f), 5.3f);
-                        }
-                        else
-                        {
-                            if (!fVehicle.IsVehicleWeaponDisabled(fMisc.GetHashKey("VEHICLE_WEAPON_PLAYER_BUZZARD"), debugHeli, fPlayer.ped))
-                            {
-                                fVehicle.DisableVehicleWeapon(true, fMisc.GetHashKey("VEHICLE_WEAPON_PLAYER_BUZZARD"), debugHeli, fPlayer.ped);
-                            }
-                            debugHeli.IsPositionFrozen = true;
-                        }
-                        Debug++;
-                        break;
-                    case 1:
-                        debugCutscene = new fCutsceneCreation("mph_pri_fin_ext", new Vector3(1706.324f, 7991.369f, 360.9091f), new Vector3(0f, 0f, 5.3f), false);
-                        debugCutscene.AddRegisterEntityToList(cutscenePed1, "MP_1", fCutscene.CutsceneUsage.CU_ANIMATE_AND_DELETE_EXISTING_SCRIPT_ENTITY, 0, fCutscene.CutsceneEntityOptionFlag.CEO_IGNORE_MODEL_NAME);
-                        debugCutscene.AddRegisterEntityToList(Game.Player.Character, "MP_2", fCutscene.CutsceneUsage.CU_ANIMATE_EXISTING_SCRIPT_ENTITY, 0, fCutscene.CutsceneEntityOptionFlag.CEO_IGNORE_MODEL_NAME);
-                        debugCutscene.AddRegisterEntityToList(cutscenePed2, "MP_3", fCutscene.CutsceneUsage.CU_ANIMATE_AND_DELETE_EXISTING_SCRIPT_ENTITY, 0, fCutscene.CutsceneEntityOptionFlag.CEO_IGNORE_MODEL_NAME);
-                        debugCutscene.AddRegisterEntityToList(cutscenePed3, "MP_4", fCutscene.CutsceneUsage.CU_ANIMATE_AND_DELETE_EXISTING_SCRIPT_ENTITY, 0, fCutscene.CutsceneEntityOptionFlag.CEO_IGNORE_MODEL_NAME);
-                        debugCutscene.AddRegisterEntityToList(debugHeli, "MPH_Helicopter", fCutscene.CutsceneUsage.CU_ANIMATE_AND_DELETE_EXISTING_SCRIPT_ENTITY, 0, fCutscene.CutsceneEntityOptionFlag.CEO_IGNORE_MODEL_NAME);
-                        debugCutscene.StartCutscene();
-                        while (!fCutscene.IsCutscenePlaying())
-                        {
-                            Wait(0);
-                        }
-                        Screen.FadeIn(1000);
-                        while (!fCutscene.HasCutsceneFinished())
-                        {
-                            fCutscene.SetCutsceneOriginAndRotation("mph_pri_fin_ext", new Vector3(debugCutscene.Pos.X, debugCutscene.Pos.Y, debugCutscene.Pos.Z), new Vector3(debugCutscene.Rot.X, debugCutscene.Rot.Y, debugCutscene.Rot.Z));
-                            debugHeli.ToggleExtra(8, false);
-                            debugHeli.ToggleExtra(9, false);
-                            cutscenePed1.IsVisible = false;
-                            cutscenePed2.IsVisible = false;
-                            cutscenePed3.IsVisible = false;
-                            Wait(0);
-                        }
-                        debugCutscene.Cleanup();
-                        debugCutscene = null;
-                        cutscenePed1.Delete();
-                        cutscenePed1 = null;
-                        cutscenePed2.Delete();
-                        cutscenePed2 = null;
-                        cutscenePed3.Delete();
-                        cutscenePed3 = null;
-                        debugHeli.Delete();
-                        debugHeli = null;
-                        Game.Player.Character.Task.ClearAll();
-                        Debug++;
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                }
-                /*
-                switch (globalBlips)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                        fBlip.SetMostBlipsInvisible(excludeBlips);
-                        break;
-                    case 2:
-                        fBlip.SetAllBlipsInvisible(excludeBlips);
-                        break;
-                    case 3:
-                        fBlip.SetAllBlipsVisible(excludeBlips);
-                        globalBlips = 0;
-                        break;
-                }
-                switch (globalScripts)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                        fInGameScripts.TerminateScriptsExeptMissions();
-                        break;
-                    case 2:
-                        fInGameScripts.TerminateScriptsWithMissions();
-                        break;
-                    case 3:
-                        fInGameScripts.StartAllNeededToStartScripts();
-                        globalScripts = 0;
-                        break;
-                }*/
-            }
-        }
 
         public static bool ScriptSetup = false;
 

@@ -11,6 +11,38 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fEntity
     {
+        public static void SetEntityProofs(Entity entity, bool bulletProof, bool fireProof, bool explosionProof, bool collisionProof, bool meleeProof, bool steamProof, bool dontResetOnCleanup, bool waterProof)
+        {
+            Function.Call(Hash.SET_​ENTITY_​PROOFS, entity, bulletProof, fireProof, explosionProof, collisionProof, meleeProof, steamProof, dontResetOnCleanup, waterProof);
+        }
+        public static Vector3 GetAnimInitialOffsetPosition(string animDict, string animName, Vector3 pos, Vector3 rot, float p8 = 0f, int p9 = 2)
+        {
+            return Function.Call<Vector3>(Hash.GET_​ANIM_​INITIAL_​OFFSET_​POSITION, animDict, animName, pos.X, pos.Y, pos.Z, rot.X, rot.Y, rot.Z, p8, p9);
+        }
+        public static Vector3 GetAnimInitialOffsetPosition(string animDict, string animName, float x, float y, float z, float xRot, float yRot, float zRot, float p8 = 0f, int p9 = 2)
+        {
+            return Function.Call<Vector3>(Hash.GET_​ANIM_​INITIAL_​OFFSET_​POSITION, animDict, animName, x, y, z, xRot, yRot, zRot, p8, p9);
+        }
+        public static Vector3 GetOffsetFromEntityInWorldCoords(Entity entity, Vector3 offset)
+        {
+            return Function.Call<Vector3>(Hash.GET_​OFFSET_​FROM_​ENTITY_​IN_​WORLD_​COORDS, entity, offset.X, offset.Y, offset.Z);
+        }
+        public static Vector3 GetOffsetFromEntityInWorldCoords(Entity entity, float offsetX, float offsetY, float offsetZ)
+        {
+            return Function.Call<Vector3>(Hash.GET_​OFFSET_​FROM_​ENTITY_​IN_​WORLD_​COORDS, entity, offsetX, offsetY, offsetZ);
+        }
+        public static bool HasAnimEventFired(Entity entity, string actionHash)
+        {
+            return Function.Call<bool>(Hash.HAS_​ANIM_​EVENT_​FIRED, entity, Function.Call<int>(Hash.GET_HASH_KEY, actionHash));
+        }
+        public static bool HasAnimEventFired(Entity entity, int actionHash)
+        {
+            return Function.Call<bool>(Hash.HAS_​ANIM_​EVENT_​FIRED, entity, actionHash);
+        }
+        public static bool HasAnimEventFired(Entity entity, Hash actionHash)
+        {
+            return Function.Call<bool>(Hash.HAS_​ANIM_​EVENT_​FIRED, entity, actionHash);
+        }
         public static bool DoesEntityExist(Entity entity)
         {
             return Function.Call<bool>(Hash.DOES_​ENTITY_​EXIST, entity);

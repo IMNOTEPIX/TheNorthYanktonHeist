@@ -14,7 +14,7 @@ namespace TheNorthYanktonHeist.Funcs
     public class SynchronizedScene : IDisposable
     {
         public int _handle { get; protected set; } = -1;
-        public bool IsActive { get => _handle != -1; }
+        public bool IsActive => _handle != -1;
         public bool IsRunning { get => Function.Call<bool>(Hash.IS_​SYNCHRONIZED_​SCENE_​RUNNING, _handle); }
         public float Phase
         {
@@ -72,7 +72,7 @@ namespace TheNorthYanktonHeist.Funcs
                 Script.Yield();
             }
         }
-        public void StartEntity(Entity entity, string animDict, string animName, float blendIn = 8f, float blendOut = 8f, SyncedSceneFlags flag = SyncedSceneFlags.None, float moveBlend = 1148846080)
+        public void PlayEntity(Entity entity, string animDict, string animName, float blendIn = 8f, float blendOut = 8f, SyncedSceneFlags flag = SyncedSceneFlags.None, float moveBlend = 1148846080)
         {
             if (IsActive && entity != null && entity.Exists())
             {
@@ -80,7 +80,7 @@ namespace TheNorthYanktonHeist.Funcs
                 Function.Call(Hash.FORCE_ENTITY_AI_AND_ANIMATION_UPDATE, entity);
             }
         }
-        public void StartPed(Ped ped, string animDict, string animName, float blendIn = 8f, float blendOut = 8f, SyncedSceneFlags flag = SyncedSceneFlags.None, RagdollBlockingFlags ragdollBlockingFlags = RagdollBlockingFlags.None,float moveBlendRatio = 1148846080, AnimationIKControlFlags ikFlags = AnimationIKControlFlags.None)
+        public void PlayPed(Ped ped, string animDict, string animName, float blendIn = 8f, float blendOut = 8f, SyncedSceneFlags flag = SyncedSceneFlags.None, RagdollBlockingFlags ragdollBlockingFlags = RagdollBlockingFlags.None,float moveBlendRatio = 1148846080, AnimationIKControlFlags ikFlags = AnimationIKControlFlags.None)
         {
             if (IsActive && ped != null && ped.Exists())
             {
@@ -88,7 +88,7 @@ namespace TheNorthYanktonHeist.Funcs
                 Function.Call(Hash.FORCE_PED_AI_AND_ANIMATION_UPDATE, ped, false, false);
             }
         }
-        public void StartCam(string animDict, string animName)
+        public void PlayCam(string animDict, string animName)
         {
             if (IsActive)
             {
@@ -100,7 +100,7 @@ namespace TheNorthYanktonHeist.Funcs
                 ScriptCameraDirector.StartRendering();
             }
         }
-        public void DeleteCamera(bool stopRendering)
+        public void DeleteCam(bool stopRendering)
         {
             if (Camera != null && Camera.Exists())
             {
@@ -131,7 +131,7 @@ namespace TheNorthYanktonHeist.Funcs
             {
                 Function.Call(Hash.TAKE_​OWNERSHIP_​OF_​SYNCHRONIZED_​SCENE, _handle);
                 _handle = -1;
-                DeleteCamera(true);
+                DeleteCam(true);
             }
         }
     }

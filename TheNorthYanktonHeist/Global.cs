@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TheNorthYanktonHeist;
 using TheNorthYanktonHeist.Funcs;
+using TheNorthYanktonHeist.Minigames;
 using TheNorthYanktonHeist.Scenes;
 using Screen = GTA.UI.Screen;
 
@@ -138,6 +139,8 @@ namespace Global
                 switch (Debug2)
                 {
                     case 0:
+                        cart.Update();
+                        cart2.Update();
                         break;
                     case 1:
                         break;
@@ -175,12 +178,16 @@ namespace Global
                 }*/
             }
         }
+        CartGrab cart = new CartGrab(CartType.Cocaine, fPlayer.ped.Position + new Vector3(2f, 2f, -1f));
+        CartGrab cart2 = new CartGrab(CartType.Diamonds_b, fPlayer.ped.Position + new Vector3(1f, 1f, -1f));
         private void onKeyDown(object sender, KeyEventArgs e)
         {
             if (debug)
             {
                 if (e.KeyCode == Keys.N)
                 {
+                    cart2.UseRemoteCounterSound = true;
+                    Debug2 = 0;
                     //Function.Call(Hash.LOAD_STREAM, "PROLOGUE_BLOW_THE_VAULT_MASTER", 0);
                     //fAudio.PlayStreamFrontend();
                     //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());
@@ -215,7 +222,7 @@ namespace Global
                 {
                     //fHud.DisplayHeistHelpText("NTH_GOTODEPOT", true);
                     //Screen.FadeIn(0);
-                    TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();
+                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();
                     //1777.488f, 3326.681f, 41.43328f
                 }
                 if (e.KeyCode == Keys.NumPad9)
@@ -281,6 +288,8 @@ namespace Global
             bool flag = true;
             if (true == flag)
             {
+                cart.Dispose();
+                cart2.Dispose();
                 SceneManager.StopCurrentScene();
                 if (debugProp != null)
                 {

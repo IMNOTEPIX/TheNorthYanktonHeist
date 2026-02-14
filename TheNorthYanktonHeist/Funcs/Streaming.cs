@@ -10,6 +10,10 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fStreaming
     {
+        public static bool HasAnimDictLoaded(string animDict)
+        {
+            return Function.Call<bool>(Hash.HAS_​ANIM_​DICT_​LOADED, animDict);
+        }
         public static void RemoveNamedPTFXAsset(string fxName)
         {
             Function.Call(Hash.REMOVE_NAMED_PTFX_ASSET, fxName);
@@ -76,11 +80,7 @@ namespace TheNorthYanktonHeist.Funcs
         {
             if (dict != string.Empty)
             {
-                while (Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, dict))
-                {
-                    Function.Call(Hash.REMOVE_ANIM_DICT, dict);
-                    Script.Yield();
-                }
+                Function.Call(Hash.REMOVE_ANIM_DICT, dict);
             }
         }
         public static void RemovePTFXAsset()

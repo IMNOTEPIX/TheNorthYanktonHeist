@@ -239,10 +239,10 @@ namespace TheNorthYanktonHeist.Funcs
                             fPlayer.PedPos(vector3.Z, vector3.Y, vector3.X, 272.3664f);
                             ScriptCameraDirector.StopRendering();
                             Function.Call(Hash.TASK_PLAY_ANIM, fPlayer.ped, fStreaming.RequestAnimDict("missprologueig_3@react_to_explosion"), "react_to_explosion_player_zero", 1000f, -8f, -1, 0, (0.075f + 0.05f), false, false, false);
-                            timerScene.StartPed(invisibleTimerPed, fStreaming.RequestAnimDict("missprologueig_3@react_to_explosion"), "react_to_explosion_player_two");
+                            timerScene.PlayPed(invisibleTimerPed, fStreaming.RequestAnimDict("missprologueig_3@react_to_explosion"), "react_to_explosion_player_two");
                             fPed.ForcePedAiAndAnimationUpdate(fPlayer.ped, false, false);
                             camScene.Camera = reactionCamera;
-                            camScene.StartCam(fStreaming.RequestAnimDict("missprologueig_3"), "react_to_explosion_cam");
+                            camScene.PlayCam(fStreaming.RequestAnimDict("missprologueig_3"), "react_to_explosion_cam");
                             timerScene.Phase = (0.075f + 0.05f);
                             camScene.Phase = 0.421f;
                             Game.DisableControlThisFrame(Control.Jump);

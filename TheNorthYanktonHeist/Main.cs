@@ -985,8 +985,8 @@ namespace TheNorthYanktonHeist
                                 door.Create();
                                 player.Rate = 0f;
                                 door.Rate = 0f;
-                                player.StartPed(fPlayer.ped, fStreaming.RequestAnimDict("anim@apt_trans@hinge_l_action"), "player_exit");
-                                door.StartEntity(AnimDoor, fStreaming.RequestAnimDict("anim@apt_trans@hinge_l_action"), "door_exit");
+                                player.PlayPed(fPlayer.ped, fStreaming.RequestAnimDict("anim@apt_trans@hinge_l_action"), "player_exit");
+                                door.PlayEntity(AnimDoor, fStreaming.RequestAnimDict("anim@apt_trans@hinge_l_action"), "door_exit");
                                 door.PlayAudioEvent();
                             }
                             else

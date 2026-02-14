@@ -13,6 +13,34 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fHud
     {
+        public static void ClearAdditionalText(int p0, bool p1 = false)
+        {
+            Function.Call(Hash.CLEAR_​ADDITIONAL_​TEXT, p0, p1);
+        }
+        public static void ClearAdditionalText(int p0)
+        {
+            Function.Call(Hash.CLEAR_​ADDITIONAL_​TEXT, p0);
+        }
+        public static void RequestAdditionalText(string gxt, int slot)
+        {
+            while (!Function.Call<bool>(Hash.HAS_​THIS_​ADDITIONAL_​TEXT_​LOADED, gxt, slot) || !Function.Call<bool>(Hash.HAS_​ADDITIONAL_​TEXT_​LOADED, slot))
+            {
+                Function.Call(Hash.REQUEST_​ADDITIONAL_​TEXT, gxt, slot);
+                Script.Yield();
+            }
+        }
+        public static void RequestAdditionalTextBasic(string gxt, int slot)
+        {
+            Function.Call(Hash.REQUEST_​ADDITIONAL_​TEXT, gxt, slot);
+        }
+        public static bool HasThisAdditionalTextLoaded(string gxt, int slot)
+        {
+            return Function.Call<bool>(Hash.HAS_​THIS_​ADDITIONAL_​TEXT_​LOADED, gxt, slot);
+        }
+        public static bool HasAdditionalTextLoaded(int slot)
+        {
+            return Function.Call<bool>(Hash.HAS_​ADDITIONAL_​TEXT_​LOADED, slot);
+        }
         public static void DisplayAmmoThisFrame(bool display)
         {
             Function.Call(Hash.DISPLAY_AMMO_THIS_FRAME, display);

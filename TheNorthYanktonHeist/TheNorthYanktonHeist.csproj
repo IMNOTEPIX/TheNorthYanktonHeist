@@ -86,7 +86,9 @@
     <Compile Include="Funcs\Vehicle.cs" />
     <Compile Include="Funcs\RegisterEntityChunk.cs" />
     <Compile Include="Global.cs" />
+    <Compile Include="Interfaces\IMinigame.cs" />
     <Compile Include="Interfaces\IScene.cs" />
+    <Compile Include="Minigames\CashGrab.cs" />
     <Compile Include="Scaleforms\MissionShard.cs" />
     <Compile Include="Funcs\Player.cs" />
     <Compile Include="Funcs\Respawn.cs" />
@@ -99,7 +101,7 @@
     <Compile Include="Functions.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scenes\BagManager.cs" />
+    <Compile Include="Funcs\BagManager.cs" />
     <Compile Include="Scenes\BombPlant.cs" />
     <Compile Include="Scenes\SceneManager.cs" />
   </ItemGroup>

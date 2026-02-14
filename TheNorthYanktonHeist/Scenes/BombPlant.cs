@@ -110,9 +110,9 @@ namespace TheNorthYanktonHeist.Scenes
                 _bombScene.HoldLastFrame = true;
                 _bombScene.Create();
 
-                _playerScene.StartPed(ped, animDict, "enter");
-                _playerScene.StartEntity(_bag, animDict, "enter_bag");
-                _bombScene.StartEntity(_bomb, animDict, "enter_bomb");
+                _playerScene.PlayPed(ped, animDict, "enter");
+                _playerScene.PlayEntity(_bag, animDict, "enter_bag");
+                _bombScene.PlayEntity(_bomb, animDict, "enter_bomb");
                 fCam.RenderScriptCams(true, true, 800);
             }
             else if (_playerScene.IsFinished)

@@ -9,6 +9,10 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fGamePad
     {
+        public static bool IsUsingKeyboardAndMouse(int control)
+        {
+            return Function.Call<bool>(Hash.IS_​USING_​KEYBOARD_​AND_​MOUSE, control);
+        }
         public static void SetControlShake(int control, int duration, int frequency)
         {
             Function.Call(Hash.SET_​CONTROL_​SHAKE, control, duration, frequency);

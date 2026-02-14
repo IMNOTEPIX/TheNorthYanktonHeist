@@ -87,6 +87,18 @@ namespace TheNorthYanktonHeist.Funcs
                 }
             }
         }
+        public static void SetMovementModeOverride(Ped ped, string name)
+        {
+            Function.Call(Hash.SET_​MOVEMENT_​MODE_​OVERRIDE, ped, name);
+        }
+        public static void SetPedCanLegIK(Ped ped, bool toggle)
+        {
+            Function.Call(Hash.SET_​PED_​CAN_​LEG_​IK, ped, toggle);
+        }
+        public static bool HaveAllStreamingRequestsCompleted(Ped ped)
+        {
+            return Function.Call<bool>(Hash.HAVE_​ALL_​STREAMING_​REQUESTS_​COMPLETED, ped);
+        }
         public static void SetPedPropIndex(Ped ped, int componentId, int drawableId, int TextureId, bool attach)
         {
             Function.Call(Hash.SET_​PED_​PROP_​INDEX, ped, componentId, drawableId, TextureId, attach);

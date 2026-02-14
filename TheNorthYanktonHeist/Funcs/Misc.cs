@@ -92,6 +92,10 @@ namespace TheNorthYanktonHeist.Funcs
         {
             return Function.Call<Hash>(Hash.GET_HASH_KEY, str);
         }
+        public static int joaat(string str)
+        {
+            return Function.Call<int>(Hash.GET_HASH_KEY, str);
+        }
         public static int GetRandomIntInRange(int startRange, int endRange)
         {
             return Function.Call<int>(Hash.GET_RANDOM_INT_IN_RANGE, startRange, endRange);

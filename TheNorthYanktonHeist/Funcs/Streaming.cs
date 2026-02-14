@@ -68,11 +68,7 @@ namespace TheNorthYanktonHeist.Funcs
             {
                 for (int i = 0; i < animDictList.Count; i++)
                 {
-                    while (Function.Call<bool>(Hash.HAS_ANIM_DICT_LOADED, animDictList[i]))
-                    {
-                        Function.Call(Hash.REMOVE_ANIM_DICT, animDictList[i]);
-                        Script.Yield();
-                    }
+                    Function.Call(Hash.REMOVE_ANIM_DICT, animDictList[i]);
                 }
             }
         }

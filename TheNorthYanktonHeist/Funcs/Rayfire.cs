@@ -41,7 +41,6 @@ namespace TheNorthYanktonHeist.Funcs
             private static Ped invisibleTimerPed;
             public static void Scene()
             {
-                fHud.DisplayHelpText($"{vaultScene}");
                 if ((Function.Call<bool>(Hash.IS_INTERPOLATING_TO_SCRIPT_CAMS) || Function.Call<bool>(Hash.IS_INTERPOLATING_FROM_SCRIPT_CAMS)) || (Function.Call<bool>(Hash.DOES_CAM_EXIST, vaultCamera) && Function.Call<bool>(Hash.IS_CAM_INTERPOLATING, vaultCamera)))
                 {
                     Game.DisableControlThisFrame(Control.LookLeftRight);

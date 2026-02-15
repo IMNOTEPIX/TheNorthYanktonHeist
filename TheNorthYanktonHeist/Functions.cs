@@ -23,7 +23,6 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using static BillsyLiamGTA.UI.Elements.VariableTimer;
 using static System.Net.Mime.MediaTypeNames;
 //using static TheNorthYanktonHeist.Functions;
 using Hash = GTA.Native.Hash;

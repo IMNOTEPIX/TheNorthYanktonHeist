@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TheNorthYanktonHeist.Funcs
+namespace TheNorthYanktonHeist.Interfaces
 {
-    internal interface IScaleform
+    public interface IScaleform
     {
         void RequestScaleform();
         void DrawScaleform();

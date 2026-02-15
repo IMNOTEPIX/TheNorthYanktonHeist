@@ -13,6 +13,50 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fGraphics
     {
+        public static void ResetScriptGfxAlign()
+        {
+            Function.Call(Hash.RESET_​SCRIPT_​GFX_​ALIGN);
+        }
+        public static void SetScriptGfxAlignParams(float x, float y, float w, float h)
+        {
+            Function.Call(Hash.SET_​SCRIPT_​GFX_​ALIGN_​PARAMS, x, y, w, h);
+        }
+        public static void SetScriptGfxAlign(int horizontalAlign, int verticalAlign)
+        {
+            Function.Call(Hash.SET_​SCRIPT_​GFX_​ALIGN, horizontalAlign, verticalAlign);
+        }
+        public static bool HasStreamedTextureDictLoaded(string textureDict)
+        {
+            return Function.Call<bool>(Hash.HAS_​STREAMED_​TEXTURE_​DICT_​LOADED, textureDict);
+        }
+        public static void RequestStreamedTextureDict(string textureDict)
+        {
+            Function.Call(Hash.REQUEST_​STREAMED_​TEXTURE_​DICT, textureDict, 0);
+        }
+        public static void DrawRect(float x, float y, float width, float height, int r, int g, int b, int a)
+        {
+            Function.Call(Hash.DRAW_​RECT, x, y, width, height, r, g, b, a, 0);
+        }
+        public static void DrawSprite(string textureDict, string textureName, float screenX, float screenY, float width, float height, float heading, int red, int green, int blue, int alpha)
+        {
+            Function.Call(Hash.DRAW_​SPRITE, textureDict, textureName, screenX, screenY, width, height, heading, red, green, blue, alpha, false, 0);
+        }
+        public static bool GetIsWidescreen()
+        {
+            return Function.Call<bool>(Hash.GET_​IS_​WIDESCREEN);
+        }
+        public static void GetActiveScreenResolution(out int x, out int y)
+        {
+            int X = default;
+            int Y = default;
+            Function.Call(Hash.GET_​ACTUAL_​SCREEN_​RESOLUTION, X, Y);
+            x = X;
+            y = Y;
+        }
+        public static float GetAspectRatio(bool b)
+        {
+            return Function.Call<float>(Hash.GET_​ASPECT_​RATIO, b);
+        }
         public static void SetTimeCycleModifier(string modifierName)
         {
             Function.Call(Hash.SET_​TIMECYCLE_​MODIFIER, modifierName);

@@ -26,7 +26,6 @@
             CasinoAggressive2,
             CasinoAggressive3,
             DrugWarsChemicals,
-            SlushFundBag,
             ChopShopWeaponsBag,
         }
 
@@ -48,7 +47,7 @@
                 { BagVariantTypes.OriginalHeists, fPlayer.IsStoryPed ? new BagData(1, 0) : new BagData(45, 0) },
                 { BagVariantTypes.CasinoYungAncestor, new BagData(82, 9) },
                 { BagVariantTypes.CasinoRegular, new BagData(82, 0) },
-                { BagVariantTypes.CasinoMaintenance, new BagData(82, 1) },
+                { BagVariantTypes.CasinoMaintenance, new BagData(82, 3) },
                 { BagVariantTypes.CasinoBugstars, new BagData(82, 8) },
                 { BagVariantTypes.CasinoGeometric, new BagData(82, 13) },
                 { BagVariantTypes.CasinoPattern, new BagData(82, 12) },
@@ -57,13 +56,12 @@
                 { BagVariantTypes.CasinoAggressive2, new BagData(82, 11) },
                 { BagVariantTypes.CasinoAggressive3, new BagData(82, 14) },
                 { BagVariantTypes.DrugWarsChemicals, new BagData(82, 2) },
-                { BagVariantTypes.SlushFundBag, new BagData(82, 3) },
                 { BagVariantTypes.ChopShopWeaponsBag, new BagData(82, 4) },
         };
 
         public static int GetComponentId(Ped ped)
         {
-            if (ped.Model == PedHash.FreemodeMale01 || ped.Model == PedHash.FreemodeFemale01)
+            if (fPlayer.IsFreemodePed)
                 return FreemodeComponentId;
 
             return StoryModeComponentId; // fallback
@@ -151,7 +149,6 @@
                 case BagVariantTypes.CasinoAggressive2: return "ch_p_m_bag_var09_arm_s";
                 case BagVariantTypes.CasinoAggressive3: return "ch_p_m_bag_var10_arm_s";
                 case BagVariantTypes.DrugWarsChemicals: return "xm3_p_xm3_m_bag_var22_arm_s";
-                case BagVariantTypes.SlushFundBag: return "ch_p_m_bag_var03_arm_s";
                 case BagVariantTypes.ChopShopWeaponsBag: return "m23_2_p_m32_m_bag_var22_arm_s_g";
                 default: return null;
             }

@@ -2,15 +2,16 @@
 using GTA.Native;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.IO;
 
 namespace TheNorthYanktonHeist.Funcs
 {
-    [Obsolete("Use ScriptManager instead.")]
+    [Obsolete("Use ScriptManager instead."), EditorBrowsable(EditorBrowsableState.Never)]
     public class fInGameScripts
     {
         public static void StartAllNeededToStartScripts()

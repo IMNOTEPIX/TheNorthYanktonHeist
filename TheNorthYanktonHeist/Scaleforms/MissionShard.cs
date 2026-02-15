@@ -1,13 +1,9 @@
-﻿using GTA;
-using GTA.Native;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TheNorthYanktonHeist.Funcs
+﻿namespace TheNorthYanktonHeist.Scaleforms
 {
+    using GTA;
+    using GTA.Native;
+    using TheNorthYanktonHeist.Interfaces;
+    using TheNorthYanktonHeist.Funcs;
     public class MissionShard : IScaleform
     {
         public unsafe void DeleteScaleform()

@@ -1,7 +1,4 @@
-﻿using BillsyLiamGTA.UI.Elements;
-using BillsyLiamGTA.UI.Scaleform;
-using BillsyLiamGTA.UI.Timerbars;
-using Global;
+﻿using Global;
 using GTA;
 using GTA.Math;
 using GTA.Native;
@@ -15,7 +12,10 @@ using System.Runtime.InteropServices;
 using System.Timers;
 using System.Windows.Forms;
 using TheNorthYanktonHeist;
+using TheNorthYanktonHeist.Drawables.TimerBars;
 using TheNorthYanktonHeist.Funcs;
+using TheNorthYanktonHeist.Minigames;
+using TheNorthYanktonHeist.Scaleforms;
 using TheNorthYanktonHeist.Scenes;
 using static Globals;
 using static System.Windows.Forms.AxHost;
@@ -76,17 +76,11 @@ namespace TheNorthYanktonHeist
             {
                 if (Game.IsMissionActive)
                 {
-                    if (PlaneBlip != null)
-                    {
-                        PlaneBlip.Delete();
-                        PlaneBlip = null;
-                    }
+                    PlaneBlip?.Delete();
+                    PlaneBlip = null;
                     if (Plane != null)
                     {
-                        if (Plane.AttachedBlip != null)
-                        {
-                            Plane.AttachedBlip.Delete();
-                        }
+                        Plane.AttachedBlip?.Delete();
                         Plane.Delete();
                         Plane = null;
                     }
@@ -214,11 +208,8 @@ namespace TheNorthYanktonHeist
                         case 2:
                             if (fPlayer.ped.CurrentVehicle == Plane)
                             {
-                                if (PlaneBlip != null)
-                                {
-                                    PlaneBlip.Delete();
-                                    PlaneBlip = null;
-                                }
+                                PlaneBlip?.Delete();
+                                PlaneBlip = null;
                                 Plane.AttachedBlip.Name = "Plane";
                                 Plane.AttachedBlip.Color = BlipColor.Blue;
                                 Plane.AttachedBlip.Alpha = 0;
@@ -231,11 +222,8 @@ namespace TheNorthYanktonHeist
                                 if (fTimer.TimerA() > 15000)
                                 {
                                     fPlayer.ped.SetIntoVehicle(Plane, VehicleSeat.Driver);
-                                    if (PlaneBlip != null)
-                                    {
-                                        PlaneBlip.Delete();
-                                        PlaneBlip = null;
-                                    }
+                                    PlaneBlip?.Delete();
+                                    PlaneBlip = null;
                                     Plane.AttachedBlip.Color = BlipColor.Blue;
                                     Plane.AttachedBlip.Alpha = 0;
                                     startSwitch = 0;
@@ -259,10 +247,7 @@ namespace TheNorthYanktonHeist
                         }
                         if (Plane != null && Plane.IsConsideredDestroyed)
                         {
-                            if (Plane.AttachedBlip != null)
-                            {
-                                Plane.AttachedBlip.Delete();
-                            }
+                            Plane.AttachedBlip?.Delete();
                             PlaneBlip.DisplayType = BlipDisplayType.NoDisplay;
                             startSwitch = 0;
                         }
@@ -271,10 +256,7 @@ namespace TheNorthYanktonHeist
                     {
                         if (fPlayer.GetDistanceTo(Plane.Position) > 440f)
                         {
-                            if (Plane.AttachedBlip != null)
-                            {
-                                Plane.AttachedBlip.Delete();
-                            }
+                            Plane.AttachedBlip?.Delete();
                             Plane.Delete();
                             Plane = null;
                             startSwitch = 0;
@@ -286,17 +268,11 @@ namespace TheNorthYanktonHeist
 
         void CleanUp()
         {
-            if (PlaneBlip != null)
-            {
-                PlaneBlip.Delete();
-                PlaneBlip = null;
-            }
+            PlaneBlip?.Delete();
+            PlaneBlip = null;
             if (Plane != null)
             {
-                if (Plane.AttachedBlip != null)
-                {
-                    Plane.AttachedBlip.Delete();
-                }
+                Plane.AttachedBlip?.Delete();
                 Plane.MarkAsNoLongerNeeded();
                 Plane = null;
             }
@@ -324,6 +300,7 @@ namespace TheNorthYanktonHeist
         {
             Tick += onTick;
             Aborted += onShutdown;
+            Aborted += (_, _) => CartGrab.DisposeAll();
         }
 
 
@@ -543,11 +520,8 @@ namespace TheNorthYanktonHeist
                                         Globals.missionSwitch = 3;
                                     }
                                 }
-                                if (Start.PlaneBlip != null)
-                                {
-                                    Start.PlaneBlip.Delete();
-                                    Start.PlaneBlip = null;
-                                }
+                                Start.PlaneBlip?.Delete();
+                                Start.PlaneBlip = null;
                                 Plane.AttachedBlip.Alpha = 0;
                             }
                         }
@@ -575,11 +549,8 @@ namespace TheNorthYanktonHeist
                         case 1:
                             fAudio.PrepareMusicEventIntensity(fAudio.MusicEventIntensity.Suspense);
                             checkpoint = 2;
-                            if (LudendorffNorthYankton != null)
-                            {
-                                LudendorffNorthYankton.Delete();
-                                LudendorffNorthYankton = null;
-                            }
+                            LudendorffNorthYankton?.Delete();
+                            LudendorffNorthYankton = null;
                             fPlayer.ped.Task.DriveTo(Plane, new Vector3((-3841.2847f - 200f), 5020.6064f, (fPlayer.ped.Position.Z + 10f)), 10f, VehicleDrivingFlags.None, 5f);
                             Screen.FadeOut(2500);
                             while (!Screen.IsFadedOut)
@@ -593,10 +564,7 @@ namespace TheNorthYanktonHeist
                             Wait(7500);
                             if (Plane != null)
                             {
-                                if (Plane.AttachedBlip != null)
-                                {
-                                    Plane.AttachedBlip.Delete();
-                                }
+                                Plane.AttachedBlip?.Delete();
                                 Plane.Delete();
                                 Plane = null;
                             }
@@ -695,16 +663,10 @@ namespace TheNorthYanktonHeist
                                         while (fPlayer.GetCarDistanceTo(new Vector2(3572.151f, -4890.441f)) > 5f)
                                             Wait(0);
                                         fCam.RenderScriptCams(false, true, 1700);
-                                        if (PrologueIntroCam != null)
-                                        {
-                                            PrologueIntroCam.Delete();
-                                            PrologueIntroCam = null;
-                                        }
-                                        if (PrologueIntroCam2 != null)
-                                        {
-                                            PrologueIntroCam2.Delete();
-                                            PrologueIntroCam2 = null;
-                                        }
+                                        PrologueIntroCam?.Delete();
+                                        PrologueIntroCam = null;
+                                        PrologueIntroCam2?.Delete();
+                                        PrologueIntroCam2 = null;
                                         fHud.RadarAndHud(true, true);
                                         Globals.missionSwitch = 4;
                                     }
@@ -810,10 +772,7 @@ namespace TheNorthYanktonHeist
                     {
                         if (BoothGuard.IsDead)
                         {
-                            if (BoothGuard.AttachedBlip != null)
-                            {
-                                BoothGuard.AttachedBlip.Delete();
-                            }
+                            BoothGuard.AttachedBlip?.Delete();
                             BoothGuard.MarkAsNoLongerNeeded();
                         }
                         else
@@ -889,7 +848,7 @@ namespace TheNorthYanktonHeist
                                             while (!Screen.IsFadedOut)
                                                 Wait(0);
                                             LoadingPrompt.Show("NorthYanktonHeist");
-                                            fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.Gunfight);
+                                            fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.MedIntensity);
                                             DepotBlip.Delete();
                                             DepotBlip = null;
                                             case5switch = 0;
@@ -903,19 +862,6 @@ namespace TheNorthYanktonHeist
                     switch (case5switch)
                     {
                         case 0:
-                            if (World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 929864185) != null &&
-                                World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 929864185) != null)
-                            {
-                                Function.Call(Hash.CREATE_​MODEL_​SWAP, 5308.04f, -5191.028f, 82.99158f, 0.3f, 929864185, 269934519, true);
-                                Function.Call(Hash.CREATE_​MODEL_​SWAP, 5302.142f, -5191.521f, 82.99158f, 0.3f, 929864185, 269934519, true);
-
-                            }
-                            if (World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519) != null &&
-                                World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519) != null)
-                            {
-                                trolly1 = World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519);
-                                trolly2 = World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519);
-                            }
                             fHud.ClearPrints();
                             fPlayer.SetMaxWantedLevelTo0();
                             fPlayer.ped.IsPositionFrozen = false;
@@ -1032,11 +978,8 @@ namespace TheNorthYanktonHeist
                             break;
                         case 4:
                             CombatsList.Combats_Activate();
-                            if (AnimCam != null)
-                            {
-                                AnimCam.Delete();
-                                AnimCam = null;
-                            }
+                            AnimCam?.Delete();
+                            AnimCam = null;
                             fPlayer.FakeWantedLevel = 3;
                             case5switch = 5;
                             break;
@@ -1080,32 +1023,8 @@ namespace TheNorthYanktonHeist
                             }
                             break;
                         case 7:
-                            if (InsideBlip != null)
-                            {
-                                InsideBlip.Delete();
-                                InsideBlip = null;
-                            }
-                            if (World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 929864185) != null &&
-                                World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 929864185) != null)
-                            {
-                                Function.Call(Hash.CREATE_​MODEL_​SWAP, 5308.04f, -5191.028f, 82.99158f, 0.3f, 929864185, 269934519, true);
-                                Function.Call(Hash.CREATE_​MODEL_​SWAP, 5302.142f, -5191.521f, 82.99158f, 0.3f, 929864185, 269934519, true);
-
-                            }
-                            if (World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519) != null &&
-                                World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519) != null)
-                            {
-                                trolly1 = World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519);
-                                trolly2 = World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519);
-                            }
-                            if (trolly3 == null)
-                            {
-                                trolly3 = fProp.CreatePropNoOffset(269934519, new Vector3(5306.773f, -5187.983f, 82.99162f), new Vector3(0f, 0f, 155f), false);
-                            }
-                            else
-                            {
-                                trolly3.IsPositionFrozen = false;
-                            }
+                            InsideBlip?.Delete();
+                            InsideBlip = null;
                             if (Function.Call<int>(Hash.GET_SCRIPT_TASK_STATUS, Game.Player.Character, Function.Call<int>(Hash.GET_HASH_KEY, "SCRIPT_TASK_GO_STRAIGHT_TO_COORD")) == 7)
                             {
                                 GameplayCamera.SetCamViewModeForContext(CamViewModeContext.InVehicle, CamViewMode.ThirdPersonFar);
@@ -1149,6 +1068,17 @@ namespace TheNorthYanktonHeist
                                         fHud.DisplayHelpText("~s~Press ~INPUT_DETONATE~ to ~r~detonate~s~ the explosives.");
                                     if (Game.IsControlJustPressed(GTA.Control.Detonate))
                                     {
+                                        var trolly1 = World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 929864185);
+                                        var trolly2 = World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 929864185);
+                                        if (trolly1 is not null &&
+                                            trolly2 is not null)
+                                        {
+                                            trolly1.Delete();
+                                            trolly2.Delete();
+                                        }
+                                        c1.Create();
+                                        c2.Create();
+                                        c3.Create();
                                         Audio.SetAudioFlag(AudioFlags.LoadMPData, false);
                                         Wait(700);
                                         case5switch = 9;
@@ -1180,6 +1110,13 @@ namespace TheNorthYanktonHeist
                             }
                             if (RayfireScenes.PrologueVaultRayfire.vaultScene >= 12)
                             {
+                                c1.ConnectToValueBar(takeBar);
+                                c2.ConnectToValueBar(takeBar);
+                                c3.ConnectToValueBar(takeBar);
+                                HudBarController.Register(takeBar);
+                                c1.ApplyBlipPreset(BlipPresets.VaultCart);
+                                c2.ApplyBlipPreset(BlipPresets.VaultCart);
+                                c3.ApplyBlipPreset(BlipPresets.VaultCart);
                                 fAudio.PrepareMusicEvent("MP_MC_START_VACUUM_8");
                                 fAudio.TriggerMusicEvent("MP_MC_START_VACUUM_8");
                                 Globals.missionSwitch = 6;
@@ -1188,110 +1125,60 @@ namespace TheNorthYanktonHeist
                     }
                     break;
                 case 6:
-                    if (World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 929864185) != null ||
-                                World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 929864185) != null)
-                    {
-                        Function.Call(Hash.CREATE_​MODEL_​SWAP, 5308.04f, -5191.028f, 82.99158f, 0.3f, 929864185, 269934519, true);
-                        Function.Call(Hash.CREATE_​MODEL_​SWAP, 5302.142f, -5191.521f, 82.99158f, 0.3f, 929864185, 269934519, true);
-
-                    }
-                    if ((trolly1 != null || trolly2 != null) && (World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519) != null ||
-                        World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519) != null))
-                    {
-                        trolly1 = World.GetClosestProp(new Vector3(5308.04f, -5191.028f, 82.99158f), 0.3f, 269934519);
-                        trolly2 = World.GetClosestProp(new Vector3(5302.142f, -5191.521f, 82.99158f), 0.3f, 269934519);
-                    }
-                    if (trolly3 == null)
-                    {
-                        trolly3 = fProp.CreatePropNoOffset(269934519, new Vector3(5306.773f, -5187.983f, 82.99162f), new Vector3(0f, 0f, 155f), false);
-                    }
-                    else
-                    {
-                        trolly3.IsPositionFrozen = false;
-                    }
-                    if (trolly1 != null)
-                    {
-                        if (trolly1.AttachedBlip == null)
-                            trolly1.AddBlip();
-                        else
-                        {
-                            trolly1.AttachedBlip.Color = BlipColor.Green;
-                            trolly1.AttachedBlip.Sprite = BlipSprite.Standard;
-                            trolly1.AttachedBlip.Name = "Cash";
-                            trolly1.AttachedBlip.Scale = 0.75f;
-                        }
-                    }
-                    if (trolly2 != null)
-                    {
-                        if (trolly2.AttachedBlip == null)
-                            trolly2.AddBlip();
-                        else
-                        {
-                            trolly2.AttachedBlip.Color = BlipColor.Green;
-                            trolly2.AttachedBlip.Sprite = BlipSprite.Standard;
-                            trolly2.AttachedBlip.Name = "Cash";
-                            trolly2.AttachedBlip.Scale = 0.75f;
-                        }
-                    }
-                    if (trolly2 != null)
-                    {
-                        if (trolly2.AttachedBlip == null)
-                            trolly2.AddBlip();
-                        else
-                        {
-                            trolly2.AttachedBlip.Color = BlipColor.Green;
-                            trolly2.AttachedBlip.Sprite = BlipSprite.Standard;
-                            trolly2.AttachedBlip.Name = "Cash";
-                            trolly2.AttachedBlip.Scale = 0.75f;
-                        }
-                    }
                     if (VaultBlip == null)
                     {
                         VaultBlip = fBlip.CreateBlipForCoordWithParams(new Vector3(5303.874f, -5189.139f, 82.54237f), BlipSprite.Standard, BlipColor.Yellow, 1f, "Vault");
                     }
                     if (fInterior.GetRoomKeyFromEntity(fPlayer.ped) == 2308199534)
                     {
-                        if (trolly1.AttachedBlip != null)
+                        if (!c1.IsMinigameActive && !c2.IsMinigameActive && !c3.IsMinigameActive)
                         {
-                            trolly1.AttachedBlip.Alpha = 255;
-                        }
-                        if (trolly2.AttachedBlip != null)
-                        {
-                            trolly2.AttachedBlip.Alpha = 255;
-                        }
-                        if (trolly3.AttachedBlip != null)
-                        {
-                            trolly3.AttachedBlip.Alpha = 255;
-                        }
-                        if (VaultBlip != null)
-                        {
-                            VaultBlip.Alpha = 0;
+                            if (c1.GetBlip() is not null)
+                            {
+                                c1.GetBlip().Alpha = 255;
+                            }
+                            if (c2.GetBlip() != null)
+                            {
+                                c2.GetBlip().Alpha = 255;
+                            }
+                            if (c3.GetBlip() != null)
+                            {
+                                c3.GetBlip().Alpha = 255;
+                            }
+                            if (VaultBlip != null)
+                            {
+                                VaultBlip.Alpha = 0;
+                            }
                         }
                     }
                     else
                     {
-                        if (trolly1.AttachedBlip != null)
+                        if (!c1.IsMinigameActive && !c2.IsMinigameActive && !c3.IsMinigameActive)
                         {
-                            trolly1.AttachedBlip.Alpha = 0;
-                        }
-                        if (trolly2.AttachedBlip != null)
-                        {
-                            trolly2.AttachedBlip.Alpha = 0;
-                        }
-                        if (trolly3.AttachedBlip != null)
-                        {
-                            trolly3.AttachedBlip.Alpha = 0;
-                        }
-                        if (VaultBlip != null)
-                        {
-                            VaultBlip.Alpha = 255;
+                            if (c1.GetBlip() != null)
+                            {
+                                c1.GetBlip().Alpha = 0;
+                            }
+                            if (c2.GetBlip() != null)
+                            {
+                                c2.GetBlip().Alpha = 0;
+                            }
+                            if (c3.GetBlip() != null)
+                            {
+                                c3.GetBlip().Alpha = 0;
+                            }
+                            if (VaultBlip != null)
+                            {
+                                VaultBlip.Alpha = 255;
+                            }
                         }
                     }
                     fAudio.ChangeMusicEventIntensity(fAudio.MusicEventIntensity.MedIntensity);
                     if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
-                        fHud.ShowGXTSubtitle("NTH_LOOTVAULT");
+                        fHud.ShowGXTSubtitle("NTH_COLLECTCASH");
                     else
-                        Screen.ShowSubtitle("~s~Loot the ~y~vault.~s~");
+                        Screen.ShowSubtitle("~s~Collect the ~g~cash.~s~");
+                    CartGrab.UpdateAll();
                     break;
             }
             if (Globals.missionSwitch != 0)
@@ -1303,9 +1190,10 @@ namespace TheNorthYanktonHeist
                 Plane = Start.Plane;
             }
         }
-        Prop trolly1;
-        Prop trolly2;
-        Prop trolly3;
+        HudValueBar takeBar = new HudValueBar("TAKE", isMoney: true) { Value = 0 };
+        CartGrab c1 = new CartGrab(CartType.Standard, new Vector3(5302.142f, -5191.521f, 82.99158f), false, new Vector3(0f, 0f, 75f));
+        CartGrab c2 = new CartGrab(CartType.Standard, new Vector3(5308.04f, -5191.028f, 82.99158f), false, new Vector3(0f, 0f, 20f));
+        CartGrab c3 = new CartGrab(CartType.Standard, new Vector3(5306.773f, -5187.983f, 82.99162f), false, new Vector3(0f, 0f, 155f));
         Blip VaultBlip;
         Blip InsideBlip;
         SynchronizedScene player = new SynchronizedScene(new Vector3(5309.55f, -5210.1f, (86.9186f - 3.41f)));
@@ -1489,9 +1377,10 @@ namespace TheNorthYanktonHeist
         Vector3 resetCamRot7 = new Vector3(17f, 0f, 130.4812f);
         Vector3 resetCamCoord3 = new Vector3(5346.801f, -5178.461f, 82.4f);
         Vector3 resetCamRot3 = new Vector3(15f, 0f, 129.449f);
+        
         InstructionalButtons resetButtons = new InstructionalButtons();
-        InstructionalButtonContainer ResetButtonContainer = new InstructionalButtonContainer(InputControl.FrontendAccept, "Restart Mission");
-        InstructionalButtonContainer GoBackToFreeroamContainer = new InstructionalButtonContainer(InputControl.FrontendCancel, "Leave Mission");
+        InstructionalButton ResetButtonContainer = new InstructionalButton(GTA.Control.FrontendAccept, "Restart Mission");
+        InstructionalButton GoBackToFreeroamContainer = new InstructionalButton(GTA.Control.FrontendCancel, "Leave Mission");
         bool instructionalButtonsSetUp = false;
         bool failShardJustShown = false;
         public static bool MissionFailCleanUpRequired = false;
@@ -1601,63 +1490,33 @@ namespace TheNorthYanktonHeist
                     }
                     if (Start.Plane != null)
                     {
-                        if (Start.Plane.AttachedBlip != null)
-                        {
-                            Start.Plane.AttachedBlip.Delete();
-                        }
+                        Start.Plane.AttachedBlip?.Delete();
                         Start.Plane.MarkAsNoLongerNeeded();
                         Start.Plane = null;
                     }
                     CombatsList.Combats_Dispose();
-                    if (InsideBlip != null)
-                    {
-                        InsideBlip.Delete();
-                        InsideBlip = null;
-                    }
-                    if (AnimGuard != null)
-                    {
-                        AnimGuard.Delete();
-                        AnimGuard = null;
-                    }
-                    if (AnimDoor != null)
-                    {
-                        AnimDoor.Delete();
-                        AnimDoor = null;
-                    }
-                    if (AnimCam != null)
-                    {
-                        AnimCam.Delete();
-                        AnimCam = null;
-                    }
-                    if (LudendorffNorthYankton != null)
-                    {
-                        LudendorffNorthYankton.Delete();
-                        LudendorffNorthYankton = null;
-                    }
-                    if (PrologueIntroCam != null)
-                    {
-                        PrologueIntroCam.Delete();
-                        PrologueIntroCam = null;
-                    }
-                    if (PrologueIntroCam2 != null)
-                    {
-                        PrologueIntroCam2.Delete();
-                        PrologueIntroCam2 = null;
-                    }
+                    InsideBlip?.Delete();
+                    InsideBlip = null;
+                    AnimGuard?.Delete();
+                    AnimGuard = null;
+                    AnimDoor?.Delete();
+                    AnimDoor = null;
+                    AnimCam?.Delete();
+                    AnimCam = null;
+                    LudendorffNorthYankton?.Delete();
+                    LudendorffNorthYankton = null;
+                    PrologueIntroCam?.Delete();
+                    PrologueIntroCam = null;
+                    PrologueIntroCam2?.Delete();
+                    PrologueIntroCam2 = null;
                     if (PrologueVehicle != null)
                     {
-                        if (PrologueVehicle.AttachedBlip != null)
-                        {
-                            PrologueVehicle.AttachedBlip.Delete();
-                        }
+                        PrologueVehicle.AttachedBlip?.Delete();
                         PrologueVehicle.MarkAsNoLongerNeeded();
                         PrologueVehicle = null;
                     }
-                    if (DepotBlip != null)
-                    {
-                        DepotBlip.Delete();
-                        DepotBlip = null;
-                    }
+                    DepotBlip?.Delete();
+                    DepotBlip = null;
                     fAudio.StopAudioScene("MI_1_TREV_FLY_TO_LUDENDORFF");
                     fAudio.StopAudioScene("MI_1_MIC_DRIVE_TO_GRAVEYARD");
                     fHud.ClearAllPrints();
@@ -1717,8 +1576,7 @@ namespace TheNorthYanktonHeist
                     switch (restartSwitch)
                     {
                         case 1:
-                            resetButtons.RemoveContainer(ResetButtonContainer);
-                            resetButtons.RemoveContainer(GoBackToFreeroamContainer);
+                            resetButtons.Clear();
                             resetButtons.Dispose();
                             restartPending = true;
                             if (Start.Plane == null)
@@ -1729,11 +1587,8 @@ namespace TheNorthYanktonHeist
                                 restarting = true;
                                 fVehicle.DeleteVehiclesInList(depotVehicles);
                                 fCam.RenderScriptCams(false, false, 0);
-                                if (resetCam != null)
-                                {
-                                    resetCam.Delete();
-                                    resetCam = null;
-                                }
+                                resetCam?.Delete();
+                                resetCam = null;
                                 if (checkpoint == 1)
                                 {
                                     fWeather.SetWeatherTypeNowPersist(weatherTypeBeforeMission);
@@ -1909,8 +1764,7 @@ namespace TheNorthYanktonHeist
                             break;
                         case 2:
                             Screen.FadeOut(2500);
-                            resetButtons.RemoveContainer(ResetButtonContainer);
-                            resetButtons.RemoveContainer(GoBackToFreeroamContainer);
+                            resetButtons.Clear();
                             resetButtons.Dispose();
                             if (Screen.IsFadedOut)
                             {
@@ -1918,11 +1772,8 @@ namespace TheNorthYanktonHeist
                                 restarting = true;
                                 fVehicle.DeleteVehiclesInList(depotVehicles);
                                 fCam.RenderScriptCams(false, false, 0);
-                                if (resetCam != null)
-                                {
-                                    resetCam.Delete();
-                                    resetCam = null;
-                                }
+                                resetCam?.Delete();
+                                resetCam = null;
                                 fPlayer.PedPos(1746.312f, 3273.837f, 40.15277f, 30.6f);
                                 instructionalButtonsSetUp = false;
                                 fPed.ApplyPedPropData(fPlayer.ped, pedProps);
@@ -2113,27 +1964,22 @@ namespace TheNorthYanktonHeist
                                 Screen.FadeIn(1500);
                             if (!instructionalButtonsSetUp)
                             {
-                                resetButtons.Load();
-                                resetButtons.AddContainer(GoBackToFreeroamContainer);
-                                resetButtons.AddContainer(ResetButtonContainer);
+                                resetButtons.Add(GoBackToFreeroamContainer);
+                                resetButtons.Add(ResetButtonContainer);
                                 instructionalButtonsSetUp = true;
                             }
                             else
                             {
-                                resetButtons.UpdateScaleform();
                                 resetButtons.Draw();
                                 Game.DisableAllControlsThisFrame();
                             }
-                            if (resetButtons.IsLoaded)
+                            if (Game.IsControlJustPressed(GTA.Control.FrontendAccept))
                             {
-                                if (Game.IsControlJustPressed(GTA.Control.FrontendAccept))
-                                {
-                                    restartSwitch = 1;
-                                }
-                                if (Game.IsControlJustPressed(GTA.Control.FrontendCancel) || Game.IsControlJustPressed(GTA.Control.FrontendPauseAlternate))
-                                {
-                                    restartSwitch = 2;
-                                }
+                                restartSwitch = 1;
+                            }
+                            if (Game.IsControlJustPressed(GTA.Control.FrontendCancel) || Game.IsControlJustPressed(GTA.Control.FrontendPauseAlternate))
+                            {
+                                restartSwitch = 2;
                             }
                         }
                     }
@@ -2164,89 +2010,38 @@ namespace TheNorthYanktonHeist
                 fProp.DeletePropsInList(boothProps);
                 fVehicle.DeleteVehiclesInList(depotVehicles);
                 CombatsList.Combats_Dispose();
-                if (trolly1 != null)
-                {
-                    trolly1.Delete();
-                    trolly1 = null;
-                }
-                if (trolly2 != null)
-                {
-                    trolly2.Delete();
-                    trolly2 = null;
-                }
-                if (trolly3 != null)
-                {
-                    trolly3.Delete();
-                    trolly3 = null;
-                }
-                if (InsideBlip != null)
-                {
-                    InsideBlip.Delete();
-                    InsideBlip = null;
-                }
-                if (Garagecolobject != null)
-                {
-                    Garagecolobject.Delete();
-                    Garagecolobject = null;
-                }
-                if (BoothGuard != null)
-                {
-                    BoothGuard.Delete();
-                    BoothGuard = null;
-                }
-                if (PrologueIntroCam != null)
-                {
-                    PrologueIntroCam.Delete();
-                    PrologueIntroCam = null;
-                }
-                if (PrologueIntroCam2 != null)
-                {
-                    PrologueIntroCam2.Delete();
-                    PrologueIntroCam2 = null;
-                }
-                if (DepotBlip != null)
-                {
-                    DepotBlip.Delete();
-                    DepotBlip = null;
-                }
+                InsideBlip?.Delete();
+                InsideBlip = null;
+                Garagecolobject?.Delete();
+                Garagecolobject = null;
+                BoothGuard?.Delete();
+                BoothGuard = null;
+                PrologueIntroCam?.Delete();
+                PrologueIntroCam = null;
+                PrologueIntroCam2?.Delete();
+                PrologueIntroCam2 = null;
+                DepotBlip?.Delete();
+                DepotBlip = null;
                 if (PrologueVehicle != null)
                 {
-                    if (PrologueVehicle.AttachedBlip != null)
-                    {
-                        PrologueVehicle.AttachedBlip.Delete();
-                    }
+                    PrologueVehicle.AttachedBlip?.Delete();
                     PrologueVehicle.MarkAsNoLongerNeeded();
                     PrologueVehicle = null;
                 }
-                if (LudendorffNorthYankton != null)
-                {
-                    LudendorffNorthYankton.Delete();
-                    LudendorffNorthYankton = null;
-                }
+                LudendorffNorthYankton?.Delete();
+                LudendorffNorthYankton = null;
                 if (Plane != null)
                 {
-                    if (Plane.AttachedBlip != null)
-                    {
-                        Plane.AttachedBlip.Delete();
-                    }
+                    Plane.AttachedBlip?.Delete();
                     Plane.MarkAsNoLongerNeeded();
                     Plane = null;
                 }
-                if (AnimGuard != null)
-                {
-                    AnimGuard.Delete();
-                    AnimGuard = null;
-                }
-                if (AnimDoor != null)
-                {
-                    AnimDoor.Delete();
-                    AnimDoor = null;
-                }
-                if (AnimCam != null)
-                {
-                    AnimCam.Delete();
-                    AnimCam = null;
-                }
+                AnimGuard?.Delete();
+                AnimGuard = null;
+                AnimDoor?.Delete();
+                AnimDoor = null;
+                AnimCam?.Delete();
+                AnimCam = null;
 
             }
         }

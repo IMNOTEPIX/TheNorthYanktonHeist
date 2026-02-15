@@ -1,18 +1,19 @@
-﻿using BillsyLiamGTA.UI.Elements;
-using BillsyLiamGTA.UI.Scaleform;
-using GTA;
+﻿using GTA;
 using GTA.Math;
 using GTA.Native;
 using GTA.UI;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TheNorthYanktonHeist;
+using TheNorthYanktonHeist.Drawables.TimerBars;
 using TheNorthYanktonHeist.Funcs;
 using TheNorthYanktonHeist.Minigames;
+using TheNorthYanktonHeist.Scaleforms;
 using TheNorthYanktonHeist.Scenes;
 using Screen = GTA.UI.Screen;
 
@@ -39,6 +40,8 @@ public static class Globals
 namespace Global
 {
     using static Globals;
+    using static System.Windows.Forms.AxHost;
+    using static System.Windows.Forms.VisualStyles.VisualStyleElement;
     using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
     using static TheNorthYanktonHeist.Heist;
 
@@ -79,6 +82,7 @@ namespace Global
 
         List<Blip> excludeBlips = new List<Blip>();
 
+        InstructionalButtons warningButtons = new InstructionalButtons();
         static CutsceneCreation debugCutscene = null;
         static Vehicle debugHeli;
         static Ped cutscenePed1;
@@ -109,26 +113,21 @@ namespace Global
                     {
                         if (!instructionalButtonsSetUp)
                         {
-                            warningButtons.Load();
-                            warningButtons.AddContainer(Continue);
+                            warningButtons.Add(GTA.Control.FrontendAccept, "Continue");
                             instructionalButtonsSetUp = true;
                         }
                         else
                         {
                             warning.Render2D();
-                            warningButtons.UpdateScaleform();
                             Game.DisableAllControlsThisFrame();
                             warning.CallFunction("SHOW_POPUP_WARNING", -1, "WARNING", "North Yankton Heist Dlcpack Is Not Installed.", "Objective Subtitles Will Not Work Correctly.", true);
                             warningButtons.Draw();
-                            if (warningButtons.IsLoaded)
+                            if (Game.IsControlJustPressed(GTA.Control.FrontendAccept))
                             {
-                                if (Game.IsControlJustPressed(GTA.Control.FrontendAccept))
-                                {
-                                    warning.Dispose();
-                                    warningButtons.RemoveContainer(Continue);
-                                    warningButtons.Dispose();
-                                    dlcPackWarningShown = true;
-                                }
+                                warning.Dispose();
+                                warningButtons.Remove(GTA.Control.FrontendAccept);
+                                warningButtons.Dispose();
+                                dlcPackWarningShown = true;
                             }
                         }
                     }
@@ -139,8 +138,7 @@ namespace Global
                 switch (Debug2)
                 {
                     case 0:
-                        cart.Update();
-                        cart2.Update();
+                        CartGrab.UpdateAll();
                         break;
                     case 1:
                         break;
@@ -178,22 +176,33 @@ namespace Global
                 }*/
             }
         }
-        CartGrab cart = new CartGrab(CartType.Cocaine, fPlayer.ped.Position + new Vector3(2f, 2f, -1f));
-        CartGrab cart2 = new CartGrab(CartType.Diamonds_b, fPlayer.ped.Position + new Vector3(1f, 1f, -1f));
+        HudValueBar bar = new HudValueBar("TAKE", true);
+        
         private void onKeyDown(object sender, KeyEventArgs e)
         {
             if (debug)
             {
                 if (e.KeyCode == Keys.N)
                 {
-                    cart2.UseRemoteCounterSound = true;
+                    /*
+                    var takeBar = new HudValueBar("TAKE", isMoney: true) { Value = 0 };
+                    HudBarController.Register(takeBar);
                     Debug2 = 0;
+                    new CartGrab(CartType.Gold_a, new Vector3(100, 200, 30)).CreateWithAutoBlip().ConnectToValueBar(takeBar);
+                    new CartGrab(CartType.Standard, fPlayer.ped.Position + new Vector3(0f, -2f, -1f)).CreateWithAutoBlip().ConnectToValueBar(takeBar);
+                    new CartGrab(CartType.Gold_c, fPlayer.ped.Position + new Vector3(-2f, -2f, -1f)).CreateWithAutoBlip().ConnectToValueBar(takeBar);
+                    new CartGrab(CartType.Diamonds_c, fPlayer.ped.Position + new Vector3(-4f, -2f, -1f)).CreateWithAutoBlip().ConnectToValueBar(takeBar);
+                    //cart.CreateWithBlip((BlipSprite)514, BlipColor.Grey, "Cocaine", 0.9f);
+                    //cart2.CreateWithBlip((BlipSprite)617, (BlipColor)26, "Diamonds", 0.9f);
+                    //cart3.CreateWithBlip((BlipSprite)618, (BlipColor)28, "Gold", 0.9f);
+                    //cart4.CreateWithBlip((BlipSprite)272, BlipColor.Green, "Cash", 0.9f);
+                    //cart.UseRemoteCounterSound = true;
+                    //cart2.UseRemoteCounterSound = true;
                     //Function.Call(Hash.LOAD_STREAM, "PROLOGUE_BLOW_THE_VAULT_MASTER", 0);
                     //fAudio.PlayStreamFrontend();
                     //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());
-                    //Debug2 = 0;
-                    //SpawnBooth();
-                    /*
+                    //SpawnBooth();*/
+                    
                     ScriptManager.ScriptManager.KillScripts();
                     TheNorthYanktonHeist.Heist.checkpoint = 3;
                     Globals.missionSwitch = 1000;
@@ -211,7 +220,7 @@ namespace Global
                     {
                         foreach (Blip blip in allBlips)
                         {
-                            if (blip != null && blip.Sprite == BlipSprite.Standard)
+                            if (blip != null && blip.Sprite == (BlipSprite)272)
                             {
                                 blip.Delete();
                             }
@@ -288,54 +297,25 @@ namespace Global
             bool flag = true;
             if (true == flag)
             {
-                cart.Dispose();
-                cart2.Dispose();
                 SceneManager.StopCurrentScene();
-                if (debugProp != null)
-                {
-                    debugProp.Delete();
-                    debugProp = null;
-                }
-                if (iLocal_1176 != null)
-                {
-                    iLocal_1176.Delete();
-                    iLocal_1176 = null;
-                }
-                if (plane != null)
-                {
-                    plane.Delete();
-                    plane = null;
-                }
-                if (debugBlip != null)
-                {
-                    debugBlip.Delete();
-                    debugBlip = null;
-                }
-                if (debugHeli != null)
-                {
-                    debugHeli.Delete();
-                    debugHeli = null;
-                }
-                if (cutscenePed1 != null)
-                {
-                    cutscenePed1.Delete();
-                    cutscenePed1 = null;
-                }
-                if (cutscenePed2 != null)
-                {
-                    cutscenePed2.Delete();
-                    cutscenePed2 = null;
-                }
-                if (cutscenePed3 != null)
-                {
-                    cutscenePed3.Delete();
-                    cutscenePed3 = null;
-                }
-                if (debugCam != null)
-                {
-                    debugCam.Delete();
-                    debugCam = null;
-                }
+                debugProp?.Delete();
+                debugProp = null;
+                iLocal_1176?.Delete();
+                iLocal_1176 = null;
+                plane?.Delete();
+                plane = null;
+                debugBlip?.Delete();
+                debugBlip = null;
+                debugHeli?.Delete();
+                debugHeli = null;
+                cutscenePed1?.Delete();
+                cutscenePed1 = null;
+                cutscenePed2?.Delete();
+                cutscenePed2 = null;
+                cutscenePed3?.Delete();
+                cutscenePed3 = null;
+                debugCam?.Delete();
+                debugCam = null;
                 fVehicle.DeleteVehiclesInList(fDebug.DebugVehicles);
                 fStreaming.RemoveAnimDict(fDebug.DebugAnimDicts);
                 fProp.DeletePropsInList(fDebug.DebugProps);
@@ -440,8 +420,9 @@ namespace Global
 
         Vehicle plane;
         bool dlcPackWarningShown = false;
+        /*
         InstructionalButtons warningButtons = new InstructionalButtons();
-        InstructionalButtonContainer Continue = new InstructionalButtonContainer(InputControl.FrontendAccept, "OK");
+        InstructionalButtonContainer Continue = new InstructionalButtonContainer(InputControl.FrontendAccept, "OK");*/
         Scaleform warning = Scaleform.RequestMovie("POPUP_WARNING");
         bool instructionalButtonsSetUp = false;
         Ped[] allPeds = World.GetAllPeds();

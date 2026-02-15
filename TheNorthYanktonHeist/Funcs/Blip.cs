@@ -7,10 +7,74 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// This is a compiler trick to enable records in .NET Framework 4.8
+namespace System.Runtime.CompilerServices
+{
+    internal static class IsExternalInit { }
+}
+
 namespace TheNorthYanktonHeist.Funcs
 {
+    // Modern record for blip preset
+    public record BlipPreset(
+        BlipSprite Sprite,
+        BlipColor Color,
+        string Name,
+        float Scale = 1f,
+        bool IsShortRange = true
+    );
+
+    // Static presets with target-typed new
+    public static class BlipPresets
+    {
+        public static readonly BlipPreset CashCart = new(
+            (BlipSprite)272,
+            BlipColor.Green,
+            "Cash",
+            Scale: 0.9f
+        );
+
+        public static readonly BlipPreset GoldCart = new(
+            (BlipSprite)618,
+            (BlipColor)28,
+            "Gold",
+            Scale: 0.8f
+        );
+
+        public static readonly BlipPreset DiamondsCart = new(
+            (BlipSprite)617,
+            (BlipColor)26,
+            "Diamonds",
+            Scale: 0.8f
+        );
+
+        public static readonly BlipPreset CocaineCart = new(
+            (BlipSprite)514,
+            BlipColor.Grey,
+            "Cocaine",
+            Scale: 0.8f
+        );
+
+        public static readonly BlipPreset VaultCart = new(
+            BlipSprite.Standard,
+            BlipColor.Green,
+            "Cash",
+            Scale: 0.75f
+            );
+
+        public static readonly BlipPreset Template = new(
+            BlipSprite.Standard,
+            BlipColor.Red,
+            "Template",
+            Scale: 1f,
+            IsShortRange: false
+        );
+    }
     public class fBlip
     {
+        public Blip CreateBlipPreset(Vector3 pos, BlipPreset preset) =>
+    CreateBlipForCoordWithParams(pos, preset.Sprite, preset.Color, preset.Scale, preset.Name, preset.IsShortRange);
+
         public static void ShowTickOnBlip(Blip blip, bool toggle)
         {
             Function.Call(Hash.SHOW_TICK_ON_BLIP, blip, toggle);
@@ -135,7 +199,7 @@ namespace TheNorthYanktonHeist.Funcs
             return Function.Call<Blip>(Hash.ADD_BLIP_FOR_RADIUS, pos.X, pos.Y, pos.Z, radius);
         }
 
-        public static Blip CreateBlipForCoordWithParams(Vector3 pos, BlipSprite Sprite, BlipColor Color, float Scale, string Name, int Alpha = 255)
+        public static Blip CreateBlipForCoordWithParams(Vector3 pos, BlipSprite Sprite, BlipColor Color, float Scale, string Name, bool isShortRange = false, int Alpha = 255)
         {
             Blip blip = AddBlipForCoord(pos);
             if (blip != null)
@@ -145,6 +209,7 @@ namespace TheNorthYanktonHeist.Funcs
                 blip.Color = Color;
                 blip.Scale = Scale;
                 blip.Name = Name;
+                blip.IsShortRange = isShortRange;
                 return blip;
             }
             return null;

@@ -13,6 +13,82 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fHud
     {
+        public static void SetTextRightJustify(bool toggle)
+        {
+            Function.Call(Hash.SET_​TEXT_​RIGHT_​JUSTIFY, toggle);
+        }
+        public static void SetTextEdge(int p0, int r, int g, int b, int a)
+        {
+            Function.Call(Hash.SET_​TEXT_​EDGE, p0, r , g , b , a);
+        }
+        public static void SetTextDropshadow(int distance, int r, int g, int b, int a)
+        {
+            Function.Call(Hash.SET_​TEXT_​DROPSHADOW, distance, r, g, b, a);
+        }
+        public static void AddTextComponentFormatInt(int value, bool commaSeparated)
+        {
+            Function.Call(Hash.ADD_​TEXT_​COMPONENT_​FORMATTED_​INTEGER, value, commaSeparated);
+        }
+        public static void AddTextComponentInt(int value)
+        {
+            Function.Call(Hash.ADD_​TEXT_​COMPONENT_​INTEGER, value);
+        }
+        public static void BeginTextCommandGetWidth(string text)
+        {
+            Function.Call(Hash.BEGIN_​TEXT_​COMMAND_​GET_​SCREEN_​WIDTH_​OF_​DISPLAY_​TEXT, text);
+        }
+        public static float EndTextCommandGetWidth(bool p0)
+        {
+            return Function.Call<float>(Hash.END_​TEXT_​COMMAND_​GET_​SCREEN_​WIDTH_​OF_​DISPLAY_​TEXT, p0);
+        }
+        public static void BeginTextCommandDisplayText(string text)
+        {
+            Function.Call(Hash.BEGIN_​TEXT_​COMMAND_​DISPLAY_​TEXT, text);
+        }
+        public static void EndTextCommandDisplayText(float x, float y)
+        {
+            Function.Call(Hash.END_​TEXT_​COMMAND_​DISPLAY_​TEXT, x, y, 0);
+        }
+        public static void BeginTextCommandGetLineCount(string entry)
+        {
+            Function.Call(Hash.BEGIN_​TEXT_​COMMAND_​GET_​NUMBER_​OF_​LINES_​FOR_​STRING, entry);
+        }
+        public static int EndTextCommandGetLineCount(float x, float y)
+        {
+            return Function.Call<int>(Hash.END_​TEXT_​COMMAND_​GET_​NUMBER_​OF_​LINES_​FOR_​STRING, x, y);
+        }
+        public static void SetTextFont(int fontType)
+        {
+            Function.Call(Hash.SET_​TEXT_​FONT, fontType);
+        }
+        public static void SetTextColour(int red, int green, int blue, int alpha)
+        {
+            Function.Call(Hash.SET_​TEXT_​COLOUR, red, green, blue, alpha);
+        }
+        public static void SetTextScale(float scale, float size)
+        {
+            Function.Call(Hash.SET_​TEXT_​SCALE, scale, size);
+        }
+        public static void SetTextJustification(int justifyType)
+        {
+            Function.Call(Hash.SET_​TEXT_​JUSTIFICATION, justifyType);
+        }
+        public static void SetTextWrap(float start, float end)
+        {
+            Function.Call(Hash.SET_​TEXT_​WRAP, start, end);
+        }
+        public static void SetTextOutline()
+        {
+            Function.Call(Hash.SET_​TEXT_​OUTLINE);
+        }
+        public static void SetTextDropShadow()
+        {
+            Function.Call(Hash.SET_​TEXT_​DROP_​SHADOW);
+        }
+        public static float GetTextHeight(float size, int font)
+        {
+            return Function.Call<float>(Hash.GET_​RENDERED_​CHARACTER_​HEIGHT, size, font);
+        }
         public static void ClearAdditionalText(int p0, bool p1 = false)
         {
             Function.Call(Hash.CLEAR_​ADDITIONAL_​TEXT, p0, p1);

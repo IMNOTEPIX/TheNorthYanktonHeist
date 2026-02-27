@@ -11,6 +11,34 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fMisc
     {
+        public enum DispatchType
+        {
+            DT_Invalid,
+            DT_PoliceAutomobile,
+            DT_PoliceHelicopter,
+            DT_FireDepartment,
+            DT_SwatAutomobile,
+            DT_AmbulanceDepartment,
+            DT_PoliceRiders,
+            DT_PoliceVehicleRequest,
+            DT_PoliceRoadBlock,
+            DT_PoliceAutomobileWaitPulledOver,
+            DT_PoliceAutomobileWaitCruising,
+            DT_Gangs,
+            DT_SwatHelicopter,
+            DT_PoliceBoat,
+            DT_ArmyVehicle,
+            DT_BikerBackup
+        };
+        public static void EnableDispatchService(DispatchType type, bool toggle)
+        {
+            Function.Call(Hash.BLOCK_DISPATCH_SERVICE_RESOURCE_CREATION, (int)type, !toggle);
+            Function.Call(Hash.ENABLE_DISPATCH_SERVICE, (int)type, toggle);
+        }
+        public static bool HasBulletImpactedInArea(float x, float y, float z, float radius)
+        {
+            return Function.Call<bool>(Hash.HAS_​BULLET_​IMPACTED_​IN_​AREA, x, y, z, radius);
+        }
         public static void SetTimeScale(float timeScale)
         {
             Function.Call(Hash.SET_​TIME_​SCALE, timeScale);

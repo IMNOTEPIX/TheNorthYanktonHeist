@@ -4,6 +4,7 @@ using GTA.Native;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -86,6 +87,18 @@ namespace TheNorthYanktonHeist.Funcs
                     );
                 }
             }
+        }
+        public static int GetPedBoneIndex(Ped ped, int boneId)
+        {
+            return Function.Call<int>(Hash.GET_​PED_​BONE_​INDEX, ped, boneId);
+        }
+        public static bool IsPedShootingInArea(Ped ped, float x1, float y1, float z1, float x2, float y2, float z2, bool p7 = false, bool p8 = true)
+        {
+            return Function.Call<bool>(Hash.IS_​PED_​SHOOTING_​IN_​AREA, ped, x1, y1, z1, x2, y2, z2, p7, p8);
+        }
+        public static Vector3 GetPedBoneCoords(Ped ped, int boneId, Vector3 offset)
+        {
+            return Function.Call<Vector3>(Hash.GET_​PED_​BONE_​COORDS, ped, boneId, offset.X, offset.Y, offset.Z);
         }
         public static void SetMovementModeOverride(Ped ped, string name)
         {

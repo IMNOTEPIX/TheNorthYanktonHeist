@@ -101,6 +101,8 @@ namespace TheNorthYanktonHeist.Scenes
 
             if (!_playerScene.IsRunning)
             {
+                Game.Player.SetControlState(false);
+
                 BagManager.RemoveBag(ped);
                 ped.Weapons.Select(WeaponHash.Unarmed);
 
@@ -115,7 +117,11 @@ namespace TheNorthYanktonHeist.Scenes
                 _bombScene.PlayEntity(_bomb, animDict, "enter_bomb");
                 fCam.RenderScriptCams(true, true, 800);
             }
-            else if (_playerScene.IsFinished)
+            else if (_playerScene.Phase >= 0.8f)
+            {
+                fCam.RenderScriptCams(false, true, 1000);
+            }
+            if (_playerScene.IsFinished)
             {
                 _sequence = 2;
             }
@@ -133,6 +139,7 @@ namespace TheNorthYanktonHeist.Scenes
             ped.Weapons.Select(_prevWeapon);
             BagManager.ApplyBag(ped, _bagVariant);
             fPlayer.ped.Task.ClearAllImmediately();
+            Game.Player.SetControlState(true);
 
             Stop();
             IsFinished = true;

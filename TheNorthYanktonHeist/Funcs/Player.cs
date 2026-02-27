@@ -72,6 +72,15 @@ namespace TheNorthYanktonHeist.Funcs
 
         public static Wanted Wanted = CreateInstance<Wanted>(Game.Player.Handle);
         public static bool IsWanted => Wanted.WantedLevel > 0;
+        public static void SetWantedLevel(int level)
+        {
+            try
+            {
+                Wanted.SetWantedLevel(level, false);
+                Wanted.ApplyWantedLevelChangeNow(false);
+            }
+            catch (Exception ex) { fHud.ShowNotification("Wanted function failed:" + ex.Message, true); }
+        }
         public static void SetWantedLevelTo0()
         {
             try

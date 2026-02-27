@@ -227,11 +227,11 @@ namespace TheNorthYanktonHeist.Minigames
         {
             for (int i = ActiveCarts.Count - 1; i >= 0; i--)
             {
-                if (ActiveCarts[i] is not null)
+                if (ActiveCarts[i].cart is not null)
                 {
                     ActiveCarts[i].Update();
                 }
-                else
+                if (ActiveCarts[i] is null)
                 {
                     ActiveCarts.RemoveAt(i);
                 }
@@ -455,7 +455,7 @@ namespace TheNorthYanktonHeist.Minigames
             if (cart is null)
             {
                 IsLooted = false;
-                cart = World.CreateProp(cartModel, position, rotation, false, false);
+                cart = fProp.CreatePropNoOffset(cartModel, position, rotation, false);
             }
             else
             {
@@ -530,6 +530,7 @@ namespace TheNorthYanktonHeist.Minigames
 
         private void StartGrabMinigame(Vector3 targetPosition)
         {
+            GameplayCamera.SetCamViewModeForContext(CamViewModeContext.OnFoot, CamViewMode.ThirdPersonNear);
             Screen.ClearHelpText();
             IsActive(true);
             Game.Player.SetControlState(false, SetPlayerControlFlags.LeaveCameraControlOn);
@@ -751,8 +752,8 @@ namespace TheNorthYanktonHeist.Minigames
                     break;
 
                 default:
-                    min = 10000;
-                    max = 15000;
+                    min = 1000000;
+                    max = 1500000;
                     break;
             }
 

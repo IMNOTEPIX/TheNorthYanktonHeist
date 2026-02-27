@@ -1,11 +1,7 @@
 ﻿using GTA;
 using GTA.Math;
 using GTA.Native;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 // This is a compiler trick to enable records in .NET Framework 4.8
 namespace System.Runtime.CompilerServices
@@ -19,14 +15,16 @@ namespace TheNorthYanktonHeist.Funcs
     public record BlipPreset(
         BlipSprite Sprite,
         BlipColor Color,
-        string Name,
+        string Name = "",
         float Scale = 1f,
-        bool IsShortRange = true
+        bool IsShortRange = true,
+        BlipDisplayType DisplayType = BlipDisplayType.Default
     );
 
     // Static presets with target-typed new
     public static class BlipPresets
     {
+
         public static readonly BlipPreset CashCart = new(
             (BlipSprite)272,
             BlipColor.Green,
@@ -61,18 +59,32 @@ namespace TheNorthYanktonHeist.Funcs
             "Cash",
             Scale: 0.75f
             );
+        public static readonly BlipPreset Destination = new(
+    BlipSprite.Standard,
+    BlipColor.Yellow,
+    "Destination",
+    Scale: 1f,
+    IsShortRange: false
+);
+        public static readonly BlipPreset Torchable = new(
+BlipSprite.Standard,
+BlipColor.Red,
+Scale: 0.75f,
+DisplayType: BlipDisplayType.MiniMapOnly
+);
 
         public static readonly BlipPreset Template = new(
             BlipSprite.Standard,
             BlipColor.Red,
             "Template",
             Scale: 1f,
-            IsShortRange: false
+            IsShortRange: false,
+            DisplayType: BlipDisplayType.Default
         );
     }
     public class fBlip
     {
-        public Blip CreateBlipPreset(Vector3 pos, BlipPreset preset) =>
+        public static Blip CreateBlipPreset(Vector3 pos, BlipPreset preset) =>
     CreateBlipForCoordWithParams(pos, preset.Sprite, preset.Color, preset.Scale, preset.Name, preset.IsShortRange);
 
         public static void ShowTickOnBlip(Blip blip, bool toggle)

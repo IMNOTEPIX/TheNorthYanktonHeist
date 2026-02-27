@@ -11,6 +11,10 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fCam
     {
+        public static void StopCamShaking(Camera cam, bool p1)
+        {
+            Function.Call(Hash.STOP_​CAM_​SHAKING, cam, p1);
+        }
         public static void StopRenderingScriptCamsIntoFirstPerson(bool bShouldApplyAcrossAllThreads, float distanceToBlend = 0.0f, eCamSplineSmoothingFlags blendType = eCamSplineSmoothingFlags.CAM_SPLINE_NO_SMOOTH)
         {
             Function.Call(Hash.STOP_RENDERING_SCRIPT_CAMS_USING_CATCH_UP, bShouldApplyAcrossAllThreads, distanceToBlend, (int)blendType);

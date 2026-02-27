@@ -1,7 +1,8 @@
 ﻿using GTA;
+using GTA.Graphics;
+using GTA.Math;
 using GTA.Native;
 using GTA.UI;
-using GTA.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,12 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fHud
     {
+        public unsafe static void GetHudColour(int hudColorIndex, out int r, out int g, out int b, out int a)
+        {
+            int R = default; int G = default; int B = default; int A = default;
+            Function.Call(Hash.GET_​HUD_​COLOUR, hudColorIndex, &R, &G, &B, &A);
+            r = R; g = G; b = B; a = A;
+        }
         public static void SetTextRightJustify(bool toggle)
         {
             Function.Call(Hash.SET_​TEXT_​RIGHT_​JUSTIFY, toggle);
@@ -120,6 +127,10 @@ namespace TheNorthYanktonHeist.Funcs
         public static void DisplayAmmoThisFrame(bool display)
         {
             Function.Call(Hash.DISPLAY_AMMO_THIS_FRAME, display);
+        }
+        public static void DisplayHelpTextThisFrameGXT(string helpText, bool p1 = true)
+        {
+            Function.Call(Hash.DISPLAY_HELP_TEXT_THIS_FRAME, helpText, p1);
         }
         public static void ShowGXTSubtitle(string GxtEntry, int duration = 10)
         {

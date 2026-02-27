@@ -22,6 +22,7 @@ namespace TheNorthYanktonHeist.Funcs
         private void onShutdown(object sender, EventArgs e)
         {
             PrologueVaultRayfire.PrologueVaultRayfireSceneCleanup();
+            PrologueDoorRayfire.PrologueDoorSceneCleanup();
         }
 
         public static class PrologueVaultRayfire
@@ -128,7 +129,7 @@ namespace TheNorthYanktonHeist.Funcs
                         if (fTimer.TimerA() > 1800)
                         {
                             if (BombPlantScene._permBomb != null)
-                                BombPlantScene._permBomb.IsVisible = false;
+                                BombPlantScene._permBomb.IsVisible = true;
                             if (fRayfire.DoesRayfireMapObjectExist(rayfireVaultDoor))
                             {
                                 fRayfire.SetStateOfRayfireMapObject(rayfireVaultDoor, 6);
@@ -197,12 +198,12 @@ namespace TheNorthYanktonHeist.Funcs
                             Wait(0);
                         if (fTimer.TimerA() > 400)
                         {
-                            fAudio.StartAlarm("PROLOGUE_VAULT_ALARMS", false);
                             if (BombPlantScene._permBomb != null)
                             {
                                 BombPlantScene._permBomb.Delete();
                                 BombPlantScene._permBomb = null;
                             }
+                            fAudio.StartAlarm("PROLOGUE_VAULT_ALARMS", false);
                             fTimer.SetTimerA(0);
                             vaultScene = 4;
                         }
@@ -236,10 +237,10 @@ namespace TheNorthYanktonHeist.Funcs
                             camScene.Create();
                             Vector3 vector3 = new Vector3(82.5187f, -5207.1147f, 5307.475f) + new Vector3(0f, 0.32f, -0.08f);
                             fPlayer.PedPos(vector3.Z, vector3.Y, vector3.X, 272.3664f);
-                            ScriptCameraDirector.StopRendering();
                             Function.Call(Hash.TASK_PLAY_ANIM, fPlayer.ped, fStreaming.RequestAnimDict("missprologueig_3@react_to_explosion"), "react_to_explosion_player_zero", 1000f, -8f, -1, 0, (0.075f + 0.05f), false, false, false);
                             timerScene.PlayPed(invisibleTimerPed, fStreaming.RequestAnimDict("missprologueig_3@react_to_explosion"), "react_to_explosion_player_two");
                             fPed.ForcePedAiAndAnimationUpdate(fPlayer.ped, false, false);
+                            ScriptCameraDirector.StopRendering();
                             camScene.Camera = reactionCamera;
                             camScene.PlayCam(fStreaming.RequestAnimDict("missprologueig_3"), "react_to_explosion_cam");
                             timerScene.Phase = (0.075f + 0.05f);
@@ -501,6 +502,10 @@ namespace TheNorthYanktonHeist.Funcs
             }
             public static void PrologueVaultRayfireSceneCleanup()
             {
+                if (fRayfire.DoesRayfireMapObjectExist(rayfireVaultDoor))
+                {
+                    fRayfire.SetStateOfRayfireMapObject(rayfireVaultDoor, 4);
+                }
                 Game.Player.SetControlState(true, SetPlayerControlFlags.AmbientScript);
                 camScene.Dispose();
                 timerScene.Dispose();
@@ -565,6 +570,218 @@ namespace TheNorthYanktonHeist.Funcs
                     BombPlantScene._permBomb.Delete();
                     BombPlantScene._permBomb = null;
                 }
+            }
+        }
+        public static class PrologueDoorRayfire
+        {
+            public static int doorScene = 0;
+            public static Prop RayfireDoor = fRayfire.GetRayfireMapObject(new Vector3(5318.2f, -5185.1f, 83.7f), 10f, "des_prologue_door");
+            private static Prop bombC4;
+            private static Prop bombC4green;
+            private static int soundID = -1;
+            private static int soundID2 = -1;
+            private static int soundID3 = -1;
+            private static int ParticeTimer = 0;
+            private static int PTFX1 = 0;
+            private static int PTFX2 = 0;
+            private static SynchronizedScene bradScene = new SynchronizedScene(new Vector3(5316.087f, -5178.637f, 82.519f));
+
+            public static void Scene()
+            {
+                switch (doorScene)
+                {
+                    case 0:
+                        fStreaming.RequestAnimDict("missprologueig_5@set_c4_mainaction");
+                        RayfireDoor = fRayfire.GetRayfireMapObject(new Vector3(5318.2f, -5185.1f, 83.7f), 10f, "des_prologue_door");
+                        if (fRayfire.DoesRayfireMapObjectExist(RayfireDoor))
+                        {
+                            fRayfire.SetStateOfRayfireMapObject(RayfireDoor, 2);
+                        }
+                        if (fPlayer.ped.Weapons.Current.Group != WeaponGroup.AssaultRifle)
+                        {
+                            fPlayer.ped.Weapons.Select(WeaponHash.PumpShotgun);
+                        }
+                        Game.Player.SetControlState(false, SetPlayerControlFlags.LeaveCameraControlOn);
+                        fPlayer.ped.SetResetFlag(PedResetFlagToggles.ForceScriptedCameraLowCoverAngleWhenEnteringCover, true);
+                        if (!fAudio.IsAudioSceneActive("PROLOGUE_TAKE_COVER"))
+                        {
+                            fAudio.StartAudioScene("PROLOGUE_TAKE_COVER");
+                        }
+                        bradScene.Create();
+                        bradScene.PlayPed(fPlayer.ped, fStreaming.RequestAnimDict("missprologueig_5@set_c4_mainaction"), "set_c4_mainaction_brad", 4f, -2f, (SyncedSceneFlags)5, (RagdollBlockingFlags)51, 1000f);
+                        bradScene.Phase = 0f;
+                        bradScene.IsLooping = false;
+                        bombC4 = fProp.CreateProp(fMisc.joaat("prop_c4_final"), fPed.GetPedBoneCoords(fPlayer.ped, 60309, Vector3.Zero), Vector3.Zero, false, false);
+                        while (bombC4 is null)
+                            Wait(0);
+                        fEntity.AttachEntityToEntity(bombC4, fPlayer.ped, fPed.GetPedBoneIndex(fPlayer.ped, 60309), Vector3.Zero, Vector3.Zero, false, false, false, false, 2, true, 0);
+                        bombC4green = fProp.CreateProp(fMisc.joaat("prop_c4_final_green"), new Vector3(5298.27f, -5187.85f, 83.87f), new Vector3(0f, 0f, -90.52732f), false, false);
+                        while (bombC4green is null)
+                            Wait(0);
+                        fEntity.AttachEntityToEntity(bombC4green, fPlayer.ped, fPed.GetPedBoneIndex(fPlayer.ped, 60309), Vector3.Zero, Vector3.Zero, false, false, false, false, 2, true, 0);
+                        bombC4green?.IsVisible = false;
+                        if (fRayfire.DoesRayfireMapObjectExist(RayfireDoor))
+                        {
+                            fRayfire.SetStateOfRayfireMapObject(RayfireDoor, 4);
+                        }
+                        doorScene = 1;
+                        break;
+                    case 1:
+                        fAudio.LoadStream("PROLOGUE_BLAST_SECURITY_DOORS_MASTER", 0);
+                        Game.DisableControlThisFrame(Control.NextCamera);
+                        if (bradScene.IsRunning)
+                        {
+                            if (bradScene.Phase > 0.239f)
+                            {
+                                if (bombC4 != null && bombC4.Exists())
+                                {
+                                    fEntity.DetachEntity(bombC4, false, true);
+                                    fEntity.DetachEntity(bombC4green, false, true);
+                                    bombC4.IsPositionFrozen = true;
+                                    bombC4green.IsPositionFrozen = true;
+                                }
+                                doorScene = 2;
+                            }
+                        }
+                        break;
+                    case 2:
+                        fAudio.LoadStream("PROLOGUE_BLAST_SECURITY_DOORS_MASTER", 0);
+                        Game.DisableControlThisFrame(Control.NextCamera);
+                        if (bradScene.IsRunning)
+                        {
+                            if (bradScene.Phase > 0.403f)
+                            {
+                                bombC4?.IsVisible = false;
+                                bombC4green?.IsVisible = true;
+                                if (soundID == -1)
+                                {
+                                    soundID = fAudio.GetSoundId();
+                                    fAudio.PlaySoundFromEntity(soundID, "Security_Door_Bomb_Bleeps", bombC4green, "Prologue_Sounds");
+                                }
+                            }
+                            if (bradScene.Phase > 0.453f)
+                            {
+                                bombC4?.IsVisible = false;
+                                bombC4green?.IsVisible = true;
+                                fMisc.ClearArea(5318.122f, -5185.5044f, (85.7186f - 3.2f), 4f, true, false, false, false);
+                                fStreaming.RequestNamedPTFXAsset("scr_prologue");
+                                fStreaming.UseParticleFXAsset("scr_prologue");
+                                if (Function.Call<bool>(Hash.HAS_​NAMED_​PTFX_​ASSET_​LOADED, "scr_prologue"))
+                                {
+                                    Function.Call(Hash.START_PARTICLE_FX_NON_LOOPED_AT_COORD, "scr_prologue_door_blast", 5318f, -5185.06f, 83.82f, 0f, 0f, 0f, 1f, false, false, false);
+                                }
+                                if (Function.Call<bool>(Hash.HAS_​NAMED_​PTFX_​ASSET_​LOADED, "scr_prologue"))
+                                {
+                                    if (!Function.Call<bool>(Hash.DOES_PARTICLE_FX_LOOPED_EXIST, PTFX1))
+                                    {
+                                        PTFX1 = Function.Call<int>(Hash.START_PARTICLE_FX_LOOPED_AT_COORD, "scr_prologue_vault_fog", 5313.3545f, -5177.7656f, 82.5186f, 0f, 0f, 0f, 1f, false, false, false, false);
+                                    }
+                                }
+                                if (Function.Call<bool>(Hash.HAS_​NAMED_​PTFX_​ASSET_​LOADED, "scr_prologue"))
+                                {
+                                    if (!Function.Call<bool>(Hash.DOES_PARTICLE_FX_LOOPED_EXIST, PTFX2))
+                                    {
+                                        PTFX2 = Function.Call<int>(Hash.START_PARTICLE_FX_LOOPED_AT_COORD, "ent_ray_pro_door_embers", 5318.1626f, -5184.8325f, 82.5186f, 0f, 0f, 0f, 1f, false, false, false, false);
+                                        ParticeTimer = Game.GameTime + 15000;
+                                    }
+                                }
+                                fGamePad.SetControlShake(0, 500, 256);
+                                GameplayCamera.Shake(CameraShake.MediumExplosion, 0.25f);
+                                soundID2 = fAudio.GetSoundId();
+                                fAudio.PlaySoundFromCoord(soundID2, "COPS_ARRIVE", new Vector3(5359.9f, -5190f, 83f), "Prologue_Sounds");
+                                soundID3 = fAudio.GetSoundId();
+                                fAudio.PlaySoundFromCoord(soundID3, "Security_Door_Alarm", new Vector3(5318.2f, -5184.8f, 84.1f), "Prologue_Sounds");
+                                if (soundID != -1)
+                                {
+                                    fAudio.StopSound(soundID);
+                                    fAudio.ReleaseSoundId(soundID);
+                                    soundID = -1;
+                                }
+                                Audio.SetAudioFlag(AudioFlags.DisableReplayScriptStreamRecording, true);
+                                fAudio.PlayStreamFrontend();
+                                if (fRayfire.DoesRayfireMapObjectExist(RayfireDoor))
+                                {
+                                    fRayfire.SetStateOfRayfireMapObject(RayfireDoor, 6);
+                                }
+                                bombC4?.Delete();
+                                bombC4 = null;
+                                bombC4green?.Delete();
+                                bombC4green = null;
+                                fPlayer.ped.PlayAmbientSpeech("GENERIC_CURSE_HIGH", SpeechModifier.ForceShoutedClear);
+                                doorScene = 3;
+                            }
+                        }
+                        break;
+                    case 3:
+                        Game.DisableControlThisFrame(Control.NextCamera);
+                        if (bradScene.IsRunning)
+                        {
+                            if (bradScene.Phase > 0.63f)
+                            {
+                                GameplayCamera.DisableOnFootFirstPersonViewThisUpdate();
+                                Game.Player.SetControlState(true);
+                                fHud.ClearPrints();
+                            }
+                            if (bradScene.Phase > 0.825f)
+                            {
+                                bradScene.Dispose();
+                                fPlayer.ped.Task.ClearAll();
+                                doorScene++;
+                            }
+                        }
+                        break;
+
+
+                }
+                if (!Function.Call<bool>(Hash.DOES_PARTICLE_FX_LOOPED_EXIST, PTFX2))
+                {
+                    if (Game.GameTime >= ParticeTimer)
+                    {
+                        Function.Call(Hash.STOP_PARTICLE_FX_LOOPED, PTFX2, false);
+                    }
+                }
+            }
+            public static void PrologueDoorSceneCleanup()
+            {
+                if (fRayfire.DoesRayfireMapObjectExist(RayfireDoor))
+                {
+                    fRayfire.SetStateOfRayfireMapObject(RayfireDoor, 2);
+                }
+                Game.Player.SetControlState(true, SetPlayerControlFlags.AmbientScript);
+                bradScene.Dispose();
+                if (fAudio.IsAudioSceneActive("PROLOGUE_TAKE_COVER"))
+                {
+                    fAudio.StopAudioScene("PROLOGUE_TAKE_COVER");
+                }
+                if (soundID != -1)
+                {
+                    fAudio.StopSound(soundID);
+                    fAudio.ReleaseSoundId(soundID);
+                    soundID = -1;
+                }
+                if (soundID2 != -1)
+                {
+                    fAudio.StopSound(soundID2);
+                    fAudio.ReleaseSoundId(soundID2);
+                    soundID2 = -1;
+                }
+                if (soundID3 != -1)
+                {
+                    fAudio.StopSound(soundID3);
+                    fAudio.ReleaseSoundId(soundID3);
+                    soundID3 = -1;
+                }
+                fStreaming.RemoveNamedPTFXAsset("scr_prologue");
+                Function.Call(Hash.STOP_PARTICLE_FX_LOOPED, PTFX1, 0);
+                Function.Call(Hash.REMOVE_PARTICLE_FX, PTFX1, 0);
+                Function.Call(Hash.STOP_PARTICLE_FX_LOOPED, PTFX2, 0);
+                Function.Call(Hash.REMOVE_PARTICLE_FX, PTFX2, 0);
+                Function.Call(Hash.STOP_STREAM);
+                Function.Call(Hash.STOP_AUDIO_SCENES);
+                bombC4?.Delete();
+                bombC4 = null;
+                bombC4green?.Delete();
+                bombC4green = null;
             }
         }
     }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TheNorthYanktonHeist.Drawables.TimerBars
 {
+    using GTA.Native;
     using System.Drawing;
     using TheNorthYanktonHeist.Funcs;
 
@@ -62,22 +63,18 @@ namespace TheNorthYanktonHeist.Drawables.TimerBars
             float wrap,
             bool asMoney = false)
         {
+            fHud.BeginTextCommandDisplayText(asMoney ? "HUD_CASH" : "NUMBER");
+            fHud.AddTextComponentInt(value);
             if (asMoney)
             {
-                string formattedMoney = $"${value:N0}";
-                DrawText(formattedMoney, x, y, font, scale, colour, justification, wrap, shadow: true);
+                fHud.AddTextComponentFormatInt(value, true);
             }
-            else
-            {
-                fHud.BeginTextCommandDisplayText("NUMBER");
-                fHud.AddTextComponentInt(value);
-                fHud.SetTextJustification(justification);
-                fHud.SetTextWrap(0f, wrap);
-                fHud.SetTextFont(font);
-                fHud.SetTextScale(0f, scale);
-                fHud.SetTextColour(colour.R, colour.G, colour.B, colour.A);
-                fHud.EndTextCommandDisplayText(x, y);
-            }
+            fHud.SetTextJustification(justification);
+            fHud.SetTextWrap(0f, wrap);
+            fHud.SetTextFont(font);
+            fHud.SetTextScale(0f, scale);
+            fHud.SetTextColour(colour.R, colour.G, colour.B, colour.A);
+            fHud.EndTextCommandDisplayText(x, y);
         }
     }
 }

@@ -1,133 +1,137 @@
 ﻿using GTA;
 using GTA.Math;
 using GTA.Native;
-using GTA.NaturalMotion;
-using GTA.UI;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Dynamic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Xml.Linq;
-using static System.Windows.Forms.AxHost;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
-using Script = GTA.Script;
 
 namespace TheNorthYanktonHeist.Funcs
 {
+    /// <summary>
+    /// Simple combat list manager (legacy support)
+    /// </summary>
     public class CombatList
     {
         public List<Ped> ListPeds = new List<Ped>();
+
+        // Performance optimization: throttle checks
+        private float lastCheckTime;
+        private const float CHECK_INTERVAL = 1000f; // Check every 1 second instead of 60 times/sec
+
         public void Check()
         {
+            // Throttle checks for performance
+            if (Game.GameTime - lastCheckTime < CHECK_INTERVAL)
+                return;
+
+            lastCheckTime = Game.GameTime;
+
             if (ListPeds.Count > 0)
             {
                 for (int i = ListPeds.Count - 1; i >= 0; i--)
                 {
-                    if (ListPeds[i] != null)
+                    if (ListPeds[i] == null || !ListPeds[i].Exists())
                     {
-                        if (fInterior.GetInteriorFromEntity(ListPeds[i]) == fInterior.GetInteriorFromEntity(Game.Player.Character))
-                        {
-                            if (fInterior.GetRoomKeyFromEntity(ListPeds[i]) == fInterior.GetRoomKeyFromEntity(Game.Player.Character))
-                            {
-                                if (ListPeds[i].AttachedBlip != null)
-                                    ListPeds[i].AttachedBlip.Alpha = 255;
-                            }
-                            else
-                            {
-                                if (ListPeds[i].AttachedBlip != null)
-                                    ListPeds[i].AttachedBlip.Alpha = 0;
-                            }
-                        }
-                        else
-                        {
-                            if (ListPeds[i].AttachedBlip != null)
-                                ListPeds[i].AttachedBlip.Alpha = 0;
-                        }
-                        if (ListPeds[i].IsDead)
-                        {
-                            if (ListPeds[i].AttachedBlip != null)
-                                ListPeds[i].AttachedBlip.Delete();
-                            ListPeds[i].MarkAsNoLongerNeeded();
-                            ListPeds.RemoveAt(i);
-                        }
+                        ListPeds.RemoveAt(i);
+                        continue;
+                    }
+
+                    UpdateBlipVisibility(ListPeds[i]);
+
+                    // Clean up dead peds
+                    if (ListPeds[i].IsDead)
+                    {
+                        ListPeds[i].AttachedBlip?.Delete();
+                        ListPeds[i].MarkAsNoLongerNeeded();
+                        ListPeds.RemoveAt(i);
                     }
                 }
             }
         }
+
+        private void UpdateBlipVisibility(Ped ped)
+        {
+            if (ped.AttachedBlip == null) return;
+
+            // Show blip if in same interior and room as player
+            bool sameInterior = fInterior.GetInteriorFromEntity(ped) == fInterior.GetInteriorFromEntity(Game.Player.Character);
+            bool sameRoom = fInterior.GetRoomKeyFromEntity(ped) == fInterior.GetRoomKeyFromEntity(Game.Player.Character);
+
+            ped.AttachedBlip.Alpha = (sameInterior && sameRoom) ? 255 : 0;
+        }
+
         public void SetBlips(string blipName = "Enemy", float scale = 0.7f, BlipColor color = BlipColor.Red, int SpriteID = 270)
         {
-            if (ListPeds.Count > 0)
+            if (ListPeds.Count == 0) return;
+
+            foreach (var ped in ListPeds)
             {
-                for (int i = 0; i < ListPeds.Count; i++)
+                if (ped == null || !ped.Exists()) continue;
+
+                if (ped.AttachedBlip == null)
                 {
-                    if (ListPeds[i] != null)
+                    ped.AddBlip();
+
+                    // NO BLOCKING LOOP! Just check once and continue
+                    if (ped.AttachedBlip != null && ped.AttachedBlip.Exists())
                     {
-                        if (ListPeds[i].AttachedBlip == null)
-                        {
-                            ListPeds[i].AddBlip();
-                            for (; ; )
-                            {
-                                Blip attachedBlip = ListPeds[i].AttachedBlip;
-                                if (attachedBlip != null && attachedBlip.Exists())
-                                    break;
-                                Script.Wait(0);
-                            }
-                            ListPeds[i].AttachedBlip.Sprite = (BlipSprite)SpriteID;
-                            ListPeds[i].AttachedBlip.Color = color;
-                            ListPeds[i].AttachedBlip.Name = blipName;
-                            ListPeds[i].AttachedBlip.Scale = scale;
-                            ListPeds[i].AttachedBlip.IsShortRange = true;
-                            ListPeds[i].AttachedBlip.DisplayType = BlipDisplayType.MiniMapOnly;
-                        }
+                        ped.AttachedBlip.Sprite = (BlipSprite)SpriteID;
+                        ped.AttachedBlip.Color = color;
+                        ped.AttachedBlip.Name = blipName;
+                        ped.AttachedBlip.Scale = scale;
+                        ped.AttachedBlip.IsShortRange = true;
+                        ped.AttachedBlip.DisplayType = BlipDisplayType.MiniMapOnly;
                     }
                 }
             }
         }
+
         public Ped CreateCombats(Model model, Vector3 pos, float heading)
         {
+            // Request model first
+            model.Request(500);
+
             Ped ped = World.CreatePed(model, pos, heading);
-            while (ped != null && !ped.Exists())
+
+            if (ped != null && ped.Exists())
             {
-                Script.Wait(0);
+                if (!ListPeds.Contains(ped))
+                    ListPeds.Add(ped);
             }
-            if (!ListPeds.Contains(ped))
-                ListPeds.Add(ped);
+
             return ped;
         }
+
         public void DeleteCombats()
         {
             if (ListPeds.Count > 0)
             {
-                for (int i = 0; i < ListPeds.Count; i++)
+                foreach (var ped in ListPeds)
                 {
-                    if (ListPeds[i].AttachedBlip != null)
-                        ListPeds[i].AttachedBlip.Delete();
-                    if (ListPeds[i] != null)
-                        ListPeds[i].Delete();
+                    if (ped != null && ped.Exists())
+                    {
+                        ped.AttachedBlip?.Delete();
+                        ped.Delete();
+                    }
                 }
                 ListPeds.Clear();
             }
         }
+
         public void ManageAttributes(fPed.CombatAttributes attribute, bool toggle)
         {
             foreach (Ped ped in ListPeds)
             {
-                fPed.SetPedCombatAttributes(ped, attribute, toggle);
-
+                if (ped != null && ped.Exists())
+                    fPed.SetPedCombatAttributes(ped, attribute, toggle);
             }
         }
+
         public void UseDefaultAttributes()
         {
             foreach (Ped ped in ListPeds)
             {
+                if (ped == null || !ped.Exists()) continue;
+
                 fPed.SetPedConfigFlag(ped, fPed.PedConfigFlags.PCF_DontBlipCop, true);
                 fPed.SetPedAsCop(ped, false);
                 fPed.SetPedCombatAttributes(ped, fPed.CombatAttributes.CA_DISABLE_REACT_TO_BUDDY_SHOT, false);
@@ -138,10 +142,13 @@ namespace TheNorthYanktonHeist.Funcs
                 fPed.SetPedCombatAttributes(ped, fPed.CombatAttributes.CA_USE_COVER, true);
             }
         }
+
         public void RandomizeMovement()
         {
             foreach (Ped p in ListPeds)
             {
+                if (p == null || !p.Exists()) continue;
+
                 switch (fMisc.GetRandomIntInRange(1, 4))
                 {
                     case 1:
@@ -156,11 +163,14 @@ namespace TheNorthYanktonHeist.Funcs
                 }
             }
         }
+
         public void RandomizeAbilityLevel(bool includePoor = true)
         {
-            if (!includePoor)
+            foreach (Ped p in ListPeds)
             {
-                foreach (Ped p in ListPeds)
+                if (p == null || !p.Exists()) continue;
+
+                if (!includePoor)
                 {
                     switch (fMisc.GetRandomIntInRange(1, 3))
                     {
@@ -172,10 +182,7 @@ namespace TheNorthYanktonHeist.Funcs
                             break;
                     }
                 }
-            }
-            else
-            {
-                foreach (Ped p in ListPeds)
+                else
                 {
                     switch (fMisc.GetRandomIntInRange(1, 4))
                     {
@@ -192,141 +199,205 @@ namespace TheNorthYanktonHeist.Funcs
                 }
             }
         }
+
         public void ManageMovements(fPed.CombatMovement movement)
         {
             foreach (Ped ped in ListPeds)
             {
-                fPed.SetPedCombatMovement(ped, movement);
+                if (ped != null && ped.Exists())
+                    fPed.SetPedCombatMovement(ped, movement);
             }
-
         }
+
         public void ManageAbilityLevels(fPed.CombatAbilityLevel abilityLevel)
         {
             foreach (Ped ped in ListPeds)
             {
-                fPed.SetPedCombatAbility(ped, abilityLevel);
+                if (ped != null && ped.Exists())
+                    fPed.SetPedCombatAbility(ped, abilityLevel);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Static manager for multiple Combats instances
+    /// </summary>
+    public static class CombatsList
+    {
+        public static List<Combats> GetCombats = new List<Combats>();
+
+        // Performance optimization: throttle checks
+        private static float lastCheckTime;
+        private static float lastActivateTime;
+        private const float CHECK_INTERVAL = 700f;
+
+        public static void Combats_Check()
+        {
+            // Throttle checks for performance
+            if (Game.GameTime - lastCheckTime < CHECK_INTERVAL)
+                return;
+
+            lastCheckTime = Game.GameTime;
+
+            for (int i = 0; i < GetCombats.Count; i++)
+            {
+                GetCombats[i]?.Check();
             }
         }
 
-    }
-    public class CombatsList
-    {
-        public static List<Combats> GetCombats = new List<Combats>();
-        public static void Combats_Check()
-        {
-            for (int i = 0; i < GetCombats.Count; i++) { GetCombats[i].Check(); }
-        }
         public static void Combats_Create()
         {
-            for (int i = 0; i < GetCombats.Count; i++) { GetCombats[i].Create(); }
-        }
-        public static void Combats_Dispose()
-        {
-            for (int i = 0; i < GetCombats.Count; i++) { GetCombats[i].Dispose(); }
-        }
-        public static void Combats_Activate()
-        {
-            for (int i = 0; i < GetCombats.Count; i++) { GetCombats[i].Activate(); }
+            for (int i = 0; i < GetCombats.Count; i++)
+            {
+                GetCombats[i]?.Create();
+            }
         }
 
+        public static void Combats_Dispose()
+        {
+            for (int i = 0; i < GetCombats.Count; i++)
+            {
+                GetCombats[i]?.Dispose();
+            }
+            GetCombats.Clear();
+        }
+
+        public static void Combats_Activate()
+        {
+            if (Game.GameTime - lastActivateTime < CHECK_INTERVAL)
+                return;
+
+            lastActivateTime = Game.GameTime;
+
+            for (int i = 0; i < GetCombats.Count; i++)
+            {
+                GetCombats[i]?.Activate();
+            }
+        }
     }
+
+    /// <summary>
+    /// Individual combat ped with full configuration
+    /// OPTIMIZED: No blocking loops, better state tracking
+    /// </summary>
     public class Combats : IDisposable
     {
-        public Ped handle {  get; protected set; }
-        public Model Model { get; protected set; } 
-        public Vector3 Position {  get; protected set; } 
-        public float Heading { get; protected set; } 
+        #region Properties
+
+        public Ped handle { get; protected set; }
+        public Model Model { get; protected set; }
+        public Vector3 Position { get; protected set; }
+        public float Heading { get; protected set; }
         public bool Exists => handle != null && handle.Exists();
-        public bool IsAlive => handle.IsAlive;
+        public bool IsAlive => Exists && handle.IsAlive;
+
         private readonly int AiTeam = World.AddRelationshipGroup("aiteam").Hash;
         private readonly int playersTeam = Function.Call<int>(Hash.GET_HASH_KEY, "PLAYER");
+
         public fPed.CombatAbilityLevel AbilityLevel { get; protected set; }
         public fPed.CombatMovement Movement { get; protected set; }
-        public fPed.CombatAbilityLevel[] AbilityLevels { get; protected set; }
-        public fPed.CombatMovement[] Movements { get; protected set; }
         public fPed.CombatAttributes[] EnableAttributes { get; protected set; }
         public fPed.CombatAttributes[] DisableAttributes { get; protected set; }
         public WeaponHash Weapon { get; protected set; }
-        public WeaponHash[] Weapons { get; protected set; }
         public bool CanHurt { get; protected set; } = true;
         public bool CanWrithe { get; protected set; } = true;
         public bool IsCop { get; protected set; } = false;
 
-        public Combats(Model model, Vector3 position, float heading, fPed.CombatMovement movement, fPed.CombatAbilityLevel abilityLevel, WeaponHash weapon, fPed.CombatAttributes[] disableAttributes, fPed.CombatAttributes[] enableAttributes)
+        // State tracking
+        private bool isActivated = false;
+        private bool isDisposed = false;
+
+        #endregion
+
+        #region Constructor
+
+        public Combats(
+            Model model,
+            Vector3 position,
+            float heading,
+            fPed.CombatMovement movement,
+            fPed.CombatAbilityLevel abilityLevel,
+            WeaponHash weapon,
+            fPed.CombatAttributes[] disableAttributes,
+            fPed.CombatAttributes[] enableAttributes)
         {
             Model = model;
             Position = position;
             Heading = heading;
             Movement = movement;
             AbilityLevel = abilityLevel;
-            EnableAttributes = enableAttributes;
-            DisableAttributes = disableAttributes;
+            EnableAttributes = enableAttributes ?? new fPed.CombatAttributes[0];
+            DisableAttributes = disableAttributes ?? new fPed.CombatAttributes[0];
             Weapon = weapon;
+
             if (!CombatsList.GetCombats.Contains(this))
                 CombatsList.GetCombats.Add(this);
         }
 
+        #endregion
+
+        #region Methods
+
         public void Check()
         {
-            if (handle != null)
+            if (!Exists || isDisposed) return;
+
+            // Update blip visibility based on location
+            UpdateBlipVisibility();
+
+            // Clean up if dead
+            if (handle.IsDead)
             {
-                if (fInterior.GetInteriorFromEntity(handle) == fInterior.GetInteriorFromEntity(Game.Player.Character))
-                {
-                    if (fInterior.GetRoomKeyFromEntity(handle) == fInterior.GetRoomKeyFromEntity(Game.Player.Character))
-                    {
-                        if (handle.AttachedBlip != null)
-                            handle.AttachedBlip.Alpha = 255;
-                    }
-                    else
-                    {
-                        if (handle.AttachedBlip != null)
-                            handle.AttachedBlip.Alpha = 0;
-                    }
-                }
-                else
-                {
-                    if (handle.AttachedBlip != null)
-                        handle.AttachedBlip.Alpha = 0;
-                }
-                if (handle.IsDead)
-                {
-                    if (handle.AttachedBlip != null)
-                        handle.AttachedBlip.Delete();
-                    handle.MarkAsNoLongerNeeded();
-                }
+                handle.AttachedBlip?.Delete();
+                handle.MarkAsNoLongerNeeded();
             }
         }
+
+        private void UpdateBlipVisibility()
+        {
+            if (handle.AttachedBlip == null) return;
+
+            bool sameInterior = fInterior.GetInteriorFromEntity(handle) == fInterior.GetInteriorFromEntity(Game.Player.Character);
+            bool sameRoom = fInterior.GetRoomKeyFromEntity(handle) == fInterior.GetRoomKeyFromEntity(Game.Player.Character);
+
+            handle.AttachedBlip.Alpha = (sameInterior && sameRoom) ? 255 : 0;
+        }
+
         public void Create(int timeout = 500)
         {
-            if (!Exists)
+            if (Exists || isDisposed) return;
+
+            // Request model
+            Model.Request(timeout - 100);
+
+            // Create ped
+            handle = World.CreatePed(Model, Position, Heading);
+
+            // NO BLOCKING LOOP! Just wait one frame if needed
+            if (handle != null && !handle.Exists())
             {
-                Model.Request(timeout - 100);
-                handle = World.CreatePed(Model, Position, Heading);
-            }
-            int gameTime = Game.GameTime;
-            while (!Exists)
-            {
-                if (Game.GameTime - gameTime > timeout)
-                    throw new TimeoutException("Timed out trying to create combat ped.");
                 Script.Yield();
             }
+
+            // If still doesn't exist after one frame, it failed
+            if (!Exists)
+            {
+                throw new Exception("Failed to create combat ped.");
+            }
         }
+
         public void Activate()
         {
-            if (Exists && IsAlive)
+            if (!Exists || isActivated || isDisposed) return;
+
+            // Create blip (NO BLOCKING LOOP!)
+            if (handle.AttachedBlip == null)
             {
-                if (handle.AttachedBlip == null)
+                handle.AddBlip();
+
+                // Check once, don't wait
+                if (handle.AttachedBlip != null && handle.AttachedBlip.Exists())
                 {
-                    handle.AddBlip();
-                    for (; ; )
-                    {
-                        Blip attachedBlip = handle.AttachedBlip;
-                        if (attachedBlip != null && attachedBlip.Exists())
-                        {
-                            break;
-                        }
-                        Script.Wait(0);
-                    }
                     handle.AttachedBlip.Sprite = (BlipSprite)270;
                     handle.AttachedBlip.Color = BlipColor.Red;
                     handle.AttachedBlip.Name = "Guard";
@@ -334,53 +405,56 @@ namespace TheNorthYanktonHeist.Funcs
                     handle.AttachedBlip.IsShortRange = true;
                     handle.AttachedBlip.DisplayType = BlipDisplayType.MiniMapOnly;
                 }
-                if (CanWrithe)
-                    fPed.SetPedConfigFlag(handle, 281, false);
-                else
-                    fPed.SetPedConfigFlag(handle, 281);
-                if (CanHurt)
-                    fPed.SetPedConfigFlag(handle, 188, false);
-                else
-                    fPed.SetPedConfigFlag(handle, 188);
-                if (!IsCop)
-                {
-                    fPed.SetPedConfigFlag(handle, fPed.PedConfigFlags.PCF_DontBlipCop, true);
-                    fPed.SetPedAsCop(handle, false);
-                }
-                else
-                {
-                    fPed.SetPedConfigFlag(handle, fPed.PedConfigFlags.PCF_DontBlipCop, false);
-                    fPed.SetPedAsCop(handle, true);
-                }
-                fPed.SetRelationshipBetweenGroups(fPed.RelationshipTypes.ACQUAINTANCE_TYPE_PED_HATE, AiTeam, playersTeam);
-                fPed.SetRelationshipBetweenGroups(fPed.RelationshipTypes.ACQUAINTANCE_TYPE_PED_HATE, playersTeam, AiTeam);
-                fPed.SetPedCombatAbility(handle, AbilityLevel);
-                fPed.SetPedCombatMovement(handle, Movement);
-                handle.Weapons.Give(Weapon, 10000, true, true);
-                handle.Weapons.Select(Weapon);
-                handle.Armor = 200;
-                foreach (fPed.CombatAttributes attribute in EnableAttributes)
-                {
-                    fPed.SetPedCombatAttributes(handle, attribute, true);
-                }
-                foreach (fPed.CombatAttributes attribute in DisableAttributes)
-                {
-                    fPed.SetPedCombatAttributes(handle, attribute, false);
-                }
             }
+
+            // Configure flags
+            fPed.SetPedConfigFlag(handle, 281, !CanWrithe);
+            fPed.SetPedConfigFlag(handle, 188, !CanHurt);
+            fPed.SetPedConfigFlag(handle, fPed.PedConfigFlags.PCF_DontBlipCop, !IsCop);
+            fPed.SetPedAsCop(handle, IsCop);
+
+            // Set relationships
+            fPed.SetRelationshipBetweenGroups(fPed.RelationshipTypes.ACQUAINTANCE_TYPE_PED_HATE, AiTeam, playersTeam);
+            fPed.SetRelationshipBetweenGroups(fPed.RelationshipTypes.ACQUAINTANCE_TYPE_PED_HATE, playersTeam, AiTeam);
+
+            // Combat settings
+            fPed.SetPedCombatAbility(handle, AbilityLevel);
+            fPed.SetPedCombatMovement(handle, Movement);
+
+            // Give weapon
+            handle.Weapons.Give(Weapon, 10000, true, true);
+            handle.Weapons.Select(Weapon);
+            handle.Armor = 200;
+
+            // Apply attributes
+            foreach (var attribute in EnableAttributes)
+            {
+                fPed.SetPedCombatAttributes(handle, attribute, true);
+            }
+
+            foreach (var attribute in DisableAttributes)
+            {
+                fPed.SetPedCombatAttributes(handle, attribute, false);
+            }
+
+            isActivated = true;
         }
+
         public void Dispose()
         {
+            if (isDisposed) return;
+
             if (Exists)
             {
-                if (handle.AttachedBlip != null)
-                {
-                    handle.AttachedBlip.Delete();
-                }
+                handle.AttachedBlip?.Delete();
                 handle.Delete();
                 handle = null;
-                Model.MarkAsNoLongerNeeded();
             }
+
+            Model.MarkAsNoLongerNeeded();
+            isDisposed = true;
         }
+
+        #endregion
     }
 }

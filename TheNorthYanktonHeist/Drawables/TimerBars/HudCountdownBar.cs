@@ -19,6 +19,7 @@ namespace TheNorthYanktonHeist.Drawables.TimerBars
         private int _endTime;
         private bool _finished;
 
+        public bool ShouldRemove { get; private set; }
         public Action OnFinished { get; set; }
         public Color TimeColor { get; set; } = Color.White;
 
@@ -36,6 +37,7 @@ namespace TheNorthYanktonHeist.Drawables.TimerBars
         {
             _finished = false;
             _endTime = Game.GameTime + _duration;
+            ShouldRemove = false;
         }
 
         public override void Draw(float y)
@@ -50,7 +52,7 @@ namespace TheNorthYanktonHeist.Drawables.TimerBars
             {
                 _finished = true;
                 OnFinished?.Invoke();
-                HudBarController.Unregister(this);
+                ShouldRemove = true;
             }
 
             TimeSpan time = TimeSpan.FromMilliseconds(remaining);

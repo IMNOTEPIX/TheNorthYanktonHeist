@@ -3,7 +3,9 @@ using GTA.Math;
 using GTA.Native;
 using GTA.UI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -138,7 +140,8 @@ namespace Global
                 switch (Debug2)
                 {
                     case 0:
-                        CartGrab.UpdateAll();
+                        Audio.SetAudioFlag(AudioFlags.LoadMPData, false);
+                        RayfireScenes.PrologueDoorRayfire.Scene();
                         break;
                     case 1:
                         break;
@@ -155,7 +158,7 @@ namespace Global
                         fBlip.SetAllBlipsInvisible(excludeBlips);
                         break;
                     case 3:
-                        fBlip.SetAllBlipsVisible(excludeBlips);
+                        fBlip.SetAllBlipsVisible(excludeBlips); 
                         globalBlips = 0;
                         break;
                 }
@@ -176,17 +179,29 @@ namespace Global
                 }*/
             }
         }
-        HudValueBar bar = new HudValueBar("TAKE", true);
-        
+        HudCountdownBar timerBar;
         private void onKeyDown(object sender, KeyEventArgs e)
         {
             if (debug)
             {
                 if (e.KeyCode == Keys.N)
                 {
+                    //Screen.ShowSubtitle("~s~Get in ~y~position.~s~");
+                    //Debug2++;
+                    //fHud.DisplayHelpText("~s~Leave the security room before it ~r~explodes.~s~");
+                    //Screen.ShowSubtitle("~s~Torch~s~ the ~y~security room~s~ to ~r~erase the footage.~s~");
+                    //Screen.ShowSubtitle("~s~Torch the ~r~security room.~s~");
+                    //fHud.DisplayHelpText("~s~Shoot the area around the door lock to shoot open the door.");
+                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());
                     /*
-                    var takeBar = new HudValueBar("TAKE", isMoney: true) { Value = 0 };
-                    HudBarController.Register(takeBar);
+                    // "~s~Security ~r~cameras caught~s~ the mayhem you caused. ", "~y~Head to the security room~s~ to eradicate the footage."
+                    fHud.DisplayHelpText_Duration(0, false, true, 10000, "~s~Security cameras caught your robbery on camera.", " ~y~Head to the security room~s~ to ~r~erase the footage.~s~");
+                    /*
+                    test = World.GetClosestProp(new Vector3(5305.461f, -5177.75f, 83.66856f), 0.1f, -311575617);
+                    Debug2 = 0;
+                    /*
+                    var takeBar = new HudValueBar("TAKE", isMoney: true) { Value = 0, ValueColor = HudColors.Get(HudColor.Green) };
+                    HudBarController.Register(takeBar);/*
                     Debug2 = 0;
                     new CartGrab(CartType.Gold_a, new Vector3(100, 200, 30)).CreateWithAutoBlip().ConnectToValueBar(takeBar);
                     new CartGrab(CartType.Standard, fPlayer.ped.Position + new Vector3(0f, -2f, -1f)).CreateWithAutoBlip().ConnectToValueBar(takeBar);
@@ -200,9 +215,7 @@ namespace Global
                     //cart2.UseRemoteCounterSound = true;
                     //Function.Call(Hash.LOAD_STREAM, "PROLOGUE_BLOW_THE_VAULT_MASTER", 0);
                     //fAudio.PlayStreamFrontend();
-                    //fDebug.CopyToClipboard(fInterior.GetRoomKeyFromEntity(fPlayer.ped).ToString());
                     //SpawnBooth();*/
-                    
                     ScriptManager.ScriptManager.KillScripts();
                     TheNorthYanktonHeist.Heist.checkpoint = 3;
                     Globals.missionSwitch = 1000;
@@ -231,7 +244,7 @@ namespace Global
                 {
                     //fHud.DisplayHeistHelpText("NTH_GOTODEPOT", true);
                     //Screen.FadeIn(0);
-                    //TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();
+                    TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();
                     //1777.488f, 3326.681f, 41.43328f
                 }
                 if (e.KeyCode == Keys.NumPad9)
@@ -256,7 +269,6 @@ namespace Global
 
                     if (Function.Call<bool>(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) && e.KeyCode == Keys.O)
                     {
-                        entity.AddBlip();
                     }
 
                     if (Function.Call<bool>(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) && e.KeyCode == Keys.L)

@@ -11,6 +11,14 @@ namespace TheNorthYanktonHeist.Funcs
 {
     public class fEntity
     {
+        public static void DetachEntity(Entity entity, bool dynamic, bool collision)
+        {
+            Function.Call(Hash.DETACH_​ENTITY, entity, dynamic, collision);
+        }
+        public static void AttachEntityToEntity(Entity entity1, Entity entity2, int boneIndex, Vector3 pos, Vector3 rot, bool p9, bool useSoftPinning, bool collision, bool isPed, int vertexIndex, bool fixedRot, int p15)
+        {
+            Function.Call(Hash.ATTACH_​ENTITY_​TO_​ENTITY, entity1, entity2, boneIndex, pos.X, pos.Y, pos.Z, rot.X, rot.Y, rot.Z, p9, useSoftPinning, collision, isPed, vertexIndex, fixedRot, p15);
+        }
         public static void SetEntityProofs(Entity entity, bool bulletProof, bool fireProof, bool explosionProof, bool collisionProof, bool meleeProof, bool steamProof, bool dontResetOnCleanup, bool waterProof)
         {
             Function.Call(Hash.SET_​ENTITY_​PROOFS, entity, bulletProof, fireProof, explosionProof, collisionProof, meleeProof, steamProof, dontResetOnCleanup, waterProof);

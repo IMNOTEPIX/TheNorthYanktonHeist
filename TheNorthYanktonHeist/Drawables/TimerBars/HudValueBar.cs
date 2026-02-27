@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace TheNorthYanktonHeist.Drawables.TimerBars
 {
     using GTA.Native;
+    using GTA.UI;
     using System.Drawing;
     using TheNorthYanktonHeist.Funcs;
 
@@ -28,7 +29,7 @@ namespace TheNorthYanktonHeist.Drawables.TimerBars
         public override void Draw(float y)
         {
             // Format value
-            string valueText = IsMoney ? $"${Value:N0}" : Value.ToString("N0");
+            //string valueText = IsMoney ? $"{Value:N0}" : Value.ToString("N0");
             int length = Value.ToString().Length;
 
             // Get config based on value length
@@ -91,13 +92,27 @@ namespace TheNorthYanktonHeist.Drawables.TimerBars
             }
 
             // Draw value
+            //HudBarDraw.DrawNumber(Value, valueX, valueY, 2, config.ValueScale, Color.FromArgb(ValueColor.R, ValueColor.G, ValueColor.B, ValueColor.A), 2, )
+            if (IsMoney)
+            {
+                fHud.BeginTextCommandDisplayText("ESDOLLA");
+                fHud.AddTextComponentInt(Value);
+                Function.Call(Hash.ADD_​TEXT_​COMPONENT_​FORMATTED_​INTEGER, Value, 1);
+                fHud.SetTextJustification(2);
+                fHud.SetTextWrap(wrapStart, wrapEnd);
+                fHud.SetTextFont(5); 
+                fHud.SetTextScale(0f, config.ValueScale);
+                fHud.SetTextColour(ValueColor.R, ValueColor.G, ValueColor.B, ValueColor.A);
+                fHud.EndTextCommandDisplayText(valueX, valueY);
+            }
+            /*
             Function.Call(Hash.BEGIN_TEXT_COMMAND_DISPLAY_TEXT, "STRING");
             Function.Call(Hash.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME, valueText);
             Function.Call(Hash.SET_TEXT_COLOUR, ValueColor.R, ValueColor.G, ValueColor.B, ValueColor.A);
             Function.Call(Hash.SET_TEXT_JUSTIFICATION, 2);
             Function.Call(Hash.SET_TEXT_WRAP, wrapStart, wrapEnd);
             Function.Call(Hash.SET_TEXT_SCALE, 0f, config.ValueScale);
-            Function.Call(Hash.END_TEXT_COMMAND_DISPLAY_TEXT, valueX, valueY, 0);
+            Function.Call(Hash.END_TEXT_COMMAND_DISPLAY_TEXT, valueX, valueY, 0);*/
         }
 
         /// <summary>

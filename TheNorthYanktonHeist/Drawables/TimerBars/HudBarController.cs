@@ -99,10 +99,26 @@ namespace TheNorthYanktonHeist.Drawables.TimerBars
                 ? HudBarDraw.BusyY
                 : HudBarDraw.DefaultY;
 
-            foreach (var bar in _activeBars)
+            // FIXED: Use backwards for loop to safely remove bars during iteration
+            for (int i = _activeBars.Count - 1; i >= 0; i--)
             {
+                var bar = _activeBars[i];
+
+                if (bar == null)
+                {
+                    _activeBars.RemoveAt(i);
+                    continue;
+                }
+
+                // Draw the bar
                 bar.Draw(y);
                 y -= bar.VerticalSpacing;
+
+                // Check if countdown bar expired and should be removed
+                if (bar is HudCountdownBar countdown && countdown.ShouldRemove)
+                {
+                    _activeBars.RemoveAt(i);
+                }
             }
 
             fGraphics.ResetScriptGfxAlign();

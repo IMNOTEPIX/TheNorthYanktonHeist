@@ -37,6 +37,10 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IMNOTEPIX.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files\Rockstar Games\Grand Theft Auto V\scripts\IMNOTEPIX.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="ScriptHookVDotNet3">
       <HintPath>..\..\..\..\..\..\Program Files\Rockstar Games\Grand Theft Auto V\ScriptHookVDotNet3.dll</HintPath>
     </Reference>
@@ -56,67 +60,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Drawables\TimerBars\ExamplesUsage.cs" />
-    <Compile Include="Drawables\TimerBars\HudBar.cs" />
-    <Compile Include="Drawables\TimerBars\HudBarController.cs" />
-    <Compile Include="Drawables\TimerBars\HudBarDraw.cs" />
-    <Compile Include="Drawables\TimerBars\HudCheckpointsBar.cs" />
-    <Compile Include="Drawables\TimerBars\HudCountdownBar.cs" />
-    <Compile Include="Drawables\TimerBars\HudPlayerBar.cs" />
-    <Compile Include="Drawables\TimerBars\HudProgressBar.cs" />
-    <Compile Include="Drawables\TimerBars\HudTextBar.cs" />
-    <Compile Include="Drawables\TimerBars\HudValueBar.cs" />
-    <Compile Include="Funcs\Audio.cs" />
-    <Compile Include="Funcs\BagManager.cs" />
-    <Compile Include="Funcs\Blip.cs" />
-    <Compile Include="Funcs\Cam.cs" />
-    <Compile Include="Funcs\Clock.cs" />
-    <Compile Include="Funcs\Clouds.cs" />
-    <Compile Include="Funcs\Combats.cs" />
-    <Compile Include="Funcs\Cutscene.cs" />
-    <Compile Include="Funcs\CutsceneCreation.cs" />
-    <Compile Include="Funcs\Debug.cs" />
-    <Compile Include="Funcs\Entity.cs" />
-    <Compile Include="Funcs\Explosion.cs" />
-    <Compile Include="Funcs\Fire.cs" />
-    <Compile Include="Funcs\GamePad.cs" />
-    <Compile Include="Funcs\Graphics.cs" />
-    <Compile Include="Funcs\Hud.cs" />
-    <Compile Include="Funcs\InGameScripts.cs" />
-    <Compile Include="Funcs\Interior.cs" />
-    <Compile Include="Funcs\Math.cs" />
-    <Compile Include="Funcs\Misc.cs" />
-    <Compile Include="Funcs\Pathfind.cs" />
-    <Compile Include="Funcs\Ped.cs" />
-    <Compile Include="Funcs\Phone.cs" />
-    <Compile Include="Funcs\Prop.cs" />
-    <Compile Include="Funcs\Rayfire.cs" />
-    <Compile Include="Funcs\Script.cs" />
-    <Compile Include="Funcs\Streaming.cs" />
-    <Compile Include="Funcs\SynchronizedScene.cs" />
-    <Compile Include="Funcs\GameTimer.cs" />
-    <Compile Include="Funcs\Vehicle.cs" />
-    <Compile Include="Funcs\RegisterEntityChunk.cs" />
+    <Compile Include="Extension\RayfireScenes.cs" />
     <Compile Include="Global.cs" />
-    <Compile Include="Interfaces\IMinigame.cs" />
-    <Compile Include="Interfaces\IScene.cs" />
-    <Compile Include="Minigames\CartGrabExtensions.cs" />
-    <Compile Include="Minigames\CashGrab.cs" />
-    <Compile Include="Scaleforms\InstructionalButtons.cs" />
-    <Compile Include="Scaleforms\MissionShard.cs" />
-    <Compile Include="Funcs\Player.cs" />
-    <Compile Include="Funcs\Respawn.cs" />
-    <Compile Include="Funcs\Scaleforms.cs" />
-    <Compile Include="Funcs\Timer.cs" />
-    <Compile Include="Funcs\Weather.cs" />
-    <Compile Include="Funcs\Zone.cs" />
-    <Compile Include="Interfaces\IScaleform.cs" />
     <Compile Include="NOTES.cs" />
-    <Compile Include="Functions.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\BombPlant.cs" />
-    <Compile Include="Scenes\SceneManager.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

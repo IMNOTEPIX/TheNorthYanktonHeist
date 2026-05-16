@@ -3,20 +3,15 @@ using GTA.Math;
 using GTA.Native;
 using GTA.UI;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using TheNorthYanktonHeist;
-using TheNorthYanktonHeist.Drawables.TimerBars;
-using TheNorthYanktonHeist.Funcs;
-using TheNorthYanktonHeist.Minigames;
-using TheNorthYanktonHeist.Scaleforms;
-using TheNorthYanktonHeist.Scenes;
+using TheNorthYanktonHeist.Extension;
+using fCore = IMNOTEPIX.Framework.fCore;
+using fUI = IMNOTEPIX.Framework.fUI;
+using fWorld = IMNOTEPIX.Framework.fWorld;
+using fPlayer = IMNOTEPIX.Framework.fPlayer;
+using fInterior = IMNOTEPIX.Framework.fWorld.Interior;
+using fBlip = IMNOTEPIX.Framework.fBlip;
 using Screen = GTA.UI.Screen;
 
 public static class Globals
@@ -73,19 +68,20 @@ namespace Global
             KeyDown += onKeyDown;
             foreach (string value in RemoveOnlyIPLS)
             {
-                fInterior.RemoveIpl(value);
+                fInterior.Interior.RemoveIpl(value);
             }
             foreach (string value2 in LoadAllIPLS)
             {
-                fInterior.RemoveIpl(value2);
-                fInterior.RequestIpl(value2);
+                fInterior.Interior.RemoveIpl(value2);
+                fInterior.Interior.RequestIpl(value2);
             }
         }
 
         List<Blip> excludeBlips = new List<Blip>();
 
-        InstructionalButtons warningButtons = new InstructionalButtons();
-        static CutsceneCreation debugCutscene = null;
+        fUI.Scaleforms.InstructionalButton warningbutton = new fUI.Scaleforms.InstructionalButton(GTA.Control.FrontendAccept, "OK");
+        fUI.Scaleforms.InstructionalButtons warningButtons = new fUI.Scaleforms.InstructionalButtons();
+        static fWorld.Cutscene.CutsceneCreation debugCutscene = null;
         static Vehicle debugHeli;
         static Ped cutscenePed1;
         static Ped cutscenePed2;
@@ -115,7 +111,7 @@ namespace Global
                     {
                         if (!instructionalButtonsSetUp)
                         {
-                            warningButtons.Add(GTA.Control.FrontendAccept, "Continue");
+                            warningButtons.Buttons.Add(warningbutton);
                             instructionalButtonsSetUp = true;
                         }
                         else
@@ -126,9 +122,10 @@ namespace Global
                             warningButtons.Draw();
                             if (Game.IsControlJustPressed(GTA.Control.FrontendAccept))
                             {
+                                warningButtons.Buttons.Clear();
                                 warning.Dispose();
-                                warningButtons.Remove(GTA.Control.FrontendAccept);
-                                warningButtons.Dispose();
+                                warningbutton = null;
+                                warningButtons.Update();
                                 dlcPackWarningShown = true;
                             }
                         }
@@ -144,6 +141,7 @@ namespace Global
                         RayfireScenes.PrologueDoorRayfire.Scene();
                         break;
                     case 1:
+                        big.Update();
                         break;
                 }
                 /*
@@ -179,7 +177,9 @@ namespace Global
                 }*/
             }
         }
-        HudCountdownBar timerBar;
+        fUI.TimerBars.HudCountdownBar timerBar;
+        fUI.Scaleforms.BigMessageHandler big = new fUI.Scaleforms.BigMessageHandler();
+
         private void onKeyDown(object sender, KeyEventArgs e)
         {
             if (debug)
@@ -244,11 +244,13 @@ namespace Global
                 {
                     //fHud.DisplayHeistHelpText("NTH_GOTODEPOT", true);
                     //Screen.FadeIn(0);
-                    TheNorthYanktonHeist.Funcs.fDebug.CopyPlayerPosWithAddons();
+                    //Framework.Core.Debug.CopyPlayerPosWithAddons();
                     //1777.488f, 3326.681f, 41.43328f
                 }
                 if (e.KeyCode == Keys.NumPad9)
                 {
+                    big.Load(true);
+                    Debug2 = 1;
                     //TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(fPlayer.ped.Heading.ToString() + "f");
                 }
                 GTA.Entity[] anyEntity = World.GetAllEntities();
@@ -264,7 +266,7 @@ namespace Global
                         string Text2 = XYZ.Replace(vectorX, vectorX + "f,");
                         string Text3 = Text2.Replace(vectorY, vectorY + "f,");
                         string Final = Text3.Replace(vectorZ, vectorZ + "f");
-                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);
+                        fCore.Debug.CopyToClipboard(Final);
                     }
 
                     if (Function.Call<bool>(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) && e.KeyCode == Keys.O)
@@ -276,7 +278,7 @@ namespace Global
                         float heading = entity.Heading;
                         string heading2 = heading + "f";
                         string Final = heading2;
-                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);
+                        fCore.Debug.CopyToClipboard(Final);
                     }
 
                     if (Function.Call<bool>(Hash.IS_PLAYER_FREE_AIMING_AT_ENTITY, Game.Player, entity) && e.KeyCode == Keys.K)
@@ -284,7 +286,7 @@ namespace Global
                         if (entity.Model.IsInCdImage)
                         {
                             int modelHash = entity.Model.Hash;
-                            fDebug.CopyToClipboard(modelHash.ToString());
+                            fCore.Debug.CopyToClipboard(modelHash.ToString());
                         }
                     }
 
@@ -298,7 +300,7 @@ namespace Global
                         string Text2 = XYZ.Replace(rotationX, rotationX + "f,");
                         string Text3 = Text2.Replace(rotationY, rotationY + "f,");
                         string Final = Text3.Replace(rotationZ, rotationZ + "f");
-                        TheNorthYanktonHeist.Funcs.fDebug.CopyToClipboard(Final);
+                        fCore.Debug.CopyToClipboard(Final);
                     }
                 }
             }
@@ -309,7 +311,7 @@ namespace Global
             bool flag = true;
             if (true == flag)
             {
-                SceneManager.StopCurrentScene();
+                fCore.SceneManager.StopCurrentScene();
                 debugProp?.Delete();
                 debugProp = null;
                 iLocal_1176?.Delete();
@@ -328,23 +330,23 @@ namespace Global
                 cutscenePed3 = null;
                 debugCam?.Delete();
                 debugCam = null;
-                fVehicle.DeleteVehiclesInList(fDebug.DebugVehicles);
-                fStreaming.RemoveAnimDict(fDebug.DebugAnimDicts);
-                fProp.DeletePropsInList(fDebug.DebugProps);
-                fProp.DeletePropsInList(boothProps);
-                fBlip.ToggleShortRangeForLongRangeBlips(false);
+                fWorld.Vehicle.DeleteList(fCore.Debug.DebugVehicles);
+                fCore.Streaming.RemoveAnimDicts(fCore.Debug.DebugAnimDicts);
+                fWorld.Object.DeleteObjectsInList(fCore.Debug.DebugProps);
+                fWorld.Object.DeleteObjectsInList(boothProps);
+                fBlip.Blip.ToggleShortRangeForLongRangeBlips(fBlip.Blip.GetLongRangeBlips(), false);
                 if (Screen.IsFadedOut || Screen.IsFadingOut)
                     Screen.FadeIn(0);
-                fHud.ClearAllHelpMessages();
-                fHud.ClearBrief();
-                fHud.ClearPrints();
-                fHud.ClearHelp(true);
-                fHud.ClearGPSMultiRoute();
-                fPlayer.SetWantedLevelTo0();
-                fPlayer.FakeWantedLevel = 0;
-                fPlayer.SetMaxWantedLevelToNormal();
-                fHud.RadarAndHud(true, true);
-                fGraphics.AnimpostFXStopAll();
+                fUI.Hud.ClearAllHelpMessages();
+                fUI.Hud.ClearBrief();
+                fUI.Hud.ClearSubtitles();
+                fUI.Hud.ClearHelp(true);
+                fUI.Hud.ClearGPSMultiRoute();
+                fPlayer.Player.SetWantedLevelTo0();
+                fPlayer.Player.FakeWantedLevel = 0;
+                fPlayer.Player.SetMaxWantedLevelToNormal();
+                fUI.Hud.RadarAndHud(true, true);
+                fUI.Graphics.AnimpostFXStopAll();
                 GlobalVariable.Get(5).Write<int>(0);
                 LoadingPrompt.Hide();
                 Function.Call(Hash.STOP_CUTSCENE_IMMEDIATELY);
@@ -408,11 +410,11 @@ namespace Global
         {
             if (boothProps.Count == 0)
             {
-                fProp.CreatePropForList(true, boothProps, new Model("prop_fncwood_02b"), new Vector3(5361.593f, -5181.164f, 84.52729f), new Vector3(0f, 180f, 90f), false, false);
-                fProp.CreatePropForList(true, boothProps, new Model("prop_fncwood_02b"), new Vector3(5361.589f, -5181.263f, 82.06731f), new Vector3(0f, 0f, 90f), false, false);
-                fProp.CreatePropForList(true, boothProps, new Model("prop_fncwood_02b"), new Vector3(5361.7f, -5181.164f, 84.52729f), new Vector3(0f, 180f, 90f), false, false);
-                fProp.CreatePropForList(true, boothProps, new Model("prop_fncwood_02b"), new Vector3(5361.696f, -5181.263f, 82.06731f), new Vector3(0f, 0f, 90f), false, false);
-                fProp.CreatePropForList(true, boothProps, new Model("apa_mp_h_acc_rugwools_03"), new Vector3(5362.6f, -5180.766f, 82.17793f), new Vector3(0f, 0f, 0f), false, false);
+                fWorld.Object.CreateObjectForList(boothProps, new Model("prop_fncwood_02b"), new Vector3(5361.593f, -5181.164f, 84.52729f), new Vector3(0f, 180f, 90f), false, false);
+                fWorld.Object.CreateObjectForList(boothProps, new Model("prop_fncwood_02b"), new Vector3(5361.589f, -5181.263f, 82.06731f), new Vector3(0f, 0f, 90f), false, false);
+                fWorld.Object.CreateObjectForList(boothProps, new Model("prop_fncwood_02b"), new Vector3(5361.7f, -5181.164f, 84.52729f), new Vector3(0f, 180f, 90f), false, false);
+                fWorld.Object.CreateObjectForList(boothProps, new Model("prop_fncwood_02b"), new Vector3(5361.696f, -5181.263f, 82.06731f), new Vector3(0f, 0f, 90f), false, false);
+                fWorld.Object.CreateObjectForList(boothProps, new Model("apa_mp_h_acc_rugwools_03"), new Vector3(5362.6f, -5180.766f, 82.17793f), new Vector3(0f, 0f, 0f), false, false);
             }
 
         }
@@ -420,13 +422,13 @@ namespace Global
         {
             if (depotVehicles.Count == 0)
             {
-                fVehicle.CreateVehicleForList(depotVehicles, new Model("stockade3"), new Vector3((5341.3525f + 1.365f), -5177.149f, 81.762f), 0.3367f);
+                fWorld.Vehicle.CreateForList(depotVehicles, new Model("stockade3"), new Vector3((5341.3525f + 1.365f), -5177.149f, 81.762f), 0.3367f);
                 Function.Call(Hash.SET_VEHICLE_IS_CONSIDERED_BY_PLAYER, depotVehicles[0], false);
                 Function.Call(Hash.SET_ENTITY_ONLY_DAMAGED_BY_PLAYER, depotVehicles[0], true);
-                fVehicle.CreateVehicleForList(depotVehicles, new Model("stockade3"), new Vector3((5337.0996f + 1.365f), -5177.0317f, 81.762f), 2.5903f);
+                fWorld.Vehicle.CreateForList(depotVehicles, new Model("stockade3"), new Vector3((5337.0996f + 1.365f), -5177.0317f, 81.762f), 2.5903f);
                 Function.Call(Hash.SET_VEHICLE_IS_CONSIDERED_BY_PLAYER, depotVehicles[1], false);
                 Function.Call(Hash.SET_ENTITY_ONLY_DAMAGED_BY_PLAYER, depotVehicles[1], true);
-                Function.Call(Hash.SET_MODEL_AS_NO_LONGER_NEEDED, fMisc.GetHashKey("stockade3"));
+                Function.Call(Hash.SET_MODEL_AS_NO_LONGER_NEEDED, fWorld.Misc.joaat("stockade3"));
             }
         }
 

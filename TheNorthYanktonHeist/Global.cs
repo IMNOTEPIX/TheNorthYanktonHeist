@@ -1132,6 +1132,198 @@ namespace Global
                         }
                         iLocal_1987++;
                         break;
+                    case 8:
+                        if ((func_761[268] || func_761[269]) || func_761[266])
+                        {
+                            if (!func_761[241])
+                            {
+                                if (((fWorld.Entity.DoesEntityExist(iLocal_665[17]) && fWorld.Ped.IsPedInjured(iLocal_665[17])) && (fWorld.Entity.DoesEntityExist(iLocal_665[18]) && fWorld.Ped.IsPedInjured(iLocal_665[18]))) && (fWorld.Entity.DoesEntityExist(iLocal_665[19]) && fWorld.Ped.IsPedInjured(iLocal_665[19])))
+                                {
+                                    func_761[268] = false;
+                                    func_761[269] = false;
+                                    func_761[266] = false;
+                                    func_761[241] = true;
+                                }
+                            }
+                        }
+                        if (!func_761[267])
+                        {
+                            if (fWorld.Entity.IsEntityInAngledArea(fPlayer.Player.Character, 5430.2236f, -5157.384f, 86.30035f, 5437.865f, -5089.6914f, 76.0554f, 150f, false, true, 0))
+                            {
+                                iLocal_1050[7] = func_485(joaat("policeold2"), fWorld.VehicleRecording.GetPositionOfVehicleRecordingAtTime(701, 0f, sLocal_559), func_472(fWorld.VehicleRecording.GetRotationOfVehicleRecordingAtTime(701, 0f, sLocal_559)), -1, 1097859072);
+                                iLocal_1050[8] = func_485(joaat("policeold2"), fWorld.VehicleRecording.GetPositionOfVehicleRecordingAtTime(702, 0f, sLocal_559), func_472(fWorld.VehicleRecording.GetRotationOfVehicleRecordingAtTime(702, 0f, sLocal_559)), -1, 1097859072);
+                                fWorld.Vehicle.SetVehicleConsideredByPlayer(iLocal_1050[7], false);
+                                fWorld.Vehicle.SetVehicleConsideredByPlayer(iLocal_1050[8], false);
+                                func_467(17);
+                                func_467(18);
+                                func_467(19);
+                                func_467(20);
+                                if (fWorld.Entity.DoesEntityExist(iLocal_665[17]))
+                                {
+                                    fWorld.Ped.SetPedIntoVehicle(iLocal_665[17], iLocal_1050[7], -1);
+                                }
+                                if (fWorld.Entity.DoesEntityExist(iLocal_665[18]))
+                                {
+                                    fWorld.Ped.SetPedIntoVehicle(iLocal_665[18], iLocal_1050[7], 0);
+                                }
+                                if (fWorld.Entity.DoesEntityExist(iLocal_665[19]))
+                                {
+                                    fWorld.Ped.SetPedIntoVehicle(iLocal_665[19], iLocal_1050[8], -1);
+                                }
+                                if (fWorld.Entity.DoesEntityExist(iLocal_665[20]))
+                                {
+                                    fWorld.Ped.SetPedIntoVehicle(iLocal_665[20], iLocal_1050[8], 0);
+                                }
+                                if (fWorld.VehicleRecording.HasVehicleRecordingBeenLoaded(701, sLocal_559))
+                                {
+                                    fWorld.VehicleRecording.StartPlaybackRecordedVehicle(iLocal_1050[7], 701, sLocal_559, true);
+                                    fWorld.VehicleRecording.SkipTimeInPlaybackRecordedVehicle(iLocal_1050[7], 3000f);
+                                    fWorld.Vehicle.SetVehicleSiren(iLocal_1050[7], true);
+                                }
+                                if (fWorld.VehicleRecording.HasVehicleRecordingBeenLoaded(702, sLocal_559))
+                                {
+                                    fWorld.VehicleRecording.StartPlaybackRecordedVehicle(iLocal_1050[8], 702, sLocal_559, true);
+                                    fWorld.VehicleRecording.SkipTimeInPlaybackRecordedVehicle(iLocal_1050[8], 3000f);
+                                    fWorld.Vehicle.SetVehicleSiren(iLocal_1050[8], true);
+                                }
+                                if (func_761[240])
+                                {
+                                    fWorld.VehicleRecording.SkipToEndAndStopPlaybackRecordedVehicle(iLocal_1050[7]);
+                                    fWorld.VehicleRecording.SkipToEndAndStopPlaybackRecordedVehicle(iLocal_1050[8]);
+                                    if (!fWorld.Ped.IsPedInjured(iLocal_665[17]))
+                                    {
+                                        fWorld.Ped.ApplyDamageToPed(iLocal_665[17], fWorld.Entity.GetEntityHealth(iLocal_665[17]) + 100, true, 0, 0);
+                                    }
+                                    if (!fWorld.Ped.IsPedInjured(iLocal_665[18]))
+                                    {
+                                        fWorld.Ped.ApplyDamageToPed(iLocal_665[18], fWorld.Entity.GetEntityHealth(iLocal_665[18]) + 100, true, 0, 0);
+                                    }
+                                    if (!fWorld.Ped.IsPedInjured(iLocal_665[19]))
+                                    {
+                                        fWorld.Ped.ApplyDamageToPed(iLocal_665[19], fWorld.Entity.GetEntityHealth(iLocal_665[19]) + 100, true, 0, 0);
+                                    }
+                                    if (!fWorld.Ped.IsPedInjured(iLocal_665[20]))
+                                    {
+                                        fWorld.Ped.ApplyDamageToPed(iLocal_665[20], fWorld.Entity.GetEntityHealth(iLocal_665[20]) + 100, true, 0, 0);
+                                    }
+                                }
+                                func_761[267] = true;
+                            }
+                        }
+                        else
+                        {
+                            if ((fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[7]) && fWorld.VehicleRecording.GetTimePositionInRecording(iLocal_1050[7]) > ((fWorld.VehicleRecording.GetTotalDurationOfVehicleRecording(701, sLocal_559) / 100f) * 90f)) || (!fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[7]) && !fWorld.Entity.IsEntityAtCoord(iLocal_1050[7], fWorld.VehicleRecording.GetPositionOfVehicleRecordingAtTime(701, 0f, sLocal_559), new Vector3(5f, 5f, 5f), false, true, 0)))
+                            {
+                                if (!func_761[251])
+                                {
+                                    if ((fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[7]) && fWorld.VehicleRecording.GetTimePositionInRecording(iLocal_1050[7]) > ((fWorld.VehicleRecording.GetTotalDurationOfVehicleRecording(701, sLocal_559) / 100f) * 95f)) || (!fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[7]) && !fWorld.Entity.IsEntityAtCoord(iLocal_1050[7], fWorld.VehicleRecording.GetPositionOfVehicleRecordingAtTime(701, 0f, sLocal_559), new Vector3(5f, 5f, 5f), false, true, 0)))
+                                    {
+                                        fWorld.Vehicle.SetVehicleHasMutedSirens(iLocal_1050[7], true);
+                                        func_761[251] = true;
+                                    }
+                                }
+                                if (!func_761[39])
+                                {
+                                    if ((fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[7]) && fWorld.VehicleRecording.GetTimePositionInRecording(iLocal_1050[7]) > ((fWorld.VehicleRecording.GetTotalDurationOfVehicleRecording(701, sLocal_559) / 100f) * 90f)) || (!fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[7]) && !fWorld.Entity.IsEntityAtCoord(iLocal_1050[7], fWorld.VehicleRecording.GetPositionOfVehicleRecordingAtTime(701, 0f, sLocal_559), new Vector3(5f, 5f, 5f), false, true, 0)))
+                                    {
+                                        if (!fWorld.Ped.IsPedInjured(iLocal_665[17]))
+                                        {
+                                            fWorld.Vehicle.SetVehicleHasMutedSirens(iLocal_1050[7], true);
+                                            Function.Call(Hash.TASK_COMBAT_HATED_TARGETS_AROUND_PED, iLocal_665[17], 100f, 0);
+                                            fWorld.Ped.SetPedCombatAttributes(iLocal_665[17], 1, false);
+                                            fWorld.Ped.SetPedCombatAttributes(iLocal_665[17], 3, true);
+                                            func_761[39] = true;
+                                        }
+                                    }
+                                }
+                                if (!func_761[40])
+                                {
+                                    if ((fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[7]) && fWorld.VehicleRecording.GetTimePositionInRecording(iLocal_1050[7]) > ((fWorld.VehicleRecording.GetTotalDurationOfVehicleRecording(701, sLocal_559) / 100f) * 95f)) || (!fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[7]) && !fWorld.Entity.IsEntityAtCoord(iLocal_1050[7], fWorld.VehicleRecording.GetPositionOfVehicleRecordingAtTime(701, 0f, sLocal_559), new Vector3(5f, 5f, 5f), false, true, 0)))
+                                    {
+                                        if (!fWorld.Ped.IsPedInjured(iLocal_665[18]))
+                                        {
+                                            fWorld.Ped.SetBlockingOfNonTemporaryEvents(iLocal_665[18], false);
+                                            Function.Call(Hash.TASK_COMBAT_HATED_TARGETS_AROUND_PED, iLocal_665[18], 1000f, 0);
+                                            fWorld.Ped.SetPedCombatAttributes(iLocal_665[18], 1, false);
+                                            fWorld.Ped.SetPedCombatAttributes(iLocal_665[18], 3, true);
+                                            func_761[40] = true;
+                                        }
+                                    }
+                                }
+                            }
+                            if ((fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[8]) && fWorld.VehicleRecording.GetTimePositionInRecording(iLocal_1050[8]) > ((fWorld.VehicleRecording.GetTotalDurationOfVehicleRecording(702, sLocal_559) / 100f) * 90f)) || (!fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[8]) && !fWorld.Entity.IsEntityAtCoord(iLocal_1050[8], fWorld.VehicleRecording.GetPositionOfVehicleRecordingAtTime(702, 0f, sLocal_559), new Vector3(5f, 5f, 5f), false, true, 0)))
+                            {
+                                if (!func_761[252])
+                                {
+                                    if ((fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[8]) && fWorld.VehicleRecording.GetTimePositionInRecording(iLocal_1050[8]) > ((fWorld.VehicleRecording.GetTotalDurationOfVehicleRecording(702, sLocal_559) / 100f) * 95f)) || (!fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[8]) && !fWorld.Entity.IsEntityAtCoord(iLocal_1050[8], fWorld.VehicleRecording.GetPositionOfVehicleRecordingAtTime(702, 0f, sLocal_559), new Vector3(5f, 5f, 5f), false, true, 0)))
+                                    {
+                                        fWorld.Vehicle.SetVehicleHasMutedSirens(iLocal_1050[8], true);
+                                        fWorld.Vehicle.SetVehicleSiren(iLocal_1050[8], false);
+                                        func_761[252] = true;
+                                    }
+                                }
+                                if (!func_761[41])
+                                {
+                                    if ((fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[8]) && fWorld.VehicleRecording.GetTimePositionInRecording(iLocal_1050[8]) > ((fWorld.VehicleRecording.GetTotalDurationOfVehicleRecording(702, sLocal_559) / 100f) * 90f)) || (!fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[8]) && !fWorld.Entity.IsEntityAtCoord(iLocal_1050[8], fWorld.VehicleRecording.GetPositionOfVehicleRecordingAtTime(702, 0f, sLocal_559), new Vector3(5f, 5f, 5f), false, true, 0)))
+                                    {
+                                        if (!fWorld.Ped.IsPedInjured(iLocal_665[19]))
+                                        {
+                                            fWorld.Ped.SetBlockingOfNonTemporaryEvents(iLocal_665[19], false);
+                                            Function.Call(Hash.TASK_COMBAT_HATED_TARGETS_AROUND_PED, iLocal_665[19], 1000f, 0);
+                                            fWorld.Ped.SetPedCombatAttributes(iLocal_665[19], 1, false);
+                                            fWorld.Ped.SetPedCombatAttributes(iLocal_665[19], 3, true);
+                                            func_761[41] = true;
+                                        }
+                                    }
+                                }
+                                if (!func_761[42])
+                                {
+                                    if ((fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[8]) && fWorld.VehicleRecording.GetTimePositionInRecording(iLocal_1050[8]) > ((fWorld.VehicleRecording.GetTotalDurationOfVehicleRecording(702, sLocal_559) / 100f) * 95f)) || (!fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[8]) && !fWorld.Entity.IsEntityAtCoord(iLocal_1050[8], fWorld.VehicleRecording.GetPositionOfVehicleRecordingAtTime(702, 0f, sLocal_559), new Vector3(5f, 5f, 5f), false, true, 0)))
+                                    {
+                                        if (!fWorld.Ped.IsPedInjured(iLocal_665[20]))
+                                        {
+                                            Function.Call(Hash.TASK_COMBAT_HATED_TARGETS_AROUND_PED, iLocal_665[20], 100f, 0);
+                                            fWorld.Ped.SetPedCombatAttributes(iLocal_665[20], 1, false);
+                                            fWorld.Ped.SetPedCombatAttributes(iLocal_665[20], 3, true);
+                                            func_761[42] = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (iLocal_37 < (iLocal_1050.Length - 1))
+                        {
+                            iLocal_37++;
+                        }
+                        else
+                        {
+                            iLocal_37 = 0;
+                        }
+                        iVar0 = iLocal_37;
+                        if (!fWorld.Entity.IsEntityDead(iLocal_1050[iVar0], false))
+                        {
+                            if (fWorld.VehicleRecording.IsPlaybackGoingOnForVehicle(iLocal_1050[iVar0]))
+                            {
+                                if (fWorld.Entity.DoesEntityExist(fWorld.Vehicle.GetPedInVehicleSeat(iLocal_1050[iVar0], -1, false)) && fWorld.Ped.IsPedInjured(fWorld.Vehicle.GetPedInVehicleSeat(iLocal_1050[iVar0], -1, false)))
+                                {
+                                    fWorld.VehicleRecording.StopPlaybackRecordedVehicle(iLocal_1050[iVar0]);
+                                }
+                            }
+                        }
+                        iVar0 = 0;
+                        while (iVar0 < iLocal_665.Length)
+                        {
+                            if (!fWorld.Ped.IsPedInjured(iLocal_665[iVar0]))
+                            {
+                                if (fWorld.Ped.IsPedInAnyVehicle(iLocal_665[iVar0], true))
+                                {
+                                    fWorld.Ped.SetPedResetFlag(iLocal_665[iVar0], 282, true);
+                                }
+                            }
+                            iVar0++;
+                        }
+                        iLocal_1987++;
+                        break;
                 }
                 if (iLocal_1987 > 5)
                 {

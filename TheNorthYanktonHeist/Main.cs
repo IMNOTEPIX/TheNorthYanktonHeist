@@ -108,7 +108,7 @@ namespace TheNorthYanktonHeist
                                         if (fPlayer.Player.GetDistanceTo(PlanePos) < 300f)
                                         {
                                             fWorld.Misc.ClearAreaOfVehicles(PlanePos, 10f);
-                                            Plane = fWorld.Vehicle.Create("cuban800", PlanePos, PlaneH);
+                                            Plane = fWorld.Vehicle.CreateVehicle("cuban800", PlanePos, PlaneH);
                                         }
                                     }
 
@@ -124,7 +124,7 @@ namespace TheNorthYanktonHeist
                                     }
                                     if (!fixedPosition)
                                     {
-                                        fWorld.Vehicle.PlaceOnGround(Plane);
+                                        fWorld.Vehicle.SetVehicleOnProperly(Plane);
                                         fixedPosition = true;
                                     }
                                     if (PlaneBlip != null && Plane.AttachedBlip == null)
@@ -152,7 +152,7 @@ namespace TheNorthYanktonHeist
                                 fWorld.Misc.ClearAreaEntities(new Vector3(1735.602f, 3294.539f, 41.80106f), 10f, false, true, true);
                                 if (fPlayer.Player.IsWanted)
                                 {
-                                    fWorld.Vehicle.SetConsideredByPlayer(Plane, false);
+                                    fWorld.Vehicle.SetVehicleConsideredByPlayer(Plane, false);
                                     if (Plane.AttachedBlip != null)
                                         Plane.AttachedBlip.Alpha = 0;
                                     if (fPlayer.Player.GetDistanceTo(Plane.Position) < 6f)
@@ -167,7 +167,7 @@ namespace TheNorthYanktonHeist
                                 }
                                 else
                                 {
-                                    fWorld.Vehicle.SetConsideredByPlayer(Plane, true);
+                                    fWorld.Vehicle.SetVehicleConsideredByPlayer(Plane, true);
                                     if (Plane.AttachedBlip != null)
                                         Plane.AttachedBlip.Alpha = 255;
                                     if (fPlayer.Player.GetDistanceTo(Plane.Position) < 6f)
@@ -327,9 +327,9 @@ namespace TheNorthYanktonHeist
         {
             get
             {
-                if (PrologueVehicle != null && PrologueVehicle.IsConsideredDestroyed || fWorld.Vehicle.GetEngineHealth(PrologueVehicle) <= 0)
+                if (PrologueVehicle != null && PrologueVehicle.IsConsideredDestroyed || fWorld.Vehicle.GetVehicleEngineHealth(PrologueVehicle) <= 0)
                     return true;
-                if (PrologueVehicle != null && !PrologueVehicle.IsConsideredDestroyed || fWorld.Vehicle.GetEngineHealth(PrologueVehicle) > 0)
+                if (PrologueVehicle != null && !PrologueVehicle.IsConsideredDestroyed || fWorld.Vehicle.GetVehicleEngineHealth(PrologueVehicle) > 0)
                     return false;
                 return true;
             }
@@ -361,15 +361,6 @@ namespace TheNorthYanktonHeist
 
         private void onTick(object sender, EventArgs e)
         {
-            //Screen.ShowHelpText($"{Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString)}");
-            //fPathfind.GetClosestVehicleNode(fPlayer.Player.ped.CurrentVehicle.Position, out local);
-            //Screen.ShowSubtitle($"{local}");
-            if (Globals.missionSwitch > 3)
-            {
-                //fPathfind.GetClosestVehicleNode(fPlayer.Player.ped.Position, out local);
-                //local = new Vector2(fPlayer.Player.ped.Position.X, fPlayer.Player.ped.Position.Y);
-            }
-            //Screen.ShowSubtitle($"{fWorld.Entity.IsEntityInArea(fPlayer.Player.ped, new Vector3(3873.535f, -5083.751f, 150f), new Vector3(3462.987f, -4794.556f, 65f))|| fWorld.Entity.IsEntityInArea(fPlayer.Player.ped, new Vector3(3896.537f, -5161.008f, 150f), new Vector3(4500.178f, -4978.984f, 65f)) || fWorld.Entity.IsEntityInArea(fPlayer.Player.ped, new Vector3(4500.178f, -4978.984f, 150f), new Vector3(5545.2f, -5260.716f, 65f))}");
             switch (Globals.missionSwitch)
             {
                 case -1:
@@ -405,7 +396,7 @@ namespace TheNorthYanktonHeist
                     fUI.Hud.ClearAllHelpMessages();
                     fUI.Hud.ClearGPSMultiRoute();
                     fUI.Hud.ClearHelp(true);
-                    fUI.Scaleforms.MissionShard missionShard = new fUI.Scaleforms.MissionShard();
+                    fUI.Scaleforms.MidsizedShard missionShard = new fUI.Scaleforms.MidsizedShard();
                     missionShard.ShardIn("~s~North Yankton Heist", "~s~Break into the ~y~Bobcat Security Depot~s~ in North Yankton and clean out the ~g~vault.~s~", 2, 0.375f);
                     missionShard = null;
                     Wait(1000);
@@ -567,15 +558,15 @@ namespace TheNorthYanktonHeist
                                         {
                                             case 1:
                                                 PrologueVehicleName = "Mesa";
-                                                PrologueVehicle = fWorld.Vehicle.Create(new Model("Mesa2"), carsPos, carsHeading);
+                                                PrologueVehicle = fWorld.Vehicle.CreateVehicle(new Model("Mesa2"), carsPos, carsHeading);
                                                 break;
                                             case 2:
                                                 PrologueVehicleName = "Rancher";
-                                                PrologueVehicle = fWorld.Vehicle.Create(new Model("RancherXL2"), carsPos, carsHeading);
+                                                PrologueVehicle = fWorld.Vehicle.CreateVehicle(new Model("RancherXL2"), carsPos, carsHeading);
                                                 break;
                                             case 3:
                                                 PrologueVehicleName = "Asea";
-                                                PrologueVehicle = fWorld.Vehicle.Create(new Model("Asea2"), carsPos, carsHeading);
+                                                PrologueVehicle = fWorld.Vehicle.CreateVehicle(new Model("Asea2"), carsPos, carsHeading);
                                                 break;
                                         }
                                     }
@@ -791,6 +782,7 @@ namespace TheNorthYanktonHeist
                                             while (!Screen.IsFadedOut)
                                                 Wait(0);
                                             LoadingPrompt.Show("NorthYanktonHeist");
+                                            fCore.Streaming.RequestAnimDict("anim@apt_trans@hinge_l_action");
                                             fWorld.Interior.PrologueMap.LoadDepot();
                                             fAudio.Audio.ChangeMusicEventIntensity(fAudio.Audio.MusicEventIntensity.Gunfight);
                                             DepotBlip.Delete();
@@ -806,7 +798,6 @@ namespace TheNorthYanktonHeist
                     switch (case5switch)
                     {
                         case 0:
-                            fCore.Streaming.RequestAnimDict("anim@apt_trans@hinge_l_action");
                             fUI.Hud.ClearSubtitles();
                             fPlayer.Player.SetMaxWantedLevelTo0();
                             fPlayer.Player.Character.IsPositionFrozen = false;
@@ -1303,6 +1294,12 @@ namespace TheNorthYanktonHeist
                                 {
                                     InsideBlip?.Delete();
                                     InsideBlip = null;
+                                    if (c1.GetBlip() is not null)
+                                        c1.GetBlip().Alpha = 0;
+                                    if (c2.GetBlip() != null)
+                                        c2.GetBlip().Alpha = 0;
+                                    if (c3.GetBlip() != null)
+                                        c3.GetBlip().Alpha = 0;
                                     fUI.Hud.ClearSubtitles();
                                     Audio.SetAudioFlag(AudioFlags.LoadMPData, false);
                                     Wait(1500);
@@ -1318,7 +1315,7 @@ namespace TheNorthYanktonHeist
                                 if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
                                     fUI.Hud.ShowGXTSubtitle("NTH_GETINPOSITION");
                                 else
-                                Screen.ShowSubtitle("~s~Get in ~y~position.~s~");
+                                    Screen.ShowSubtitle("~s~Get in ~y~position.~s~");
                             }
                             break;
                         case 7:
@@ -1327,6 +1324,142 @@ namespace TheNorthYanktonHeist
                                 AfterVaultSwitch = 8;
                             break;
                         case 8:
+                            if (Function.Call<bool>(Hash.DOES_TEXT_LABEL_EXIST, NYHeistDLCgxtString))
+                                fUI.Hud.ShowGXTSubtitle("NTH_SHUTTER");
+                            else
+                                Screen.ShowSubtitle("~s~Open the ~g~shutter door.~s~");
+                            switch (shutterSwitch)
+                            {
+                                case 0:
+                                    fCore.Streaming.RequestAnimDict("missprologueig_5@press_button_duck");
+                                    fCore.Streaming.RequestAnimDict("Map_Objects");
+                                    if (!fWorld.Entity.DoesEntityExist(GarageDoor))
+                                    {
+                                        Function.Call(Hash.CREATE_MODEL_HIDE, 5320.6f, -5188.56f, 82.52f, 1f, fWorld.Misc.joaat("prop_gar_door_a_01"), false);
+                                        GarageDoor = Function.Call<Prop>(Hash.CREATE_OBJECT_NO_OFFSET, fWorld.Misc.joaat("prop_gar_door_a_01"), 5320.6f, -5188.56f, 82.5f, true, true, false, 0);
+                                        Function.Call(Hash.SET_ENTITY_COLLISION, GarageDoor, false, false);
+                                        Function.Call(Hash.SET_ENTITY_ROTATION, GarageDoor, 0f, 0f, -90f, 2, true);
+                                        Function.Call(Hash.SET_MODEL_AS_NO_LONGER_NEEDED, fWorld.Misc.joaat("prop_gar_door_a_01"));
+                                    }
+                                    else if (!fWorld.Entity.DoesEntityExist(Garagecolobject))
+                                    {
+                                        Garagecolobject = World.CreateProp(new Model("p_gdoor1colobject_s"), new Vector3(5320.59f, -5188.49f, 82.52f), new Vector3(0f, 0f, 90f), false, false);
+                                        Function.Call(Hash.FREEZE_ENTITY_POSITION, Garagecolobject, true);
+                                        Function.Call(Hash.SET_ENTITY_VISIBLE, Garagecolobject, false, false);
+                                        Function.Call(Hash.SET_MODEL_AS_NO_LONGER_NEEDED, fWorld.Misc.joaat("p_gdoor1colobject_s"));
+                                    }
+                                    if (!fBlip.Blip.DoesBlipExist(shutterBlip))
+                                    {
+                                        shutterBlip = fBlip.Blip.AddBlipForCoord(new Vector3(5320.226f, -5186.1284f, 82.5187f));
+                                        shutterBlip.Scale = 1f;
+                                        shutterBlip.ShowRoute = false;
+                                        shutterBlip.Priority = 9;
+                                    }
+                                    shutterBlip?.Color = (BlipColor)2;
+                                    if (fWorld.Camera.GetCamViewModeForContext(0) == 4 && fWorld.Entity.IsEntityAtCoord(fPlayer.Player.Character, 5318.1904f, -5187.5776f, 84.26867f, 10f, 10f, 1.75f, false, true, 0))
+                                    {
+                                        fWorld.Ped.SetPedMaxMoveBlendRatio(fPlayer.Player.Character, 1f);
+                                    }
+                                    if (fWorld.Entity.IsEntityInAngledArea(fPlayer.Player.Character, 5320.486f, -5186.8735f, 82.51864f, 5315.874f, -5186.868f, 86.01864f, 3f, false, true, 0))
+                                    {
+                                        Vector3 vector = new Vector3(5320.469f + 0.25f, -5186.864f, 82.519f) - new Vector3(0f, 0.41f, 0f) + new Vector3(0f, -0.06f, -0.18f);
+                                        Vector3 vector1 = Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_POSITION, "missprologueig_5@press_button_duck", "press_button_player2", vector.X, vector.Y, vector.Z, 0f, 0f, 0f, 0f, 2);
+                                        fUI.Hud.DisplayHelpText("~s~Press ~INPUT_CONTEXT~ to open the ~g~shutter door.~s~");
+                                        if (Game.IsControlJustPressed(GTA.Control.Context))
+                                        {
+                                            if (!fPlayer.Player.Character.Weapons.HasWeapon(WeaponHash.CarbineRifle))
+                                                fPlayer.Player.Character.Weapons.Give(WeaponHash.CarbineRifle, 364, true, true);
+                                            fPlayer.Player.Character.Weapons.Select(WeaponHash.CarbineRifle);
+                                            fUI.Hud.ClearAllHelpMessages();
+                                            if (fBlip.Blip.DoesBlipExist(shutterBlip))
+                                            {
+                                                shutterBlip.Delete();
+                                                shutterBlip = null;
+                                            }
+                                            Function.Call(Hash.CLEAR_PED_TASKS, fPlayer.Player.Character);
+                                            fPlayer.Player.Character.Task.FollowNavMeshTo(vector1, PedMoveBlendRatio.Walk, 20000, 0.25f, (FollowNavMeshFlags)516, Function.Call<Vector3>(Hash.GET_ANIM_INITIAL_OFFSET_POSITION, "missprologueig_5@press_button_duck", "press_button_player2", vector.X, vector.Y, vector.Z, 0f, 0f, 0f, 0f, 2).Y);
+                                            GameplayCamera.SetCoordHint(new Vector3(5320.464f, -5186.7456f, 84.1165f), 2000, 2000, 2000, CameraHintHelperNameHash.NoFovHintHelper);
+                                            while (fPlayer.Player.Character.CurrentScriptTaskStatus != ScriptTaskStatus.Vacant)
+                                                Wait(0);
+                                            shutterSwitch++;
+                                        }
+                                    }
+                                    else
+                                        fUI.Hud.ClearAllHelpMessages();
+                                    break;
+                                case 1:
+                                    if (fWorld.Entity.IsEntityAtCoord(fPlayer.Player.Character, fWorld.Ped.GetAnimInitialOffsetPosition("missprologueig_5@press_button_duck", "press_button_player2", new Vector3(5320.469f + 0.25f, -5186.864f, 82.519f) - new Vector3(0f, 0.41f, 0f) + new Vector3(0f, -0.06f, -0.18f), new Vector3(0f, 0f, 0f), 0f, 2), new Vector3(0.2f, 0.2f, 3f), false, true, 0))
+                                    {
+                                        if (fWorld.Camera.GetCamViewModeForContext(0) != 4)
+                                        {
+                                            Shutter.Create();
+                                            Shutter.PlayPed(fPlayer.Player.Character, "missprologueig_5@press_button_duck", "press_button_player2", 1.5f, -1.5f, (SyncedSceneFlags)4, 0, 1.5f, 0);
+                                            Shutter.HoldLastFrame = false;
+                                        }
+                                        else
+                                        {
+                                            Shutter.Create();
+                                            Shutter.PlayPed(fPlayer.Player.Character, "missprologueig_5@press_button_duck", "press_button_player2", 8f, -1.5f, (SyncedSceneFlags)4, 0, 8f, 0);
+                                            Shutter.HoldLastFrame = false;
+                                        }
+                                    }
+                                    if (Shutter.IsRunning)
+                                        shutterSwitch++;
+                                    break;
+                                case 2:
+                                    if ((Shutter.IsRunning && Shutter.Phase > 0.178f) || !Shutter.IsRunning)
+                                    {
+                                        if (fWorld.Entity.DoesEntityExist(GarageDoor))
+                                        {
+                                            if (fWorld.Entity.DoesEntityExist(Garagecolobject))
+                                                Function.Call(Hash.SET_ENTITY_COORDS, Garagecolobject, 5320.59f, -5188.49f, 82.52f, true, false, false, true);
+                                            if (!fWorld.Entity.IsEntityPlayingAnim(GarageDoor, "Map_Objects", "GDoor_Open", 3))
+                                            {
+                                                fWorld.Entity.PlayEntityAnim(GarageDoor, "GDoor_Open", "Map_Objects", 1000f, false, true, false, 0f, 0);
+                                            }
+                                            else
+                                            {
+                                                fWorld.Entity.SetEntityAnimCurrentTime(GarageDoor, "Map_Objects", "GDoor_Open", 0f);
+                                                fWorld.Entity.SetEntityAnimSpeed(GarageDoor, "Map_Objects", "GDoor_Open", 1f);
+                                            }
+                                        }
+                                        Function.Call<bool>(Hash.START_PARTICLE_FX_NON_LOOPED_AT_COORD, "scr_pro_door_snow", 5320.537f, -5188.5547f, 82.51863f, 0f, 0f, 0f, 1f, false, false, false);
+                                        if (fAudio.Audio.IsAudioSceneActive("PROLOGUE_TAKE_COVER"))
+                                        {
+                                            fAudio.Audio.StopAudioScene("PROLOGUE_TAKE_COVER");
+                                        }
+                                        if (!fAudio.Audio.IsAudioSceneActive("PROLOGUE_POLICE_SHOOTOUT"))
+                                        {
+                                            fAudio.Audio.StartAudioScene("PROLOGUE_POLICE_SHOOTOUT");
+                                        }
+                                        shutterSwitch++;
+                                    }
+                                    break;
+                                case 3:
+                                    if (fWorld.Entity.DoesEntityExist(GarageDoor))
+                                    {
+                                        if (Function.Call<bool>(Hash.DOES_ENTITY_HAVE_DRAWABLE, GarageDoor))
+                                        {
+                                            if (Function.Call<bool>(Hash.IS_ENTITY_PLAYING_ANIM, GarageDoor, "Map_Objects", "GDoor_Open", 3) && Function.Call<float>(Hash.GET_ENTITY_ANIM_CURRENT_TIME, GarageDoor, "Map_Objects", "GDoor_Open") <= 1f)
+                                            {
+                                                if (fWorld.Entity.DoesEntityExist(Garagecolobject))
+                                                {
+                                                    Function.Call(Hash.SET_ENTITY_COORDS, Garagecolobject, 5320.59f, -5188.49f, func_753(82.52f, (82.52f + 2.6f), 0f, 0.888f, Function.Call<float>(Hash.GET_ENTITY_ANIM_CURRENT_TIME, GarageDoor, "Map_Objects", "GDoor_Open")), true, false, false, true);
+                                                }
+                                            }
+                                            if (Function.Call<float>(Hash.GET_ENTITY_ANIM_CURRENT_TIME, GarageDoor, "Map_Objects", "GDoor_Open") >= 1f)
+                                            {
+                                                AfterVaultSwitch = 9;
+                                                shutterSwitch = 0;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                    float func_753(float fParam0, float fParam1, float fParam2, float fParam3, float fParam4)
+                                        => ((((fParam1 - fParam0) / (fParam3 - fParam2)) * (fParam4 - fParam2)) + fParam0);
+                            }
+                            break;
+                        case 9:
                             break;
                     }
                     break;
@@ -1368,6 +1501,9 @@ namespace TheNorthYanktonHeist
         private Camera AnimCam;
         private Ped AnimGuard;
         private int case5switch = -1;
+        private int shutterSwitch = 0;
+        private Blip shutterBlip;
+        SynchronizedScene Shutter = new SynchronizedScene(new Vector3(5320.469f + 0.25f, -5186.864f, 82.519f) - new Vector3(0f, 0.41f, 0f) + new Vector3(-0.18f, -0.06f, 0));
         private static fWorld.Ped.CombatAttributes[] EnableAttrbutes =
             {
             fWorld.Ped.CombatAttributes.CA_BLIND_FIRE_IN_COVER,
@@ -1390,6 +1526,7 @@ namespace TheNorthYanktonHeist
         public int AiTeam = World.AddRelationshipGroup("aiteam").Hash;
         public int playersTeam = Function.Call<int>(Hash.GET_HASH_KEY, "PLAYER");
 
+        static Prop GarageDoor;
         static Prop Garagecolobject;
         static Ped BoothGuard;
         static List<Prop> boothProps = new List<Prop>();
@@ -1499,10 +1636,10 @@ namespace TheNorthYanktonHeist
         {
             if (depotVehicles.Count == 0)
             {
-                fWorld.Vehicle.CreateForList(depotVehicles, new Model("stockade3"), new Vector3((5341.3525f + 1.365f), -5177.149f, 81.762f), 0.3367f);
+                fWorld.Vehicle.CreateVehicleForList(depotVehicles, new Model("stockade3"), new Vector3((5341.3525f + 1.365f), -5177.149f, 81.762f), 0.3367f);
                 Function.Call(Hash.SET_VEHICLE_IS_CONSIDERED_BY_PLAYER, depotVehicles[0], false);
                 Function.Call(Hash.SET_ENTITY_ONLY_DAMAGED_BY_PLAYER, depotVehicles[0], true);
-                fWorld.Vehicle.CreateForList(depotVehicles, new Model("stockade3"), new Vector3((5337.0996f + 1.365f), -5177.0317f, 81.762f), 2.5903f);
+                fWorld.Vehicle.CreateVehicleForList(depotVehicles, new Model("stockade3"), new Vector3((5337.0996f + 1.365f), -5177.0317f, 81.762f), 2.5903f);
                 Function.Call(Hash.SET_VEHICLE_IS_CONSIDERED_BY_PLAYER, depotVehicles[1], false);
                 Function.Call(Hash.SET_ENTITY_ONLY_DAMAGED_BY_PLAYER, depotVehicles[1], true);
                 Function.Call(Hash.SET_MODEL_AS_NO_LONGER_NEEDED, fWorld.Misc.joaat("stockade3"));
@@ -1628,6 +1765,10 @@ namespace TheNorthYanktonHeist
                 fPlayer.Player.SetMaxWantedLevelTo0();
                 if (justFailed && !restartPending)
                 {
+                    shutterBlip?.Delete();
+                    shutterBlip = null;
+                    GarageDoor?.Delete();
+                    GarageDoor = null;
                     weatherTypeSaved = false;
                     if (fPlayer.Player.IsFranklin)
                     {
@@ -1697,7 +1838,7 @@ namespace TheNorthYanktonHeist
                     fAudio.Audio.ChangeMusicEventIntensity(fAudio.Audio.MusicEventIntensity.Fail);
                     if (GetFailVariation() == FailVariations.PlaneDestroyed)
                     {
-                        fUI.Scaleforms.MissionShard failShard = new fUI.Scaleforms.MissionShard();
+                        fUI.Scaleforms.MidsizedShard failShard = new fUI.Scaleforms.MidsizedShard();
                         failShard.ShardIn("HEIST FAILED", "The Plane Was Destroyed.", 6, 0.3f, 6, true);
                         failShard = null;
                         failShardJustShown = true;
@@ -1709,7 +1850,7 @@ namespace TheNorthYanktonHeist
                     {
                         if (GetFailVariation() == FailVariations.PrologueVehicleDestroyed)
                         {
-                            fUI.Scaleforms.MissionShard failShard = new fUI.Scaleforms.MissionShard();
+                            fUI.Scaleforms.MidsizedShard failShard = new fUI.Scaleforms.MidsizedShard();
                             failShard.ShardIn("HEIST FAILED", $"{PrologueVehicleName} Was Destroyed.", 6, 0.3f, 6, true);
                             failShard = null;
                             failShardJustShown = true;
@@ -1719,7 +1860,7 @@ namespace TheNorthYanktonHeist
                         }
                         if (GetFailVariation() == FailVariations.PlayerFailedToReachTheDepot)
                         {
-                            fUI.Scaleforms.MissionShard failShard = new fUI.Scaleforms.MissionShard();
+                            fUI.Scaleforms.MidsizedShard failShard = new fUI.Scaleforms.MidsizedShard();
                             failShard.ShardIn("HEIST FAILED", $"{PlayerNameStr} Failed To Reach The Depot", 6, 0.3f, 6, true);
                             failShard = null;
                             failShardJustShown = true;
@@ -1729,7 +1870,7 @@ namespace TheNorthYanktonHeist
                         }
                         if (GetFailVariation() == FailVariations.PlayerAbandonedThePrologueVehicle)
                         {
-                            fUI.Scaleforms.MissionShard failShard = new fUI.Scaleforms.MissionShard();
+                            fUI.Scaleforms.MidsizedShard failShard = new fUI.Scaleforms.MidsizedShard();
                             failShard.ShardIn("HEIST FAILED", $"{PlayerNameStr} Abandoned The Vehicle", 6, 0.3f, 6, true);
                             failShard = null;
                             failShardJustShown = true;
@@ -1753,7 +1894,7 @@ namespace TheNorthYanktonHeist
                             {
                                 LoadingPrompt.Show("NorthYanktonHeist");
                                 restarting = true;
-                                fWorld.Vehicle.DeleteList(depotVehicles);
+                                fWorld.Vehicle.DeleteVehicleList(depotVehicles);
                                 fWorld.Camera.RenderScriptCams(false, false, 0);
                                 resetCam?.Delete();
                                 resetCam = null;
@@ -1810,7 +1951,7 @@ namespace TheNorthYanktonHeist
                                         else
                                         {
                                             fPlayer.Player.PedPos(828.5366f, 3302.112f, 180f);
-                                            Start.Plane = fWorld.Vehicle.Create(new Model("cuban800"), new Vector3(828.5366f, 3302.112f, 180f), 70f);
+                                            Start.Plane = fWorld.Vehicle.CreateVehicle(new Model("cuban800"), new Vector3(828.5366f, 3302.112f, 180f), 70f);
                                         }
                                         break;
                                     case 2:
@@ -1895,7 +2036,7 @@ namespace TheNorthYanktonHeist
                             {
                                 LoadingPrompt.Show("NorthYanktonHeist");
                                 restarting = true;
-                                fWorld.Vehicle.DeleteList(depotVehicles);
+                                fWorld.Vehicle.DeleteVehicleList(depotVehicles);
                                 fWorld.Camera.RenderScriptCams(false, false, 0);
                                 resetCam?.Delete();
                                 resetCam = null;
@@ -2089,8 +2230,12 @@ namespace TheNorthYanktonHeist
                 fWorld.Zone.SetZoneEnabled(fWorld.Zone.GetZoneFromNameID("Prol"), false);
                 fAudio.Audio.ChangeMusicEventIntensity(fAudio.Audio.MusicEventIntensity.Fail);
                 fWorld.Object.DeleteObjectsInList(boothProps);
-                fWorld.Vehicle.DeleteList(depotVehicles);
+                fWorld.Vehicle.DeleteVehicleList(depotVehicles);
                 fCombat.CombatRegistry.DisposeAll();
+                GarageDoor?.Delete();
+                GarageDoor = null;
+                shutterBlip?.Delete();
+                shutterBlip = null;
                 VaultBlip?.Delete();
                 VaultBlip = null;
                 InsideBlip?.Delete();
